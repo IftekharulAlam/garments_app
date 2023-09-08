@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:garments_app/view/home_page.dart';
+
 import 'package:http/http.dart' as http;
 
 class RegistrationPage extends StatefulWidget {
@@ -24,14 +24,27 @@ class _RegistrationPageState extends State<RegistrationPage> {
   TextEditingController fathersName = TextEditingController();
   TextEditingController mothersName = TextEditingController();
   TextEditingController salary = TextEditingController();
-  Future createWorkOwner(
-      String phone, String type, String workName, String workPrice) async {
+  Future register(
+      String name,
+      String address,
+      String phone,
+      String nid,
+      String password,
+      String fathersName,
+      String mothersName,
+      String salary,
+      String type) async {
     http.Response response = await http
-        .post(Uri.parse("http://192.168.0.100:8000/registerUser"), body: {
+        .post(Uri.parse("http://192.168.0.100:8080/registerUser"), body: {
+      "name": name,
+      "address": address,
       "phone": phone,
-      "workName": workName,
-      "workPrice": workPrice,
-      "type": type
+      "nid": nid,
+      "password": password,
+      "fathersName": fathersName,
+      "mothersName": mothersName,
+      "salary": salary,
+      "type": type,
     });
 
     if (response.statusCode == 200) {
@@ -88,7 +101,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
             Container(
               padding: const EdgeInsets.all(10),
               child: TextField(
-                controller: address,
+                controller: nid,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'NID',
@@ -108,8 +121,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
             Container(
               padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
               child: TextField(
-                obscureText: true,
-                controller: password,
+                controller: address,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Address',
@@ -130,8 +142,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
             Container(
               padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
               child: TextField(
-                obscureText: true,
-                controller: password,
+                controller: fathersName,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Fathers Name',
@@ -141,8 +152,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
             Container(
               padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
               child: TextField(
-                obscureText: true,
-                controller: password,
+                controller: mothersName,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Mothers Name',
@@ -152,8 +162,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
             Container(
               padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
               child: TextField(
-                obscureText: true,
-                controller: password,
+                controller: salary,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Salary',
@@ -189,10 +198,16 @@ class _RegistrationPageState extends State<RegistrationPage> {
               child: ElevatedButton(
                 child: const Text('Register'),
                 onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const HomePage()));
+                  register(
+                      name.text,
+                      address.text,
+                      phone.text,
+                      nid.text,
+                      password.text,
+                      fathersName.text,
+                      mothersName.text,
+                      salary.text,
+                      dropdownvalue);
                 },
               ),
             ),
