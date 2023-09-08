@@ -2,14 +2,14 @@
 
 import 'package:flutter/material.dart';
 
-import 'package:garments_app/login_page.dart';
+import 'package:garments_app/view/login_page.dart';
 
 void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  static const String _title = 'Helping Hand ';
+  static const String _title = 'BM Garments';
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: _title,
       home: Scaffold(
-        appBar: AppBar(title: const Text(_title)),
+        appBar: AppBar(title: const Center(child: Text(_title))),
         body: const LoginPage(),
       ),
     );
