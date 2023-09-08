@@ -1,4 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:garments_app/view/home_page.dart';
+import 'package:http/http.dart' as http;
 
 class RegistrationPage extends StatefulWidget {
   const RegistrationPage({super.key});
@@ -14,7 +19,36 @@ class _RegistrationPageState extends State<RegistrationPage> {
   TextEditingController name = TextEditingController();
   TextEditingController address = TextEditingController();
   TextEditingController phone = TextEditingController();
+  TextEditingController nid = TextEditingController();
   TextEditingController password = TextEditingController();
+  TextEditingController fathersName = TextEditingController();
+  TextEditingController mothersName = TextEditingController();
+  TextEditingController salary = TextEditingController();
+  Future createWorkOwner(
+      String phone, String type, String workName, String workPrice) async {
+    http.Response response = await http
+        .post(Uri.parse("http://192.168.0.100:8000/registerUser"), body: {
+      "phone": phone,
+      "workName": workName,
+      "workPrice": workPrice,
+      "type": type
+    });
+
+    if (response.statusCode == 200) {
+      Fluttertoast.showToast(
+          msg: "Update Successful",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+      return jsonDecode(response.body);
+    } else {
+      throw Exception("Error loading data");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,12 +68,13 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       fontSize: 30),
                 )),
             Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.all(10),
-                child: const Text(
-                  'User Registration',
-                  style: TextStyle(fontSize: 20),
-                )),
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(10),
+              child: const Text(
+                'User Registration',
+                style: TextStyle(fontSize: 20),
+              ),
+            ),
             Container(
               padding: const EdgeInsets.all(10),
               child: TextField(
@@ -56,7 +91,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 controller: address,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: 'Address',
+                  labelText: 'NID',
                 ),
               ),
             ),
@@ -77,8 +112,88 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 controller: password,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
+                  labelText: 'Address',
+                ),
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+              child: TextField(
+                obscureText: true,
+                controller: password,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
                   labelText: 'Password',
                 ),
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+              child: TextField(
+                obscureText: true,
+                controller: password,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Fathers Name',
+                ),
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+              child: TextField(
+                obscureText: true,
+                controller: password,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Mothers Name',
+                ),
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+              child: TextField(
+                obscureText: true,
+                controller: password,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Salary',
+                ),
+              ),
+            ),
+            Center(
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                child: DropdownButton(
+                  underline: Container(),
+                  style: const TextStyle(
+                      //te
+                      color: Colors.black, //Font color
+                      fontSize: 18 //font size on dropdown button
+                      ),
+                  value: dropdownvalue,
+                  icon: const Icon(Icons.keyboard_arrow_down),
+                  items: items.map((String items) {
+                    return DropdownMenuItem(value: items, child: Text(items));
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      dropdownvalue = newValue!;
+                    });
+                  },
+                ),
+              ),
+            ),
+            Container(
+              height: 50,
+              padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+              child: ElevatedButton(
+                child: const Text('Register'),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const HomePage()));
+                },
               ),
             ),
             Row(
