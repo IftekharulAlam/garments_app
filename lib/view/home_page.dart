@@ -5,7 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:garments_app/view/bill.dart';
 import 'package:garments_app/view/chalan.dart';
-import 'package:garments_app/view/daily_sheet.dart';
+import 'package:garments_app/view/daily_sheet/daily_sheet.dart';
 import 'package:garments_app/view/party_khata.dart';
 import 'package:garments_app/view/staff_attendence.dart';
 import 'package:garments_app/view/staff_khata.dart';

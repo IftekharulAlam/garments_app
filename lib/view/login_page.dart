@@ -1,7 +1,8 @@
-// ignore_for_file: sort_child_properties_last
+// ignore_for_file: sort_child_properties_last, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+
 import 'package:garments_app/view/home_page.dart';
 import 'package:garments_app/view/registration_page.dart';
 import 'package:http/http.dart' as http;
@@ -20,14 +21,11 @@ class _LoginPageState extends State<LoginPage> {
   var items = ['Owner', 'Manager', 'Staff', 'Designer'];
   TextEditingController name = TextEditingController();
   TextEditingController password = TextEditingController();
-  Future login() async {
+  Future login(String name, String password, String userType) async {
     String finalUrl = "http://192.168.0.100:8000/login";
     var url = Uri.parse(finalUrl);
-    var response = await http.post(url, body: {
-      "name": name.text,
-      "password": password.text,
-      "userType": dropdownvalue
-    });
+    var response = await http.post(url,
+        body: {"name": name, "password": password, "userType": userType});
 
     var data = json.decode(response.body);
 
@@ -49,18 +47,12 @@ class _LoginPageState extends State<LoginPage> {
           backgroundColor: Colors.red,
           textColor: Colors.white,
           fontSize: 16.0);
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(
-      //     builder: (context) => HomePage(
-      //         Username: "${data[0]["name"]}",
-      //         Usertype: dropdownvalue,
-      //         UserAddress: "${data[0]["address"]}",
-      //         UserIamge: "${data[0]["profilePic"]}",
-      //         UserPhone: "${data[0]["phone"]}",
-      //         UserWorkingHour: "${data[0]["workingHour"]}"),
-      //   ),
-      // );
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const HomePage(),
+        ),
+      );
     }
   }
 
@@ -150,8 +142,13 @@ class _LoginPageState extends State<LoginPage> {
             child: ElevatedButton(
               child: const Text('Login'),
               onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const HomePage()));
+                // login(name.text, password.text, dropdownvalue);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const HomePage(),
+                  ),
+                );
               },
             ),
           ),

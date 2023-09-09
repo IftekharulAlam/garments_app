@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:garments_app/view/daily_sheet/daily_sheet_add.dart';
 
 class DailySheetPage extends StatefulWidget {
   const DailySheetPage({super.key});
@@ -8,14 +9,13 @@ class DailySheetPage extends StatefulWidget {
 }
 
 class _DailySheetPageState extends State<DailySheetPage> {
-   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   List<String> itemStrings = [
     'Date 1/10/13',
     'Date 1/10/13',
     'Date 1/10/13',
     'Date 1/10/13',
     'Date 1/10/13',
-    
   ];
   List<Widget> itemsWidgets = [];
 
@@ -67,8 +67,26 @@ class _DailySheetPageState extends State<DailySheetPage> {
               style: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.w500,
-                  fontSize: 30),
+                  fontSize: 25),
             ),
+          ),
+          Container(
+            height: 50,
+            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+            child: ElevatedButton(
+              child: const Text('Add New'),
+              onPressed: () {
+                // login(name.text, password.text, dropdownvalue);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const DailySheetAddPage()));
+              },
+            ),
+          ),
+          
+          const SizedBox(
+            height: 20,
           ),
           for (int x = 1; x < itemStrings.length; x++)
             GestureDetector(
