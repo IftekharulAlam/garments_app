@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:garments_app/view/staff_khata/staff_details.dart';
 
 class StaffKhataPage extends StatefulWidget {
   const StaffKhataPage({super.key});
@@ -19,7 +20,13 @@ class _StaffKhataPageState extends State<StaffKhataPage> {
     'Mehedi'
   ];
   List<Widget> itemsWidgets = [
-
+    StaffDetailsPage(),
+    StaffDetailsPage(),
+    StaffDetailsPage(),
+    StaffDetailsPage(),
+    StaffDetailsPage(),
+    StaffDetailsPage(),
+    StaffDetailsPage(),
   ];
 
   @override
@@ -62,7 +69,7 @@ class _StaffKhataPageState extends State<StaffKhataPage> {
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: <Widget>[
-              Container(
+          Container(
             alignment: Alignment.center,
             padding: const EdgeInsets.all(10),
             child: const Text(
@@ -77,6 +84,8 @@ class _StaffKhataPageState extends State<StaffKhataPage> {
             GestureDetector(
               onTap: () {
                 //items_widgets[x];
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => itemsWidgets[x]));
               },
               child: Card(
                 child: ListTile(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:garments_app/view/daily_sheet/daily_sheet_add.dart';
+import 'package:garments_app/view/daily_sheet/daily_sheet_view.dart';
 
 class DailySheetPage extends StatefulWidget {
   const DailySheetPage({super.key});
@@ -17,7 +18,13 @@ class _DailySheetPageState extends State<DailySheetPage> {
     'Date 1/10/13',
     'Date 1/10/13',
   ];
-  List<Widget> itemsWidgets = [];
+  List<Widget> itemsWidgets = [
+    const DailySheetViewPage(),
+    const DailySheetViewPage(),
+    const DailySheetViewPage(),
+    const DailySheetViewPage(),
+    const DailySheetViewPage(),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -70,21 +77,38 @@ class _DailySheetPageState extends State<DailySheetPage> {
                   fontSize: 25),
             ),
           ),
-          Container(
-            height: 50,
-            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-            child: ElevatedButton(
-              child: const Text('Add New'),
-              onPressed: () {
-                // login(name.text, password.text, dropdownvalue);
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const DailySheetAddPage()));
-              },
-            ),
+          Row(
+            children: [
+              Container(
+                height: 50,
+                padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                child: ElevatedButton(
+                  child: const Text('Khoroch'),
+                  onPressed: () {
+                    // login(name.text, password.text, dropdownvalue);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const DailySheetAddPage()));
+                  },
+                ),
+              ),
+              Container(
+                height: 50,
+                padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                child: ElevatedButton(
+                  child: const Text('Joma'),
+                  onPressed: () {
+                    // login(name.text, password.text, dropdownvalue);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const DailySheetAddPage()));
+                  },
+                ),
+              ),
+            ],
           ),
-          
           const SizedBox(
             height: 20,
           ),
@@ -92,6 +116,8 @@ class _DailySheetPageState extends State<DailySheetPage> {
             GestureDetector(
               onTap: () {
                 //items_widgets[x];
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => itemsWidgets[x]));
               },
               child: Card(
                 child: ListTile(
