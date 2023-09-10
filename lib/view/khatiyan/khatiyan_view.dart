@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 
-class DailySheetViewPage extends StatefulWidget {
-  const DailySheetViewPage({super.key});
+class KhatiyanViewPage extends StatefulWidget {
+  const KhatiyanViewPage({super.key});
 
   @override
-  State<DailySheetViewPage> createState() => _DailySheetViewPageState();
+  State<KhatiyanViewPage> createState() => _KhatiyanViewPageState();
 }
 
-class _DailySheetViewPageState extends State<DailySheetViewPage> {
+class _KhatiyanViewPageState extends State<KhatiyanViewPage> {
   Future login(String name, String password, String userType) async {
     String finalUrl = "http://192.168.0.100:8000/login";
     var url = Uri.parse(finalUrl);
@@ -58,6 +58,13 @@ class _DailySheetViewPageState extends State<DailySheetViewPage> {
     ];
   }
 
+  List<DataColumn> _createColumns2() {
+    return [
+      const DataColumn(label: Text('Total')),
+      const DataColumn(label: Text('100')),
+    ];
+  }
+
   List<DataRow> _createRows() {
     return [
       DataRow(cells: [
@@ -95,7 +102,7 @@ class _DailySheetViewPageState extends State<DailySheetViewPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Daily Sheet Khoroch"),
+        title: const Text("Khatiyan Details"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(10),
@@ -123,32 +130,13 @@ class _DailySheetViewPageState extends State<DailySheetViewPage> {
               ],
             ),
             SizedBox(
-              child: DataTable(columns: _createColumns(), rows: _createRows()),
+              height: 450,
+              child: SingleChildScrollView(
+                  child: DataTable(
+                      columns: _createColumns(), rows: _createRows())),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.all(10),
-                  child: const Text(
-                    'Date :',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                ),
-                Container(
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.all(10),
-                  child: const Text(
-                    'Joma :',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(
-              child: DataTable(columns: _createColumns(), rows: _createRows()),
-            ),
+            DataTable(
+                columnSpacing: 33.0, columns: _createColumns2(), rows: const [])
           ],
         ),
       ),

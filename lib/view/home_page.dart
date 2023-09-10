@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:garments_app/view/bill/bill.dart';
 import 'package:garments_app/view/chalan.dart';
 import 'package:garments_app/view/daily_sheet/daily_sheet.dart';
+import 'package:garments_app/view/khatiyan/khatiyan_list.dart';
 import 'package:garments_app/view/party_khata/party_khata.dart';
 import 'package:garments_app/view/staff_khata/staff_attendence.dart';
 import 'package:garments_app/view/staff_khata/staff_khata.dart';
@@ -46,6 +47,7 @@ class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   List<String> itemStrings = [
     'Daily Sheet',
+    'Khatiyan',
     'Staff Khata',
     'Party Khata',
     'Staff Attendence',
@@ -55,6 +57,7 @@ class _HomePageState extends State<HomePage> {
   ];
   List<Widget> itemWidgets = [
     const DailySheetPage(),
+    const KhatiyanListPage(),
     const StaffKhataPage(),
     const PartyKhataPage(),
     const StaffAttendencePage(),
