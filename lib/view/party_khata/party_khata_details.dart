@@ -2,17 +2,17 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:garments_app/view/staff_khata/staff_profile.dart';
+import 'package:garments_app/view/party_khata/party_profile.dart';
 import 'package:http/http.dart' as http;
 
-class StaffDetailsPage extends StatefulWidget {
-  const StaffDetailsPage({super.key});
+class PartyKhataDetails extends StatefulWidget {
+  const PartyKhataDetails({super.key});
 
   @override
-  State<StaffDetailsPage> createState() => _StaffDetailsPageState();
+  State<PartyKhataDetails> createState() => _PartyKhataDetailsState();
 }
 
-class _StaffDetailsPageState extends State<StaffDetailsPage> {
+class _PartyKhataDetailsState extends State<PartyKhataDetails> {
   Future login(String name, String password, String userType) async {
     String finalUrl = "http://192.168.0.100:8000/login";
     var url = Uri.parse(finalUrl);
@@ -52,10 +52,19 @@ class _StaffDetailsPageState extends State<StaffDetailsPage> {
     return DataTable(columns: _createColumns(), rows: _createRows());
   }
 
+  List<DataColumn> _createColumns2() {
+    return [
+      const DataColumn(label: Text('Date')),
+      const DataColumn(label: Text('Bill No')),
+      const DataColumn(label: Text('Details')),
+      const DataColumn(label: Text('Amount')),
+    ];
+  }
+
   List<DataColumn> _createColumns() {
     return [
       const DataColumn(label: Text('Date')),
-      const DataColumn(label: Text('Item')),
+      const DataColumn(label: Text('Details')),
       const DataColumn(label: Text('Amount')),
     ];
   }
@@ -64,37 +73,84 @@ class _StaffDetailsPageState extends State<StaffDetailsPage> {
     return [
       DataRow(cells: [
         DataCell(Text('#100')),
-        DataCell(Text('#100')),
+        DataCell(Text('200')),
         DataCell(Text('200')),
       ]),
       DataRow(cells: [
         DataCell(Text('#100')),
-        DataCell(Text('#100')),
+        DataCell(Text('200')),
         DataCell(Text('200')),
       ]),
       DataRow(cells: [
         DataCell(Text('#100')),
-        DataCell(Text('#100')),
+        DataCell(Text('200')),
         DataCell(Text('200')),
       ]),
       DataRow(cells: [
         DataCell(Text('#100')),
-        DataCell(Text('#100')),
+        DataCell(Text('200')),
         DataCell(Text('200')),
       ]),
       DataRow(cells: [
         DataCell(Text('#100')),
-        DataCell(Text('#100')),
+        DataCell(Text('200')),
         DataCell(Text('200')),
       ]),
       DataRow(cells: [
         DataCell(Text('#100')),
-        DataCell(Text('#100')),
+        DataCell(Text('200')),
         DataCell(Text('200')),
       ]),
       DataRow(cells: [
         DataCell(Text('#100')),
+        DataCell(Text('200')),
+        DataCell(Text('200')),
+      ]),
+    ];
+  }
+
+  List<DataRow> _createRows2() {
+    return [
+      DataRow(cells: [
         DataCell(Text('#100')),
+        DataCell(Text('200')),
+        DataCell(Text('200')),
+        DataCell(Text('200')),
+      ]),
+      DataRow(cells: [
+        DataCell(Text('#100')),
+        DataCell(Text('200')),
+        DataCell(Text('200')),
+        DataCell(Text('200')),
+      ]),
+      DataRow(cells: [
+        DataCell(Text('#100')),
+        DataCell(Text('200')),
+        DataCell(Text('200')),
+        DataCell(Text('200')),
+      ]),
+      DataRow(cells: [
+        DataCell(Text('#100')),
+        DataCell(Text('200')),
+        DataCell(Text('200')),
+        DataCell(Text('200')),
+      ]),
+      DataRow(cells: [
+        DataCell(Text('#100')),
+        DataCell(Text('200')),
+        DataCell(Text('200')),
+        DataCell(Text('200')),
+      ]),
+      DataRow(cells: [
+        DataCell(Text('#100')),
+        DataCell(Text('200')),
+        DataCell(Text('200')),
+        DataCell(Text('200')),
+      ]),
+      DataRow(cells: [
+        DataCell(Text('#100')),
+        DataCell(Text('200')),
+        DataCell(Text('200')),
         DataCell(Text('200')),
       ]),
     ];
@@ -104,7 +160,7 @@ class _StaffDetailsPageState extends State<StaffDetailsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Daily Sheet Khoroch"),
+        title: const Text("Party Details"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(10),
@@ -118,18 +174,10 @@ class _StaffDetailsPageState extends State<StaffDetailsPage> {
                     leading: Icon(Icons.man_2_outlined,
                         color: Colors.cyan, size: 40),
                     title: Text(
-                      "Name : Kajol Khan",
+                      "Supty Entrprice",
                       style: TextStyle(fontSize: 20),
                     ),
-                    subtitle: Row(
-                      children: [
-                        Text('Designation : Senior'),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        Text('Salary : 20000'),
-                      ],
-                    ),
+                    subtitle: Text('Owner : '),
                   ),
                 ],
               ),
@@ -144,14 +192,60 @@ class _StaffDetailsPageState extends State<StaffDetailsPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const StaffProfile(),
+                      builder: (context) => const PartyProfilePage(),
                     ),
                   );
                 },
               ),
             ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.all(10),
+                  child: const Text(
+                    'Date :',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ),
+                Container(
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.all(10),
+                  child: const Text(
+                    'Joma :',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ),
+              ],
+            ),
             SizedBox(
               child: DataTable(columns: _createColumns(), rows: _createRows()),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.all(10),
+                  child: const Text(
+                    'Date :',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ),
+                Container(
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.all(10),
+                  child: const Text(
+                    'Khoroch :',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              child:
+                  DataTable(columns: _createColumns2(), rows: _createRows2()),
             ),
           ],
         ),

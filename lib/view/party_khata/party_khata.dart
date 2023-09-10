@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:garments_app/view/party_khata/party_khata_details.dart';
 
 class PartyKhataPage extends StatefulWidget {
   const PartyKhataPage({super.key});
@@ -18,7 +19,14 @@ class _PartyKhataPageState extends State<PartyKhataPage> {
     'Ruposhi Bangla',
     'Mehedi Garments'
   ];
-  List<Widget> itemsWidgets = [];
+  List<Widget> itemsWidgets = [
+    PartyKhataDetails(),
+    PartyKhataDetails(),
+    PartyKhataDetails(),
+    PartyKhataDetails(),
+    PartyKhataDetails(),
+    PartyKhataDetails(),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -75,6 +83,8 @@ class _PartyKhataPageState extends State<PartyKhataPage> {
             GestureDetector(
               onTap: () {
                 //items_widgets[x];
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => itemsWidgets[x]));
               },
               child: Card(
                 child: ListTile(

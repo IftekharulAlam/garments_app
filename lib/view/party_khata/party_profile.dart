@@ -1,23 +1,23 @@
-import 'package:flutter/material.dart';
+// import 'dart:convert';
 
-class StaffProfile extends StatefulWidget {
-  const StaffProfile({super.key});
+import 'package:flutter/material.dart';
+// import 'package:fluttertoast/fluttertoast.dart';
+// import 'package:http/http.dart' as http;
+
+class PartyProfilePage extends StatefulWidget {
+  const PartyProfilePage({super.key});
 
   @override
-  State<StaffProfile> createState() => _StaffProfileState();
+  State<PartyProfilePage> createState() => _PartyProfilePageState();
 }
 
-class _StaffProfileState extends State<StaffProfile> {
+class _PartyProfilePageState extends State<PartyProfilePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   List<String> itemStrings = [
-    'Name : Sahidul Islam',
-    'NID : 123456789',
+    'Owner Name : Sahidul Islam',
     'Phone',
     'Address',
-    'Fathers Name',
-    'Mothers Name',
   ];
-  List<Widget> itemWidgets = [];
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +63,7 @@ class _StaffProfileState extends State<StaffProfile> {
             alignment: Alignment.center,
             padding: const EdgeInsets.all(10),
             child: const Text(
-              'Staff Profile',
+              'Party Profile',
               style: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.w500,
@@ -78,23 +78,19 @@ class _StaffProfileState extends State<StaffProfile> {
                   leading:
                       Icon(Icons.man_2_outlined, color: Colors.cyan, size: 40),
                   title: Text(
-                    "Name : Kajol Khan",
+                    "Supti Enterprice",
                     style: TextStyle(fontSize: 20),
                   ),
                   subtitle: Row(
                     children: [
-                      Text('Designation : Senior'),
-                      SizedBox(
-                        width: 5,
-                      ),
-                      Text('Salary : 20000'),
+                      Text('Owner : '),
                     ],
                   ),
                 ),
               ],
             ),
           ),
-          for (int x = 1; x < itemStrings.length; x++)
+          for (int x = 0; x < itemStrings.length; x++)
             Card(
               child: ListTile(
                 title: Row(

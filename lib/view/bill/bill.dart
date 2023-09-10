@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:garments_app/view/bill/bill_create.dart';
 
 class BillPage extends StatefulWidget {
   const BillPage({super.key});
@@ -67,6 +68,20 @@ class _BillPageState extends State<BillPage> {
                   color: Colors.black,
                   fontWeight: FontWeight.w500,
                   fontSize: 30),
+            ),
+          ),
+          Container(
+            height: 50,
+            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+            child: ElevatedButton(
+              child: const Text('Create New Bill'),
+              onPressed: () {
+                // login(name.text, password.text, dropdownvalue);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const BillCreatePage()));
+              },
             ),
           ),
           for (int x = 1; x < itemStrings.length; x++)
