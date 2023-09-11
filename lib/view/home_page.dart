@@ -8,19 +8,10 @@ import 'package:garments_app/view/chalan.dart';
 import 'package:garments_app/view/daily_sheet/daily_sheet.dart';
 import 'package:garments_app/view/khatiyan/khatiyan_list.dart';
 import 'package:garments_app/view/party_khata/party_khata.dart';
+import 'package:garments_app/view/products/products_list.dart';
 import 'package:garments_app/view/staff_khata/staff_attendence.dart';
 import 'package:garments_app/view/staff_khata/staff_khata.dart';
 import 'package:garments_app/view/voucher.dart';
-//import 'package:fluttertoast/fluttertoast.dart';
-// import 'package:myapp/createWorkPage.dart';
-// import 'package:myapp/myappointListPage.dart';
-// import 'package:myapp/myworkers.dart';
-// import 'package:myapp/policeComplain.dart';
-// import 'package:myapp/searchPage.dart';
-// import 'package:myapp/showProfilePage.dart';
-//import 'package:http/http.dart' as http;
-// import 'package:myapp/updateProfilePageOwner.dart';
-// import 'package:myapp/updateProfilePageWorker.dart';
 
 class HomePage extends StatefulWidget {
   // String Username;
@@ -46,6 +37,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   List<String> itemStrings = [
+    'Products',
     'Daily Sheet',
     'Khatiyan',
     'Staff Khata',
@@ -56,6 +48,7 @@ class _HomePageState extends State<HomePage> {
     'Chalan'
   ];
   List<Widget> itemWidgets = [
+    const ProductsListPage(),
     const DailySheetPage(),
     const KhatiyanListPage(),
     const StaffKhataPage(),
@@ -70,15 +63,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(
-          // leading: IconButton(
-          //   onPressed: () {
-          //     _scaffoldKey.currentState?.openDrawer();
-          //   },
-          //  icon: Icon(Icons.upgrade_sharp)
-          // ),
-          automaticallyImplyLeading: false,
-          title: Center(child: Text("BM Garments"))),
+      appBar: AppBar(title: Text("BM Garments")),
       drawer: Drawer(
         child: ListView(
           children: const [
@@ -105,7 +90,7 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       body: ListView(
-        padding: EdgeInsets.all(20),
+        padding: EdgeInsets.all(10),
         children: <Widget>[
           Container(
             alignment: Alignment.center,
