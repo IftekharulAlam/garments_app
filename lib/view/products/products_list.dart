@@ -62,11 +62,13 @@ class _ProductsListPageState extends State<ProductsListPage> {
     }
   }
 
-  Future getProductsList(String userType, String userPhone) async {
-    http.Response response = await http.post(
-        Uri.parse("http://192.168.0.100:8000/getProductsList"),
-        body: {"userType": userType, "userPhone": userPhone});
+  Future getProductsList() async {
+    http.Response response = await http.get(
+      Uri.parse("http://192.168.0.100:8000/getProductsList"),
+      // body: {"userType": userType, "userPhone": userPhone}
+    );
     if (response.statusCode == 200) {
+      print(jsonDecode(response.body));
       return jsonDecode(response.body);
     } else {
       throw Exception("Error loading data");
@@ -103,12 +105,11 @@ class _ProductsListPageState extends State<ProductsListPage> {
           ],
         ),
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(20),
+      body: Column(
         children: <Widget>[
           Container(
             alignment: Alignment.center,
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
             child: const Text(
               'Products',
               style: TextStyle(
@@ -252,38 +253,40 @@ class _ProductsListPageState extends State<ProductsListPage> {
                               ElevatedButton(
                                 child: const Text("Create"),
                                 onPressed: () {
-                                  list.clear();
-                                  if (productModelNo.text.isEmpty ||
-                                      productDetails.text.isEmpty ||
-                                      productRate.text.isEmpty) {
-                                  } else {
-                                    if (isCheckedSizeXL == true) {
-                                      list.add("XL");
-                                    }
-                                    if (isCheckedSizeXXL == true) {
-                                      list.add("XXL");
-                                    }
-                                    if (isCheckedSizeM == true) {
-                                      list.add("M");
-                                    }
-                                    if (isCheckedSizeS == true) {
-                                      list.add("S");
-                                    }
+                                  setState(() {
+                                    list.clear();
+                                    if (productModelNo.text.isEmpty ||
+                                        productDetails.text.isEmpty ||
+                                        productRate.text.isEmpty) {
+                                    } else {
+                                      if (isCheckedSizeXL == true) {
+                                        list.add("XL");
+                                      }
+                                      if (isCheckedSizeXXL == true) {
+                                        list.add("XXL");
+                                      }
+                                      if (isCheckedSizeM == true) {
+                                        list.add("M");
+                                      }
+                                      if (isCheckedSizeS == true) {
+                                        list.add("S");
+                                      }
 
-                                    createProduct(
-                                        productModelNo.text,
-                                        productDetails.text,
-                                        productRate.text,
-                                        list.join(","));
-                                    productModelNo.text = "";
-                                    productDetails.text = "";
-                                    productRate.text = "";
-                                    isCheckedSizeXL = false;
-                                    isCheckedSizeXXL = false;
-                                    isCheckedSizeM = false;
-                                    isCheckedSizeS = false;
-                                    Navigator.of(context).pop();
-                                  }
+                                      createProduct(
+                                          productModelNo.text,
+                                          productDetails.text,
+                                          productRate.text,
+                                          list.join(","));
+                                      productModelNo.text = "";
+                                      productDetails.text = "";
+                                      productRate.text = "";
+                                      isCheckedSizeXL = false;
+                                      isCheckedSizeXXL = false;
+                                      isCheckedSizeM = false;
+                                      isCheckedSizeS = false;
+                                      Navigator.of(context).pop();
+                                    }
+                                  });
                                 },
                               ),
                               ElevatedButton(
@@ -478,26 +481,48 @@ class _ProductsListPageState extends State<ProductsListPage> {
               ),
             ],
           ),
-          for (int x = 0; x < itemStrings.length; x++)
-            GestureDetector(
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => itemWidgets[x]));
-              },
-              child: Card(
-                child: ListTile(
-                  title: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(itemStrings[x]),
-                      IconButton(onPressed: () {}, icon: const Icon(Icons.edit))
-                    ],
-                  ),
-                  trailing: IconButton(
-                      onPressed: () {}, icon: const Icon(Icons.delete)),
-                ),
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.all(10),
+              child: FutureBuilder(
+                future: getProductsList(),
+                builder: (BuildContext context, AsyncSnapshot sn) {
+                  if (sn.hasData) {
+                    List unis = sn.data;
+                    return ListView.builder(
+                      padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                      itemCount: unis.length,
+                      itemBuilder: (context, index) => GestureDetector(
+                        onTap: () {},
+                        child: Card(
+                          child: ListTile(
+                            title: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text("${unis[index]["productModelNo"]}"),
+                                IconButton(
+                                    onPressed: () {},
+                                    icon: const Icon(Icons.edit))
+                              ],
+                            ),
+                            trailing: IconButton(
+                                onPressed: () {},
+                                icon: const Icon(Icons.delete)),
+                          ),
+                        ),
+                      ),
+                    );
+                  }
+                  if (sn.hasError) {
+                    return const Center(child: Text("Error Loading Data"));
+                  }
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                },
               ),
             ),
+          ),
         ],
       ),
     );
