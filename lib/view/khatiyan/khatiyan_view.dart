@@ -1,101 +1,32 @@
+// ignore_for_file: must_be_immutable
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+
 import 'package:http/http.dart' as http;
 
 class KhatiyanViewPage extends StatefulWidget {
-  const KhatiyanViewPage({super.key});
+  String khatiyanName;
+  KhatiyanViewPage({super.key, required this.khatiyanName});
 
   @override
   State<KhatiyanViewPage> createState() => _KhatiyanViewPageState();
 }
 
 class _KhatiyanViewPageState extends State<KhatiyanViewPage> {
-  Future login(String name, String password, String userType) async {
-    String finalUrl = "http://192.168.0.100:8000/login";
+  Future getKhatiyanDetails(String khatiyanName) async {
+    String finalUrl = "http://192.168.0.100:8000/getKhatiyanDetails";
     var url = Uri.parse(finalUrl);
-    var response = await http.post(url,
-        body: {"name": name, "password": password, "userType": userType});
+    http.Response response = await http.post(url, body: {
+      "khatiyanName": khatiyanName,
+    });
 
-    var data = json.decode(response.body);
-
-    if (data[0]["message"] == "Wrong") {
-      Fluttertoast.showToast(
-          msg: "Login Unsuccessful",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0);
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
     } else {
-      Fluttertoast.showToast(
-          msg: "Login successful",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0);
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(
-      //     builder: (context) => const HomePage(),
-      //   ),
-      // );
+      throw Exception("Error loading data");
     }
-  }
-
-  DataTable _createDataTable() {
-    return DataTable(columns: _createColumns(), rows: _createRows());
-  }
-
-  List<DataColumn> _createColumns() {
-    return [
-      const DataColumn(label: Text('Item')),
-      const DataColumn(label: Text('Amount')),
-    ];
-  }
-
-  List<DataColumn> _createColumns2() {
-    return [
-      const DataColumn(label: Text('Total')),
-      const DataColumn(label: Text('100')),
-    ];
-  }
-
-  List<DataRow> _createRows() {
-    return [
-      DataRow(cells: [
-        DataCell(Text('#100')),
-        DataCell(Text('200')),
-      ]),
-      DataRow(cells: [
-        DataCell(Text('#100')),
-        DataCell(Text('200')),
-      ]),
-      DataRow(cells: [
-        DataCell(Text('#100')),
-        DataCell(Text('200')),
-      ]),
-      DataRow(cells: [
-        DataCell(Text('#100')),
-        DataCell(Text('200')),
-      ]),
-      DataRow(cells: [
-        DataCell(Text('#100')),
-        DataCell(Text('200')),
-      ]),
-      DataRow(cells: [
-        DataCell(Text('#100')),
-        DataCell(Text('200')),
-      ]),
-      DataRow(cells: [
-        DataCell(Text('#100')),
-        DataCell(Text('200')),
-      ]),
-    ];
   }
 
   @override
@@ -105,8 +36,8 @@ class _KhatiyanViewPageState extends State<KhatiyanViewPage> {
         title: const Text("Khatiyan Details"),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(10),
-        child: ListView(
+        padding: const EdgeInsets.all(5),
+        child: Column(
           children: <Widget>[
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -114,29 +45,64 @@ class _KhatiyanViewPageState extends State<KhatiyanViewPage> {
                 Container(
                   alignment: Alignment.center,
                   padding: const EdgeInsets.all(10),
-                  child: const Text(
-                    'Date :',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                ),
-                Container(
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.all(10),
-                  child: const Text(
-                    'Joma :',
-                    style: TextStyle(fontSize: 20),
+                  child: Text(
+                    widget.khatiyanName,
+                    style: const TextStyle(fontSize: 20),
                   ),
                 ),
               ],
             ),
-            SizedBox(
-              height: 450,
-              child: SingleChildScrollView(
-                  child: DataTable(
-                      columns: _createColumns(), rows: _createRows())),
+            Container(
+            padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+              child: const Card(
+                child: ListTile(
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Date"),
+                      Text("Joma"),
+                      Text("Khoroch"),
+                      Text("Balance"),
+                    ],
+                  ),
+                ),
+              ),
             ),
-            DataTable(
-                columnSpacing: 33.0, columns: _createColumns2(), rows: const [])
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                child: FutureBuilder(
+                  future: getKhatiyanDetails(widget.khatiyanName),
+                  builder: (BuildContext context, AsyncSnapshot sn) {
+                    if (sn.hasData) {
+                      List unis = sn.data;
+                      return ListView.builder(
+                        itemCount: unis.length,
+                        itemBuilder: (context, index) => Card(
+                          child: ListTile(
+                            title: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text("${unis[index]["Date"]}"),
+                                Text("${unis[index]["Joma"]}"),
+                                Text("${unis[index]["Khoroch"]}"),
+                                Text("${unis[index]["Balance"]}"),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+                    if (sn.hasError) {
+                      return const Center(child: Text("Error Loading Data"));
+                    }
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  },
+                ),
+              ),
+            ),
           ],
         ),
       ),

@@ -30,7 +30,7 @@ class _ProductsListPageState extends State<ProductsListPage> {
     const ProductsViewPage(),
   ];
   var list = [];
-
+  List unis = [];
   bool isChecked = false;
   bool isCheckedSizeXL = false;
   bool isCheckedSizeXXL = false;
@@ -67,9 +67,10 @@ class _ProductsListPageState extends State<ProductsListPage> {
       Uri.parse("http://192.168.0.100:8000/getProductsList"),
       // body: {"userType": userType, "userPhone": userPhone}
     );
+
     if (response.statusCode == 200) {
-      print(jsonDecode(response.body));
-      return jsonDecode(response.body);
+      unis = jsonDecode(response.body);
+      return unis;
     } else {
       throw Exception("Error loading data");
     }
@@ -80,31 +81,6 @@ class _ProductsListPageState extends State<ProductsListPage> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(title: const Text("BM Garments")),
-      drawer: Drawer(
-        child: ListView(
-          children: const [
-            Column(
-              children: [
-                // DrawerHeader(
-                //    child: Image.memory(base64.decode(widget.UserIamge))),
-                ListTile(
-                  // title: Center(child: Text(widget.Username)),
-                  title: Center(child: Text("Profile")),
-                ),
-                ListTile(
-                  title:
-                      // Center(child: Text(" Address : ${widget.UserAddress}")),
-                      Center(child: Text("Daily Sheet")),
-                ),
-                ListTile(
-                  title: Center(child: Text("Khatiayn")),
-                  // title: Center(child: Text(" Phone : ${widget.UserPhone}")),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
       body: Column(
         children: <Widget>[
           Container(
@@ -488,7 +464,7 @@ class _ProductsListPageState extends State<ProductsListPage> {
                 future: getProductsList(),
                 builder: (BuildContext context, AsyncSnapshot sn) {
                   if (sn.hasData) {
-                    List unis = sn.data;
+                    unis = sn.data;
                     return ListView.builder(
                       padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                       itemCount: unis.length,

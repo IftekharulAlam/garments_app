@@ -1,5 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:garments_app/view/khatiyan/khatiyan_view.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
+import 'package:http/http.dart' as http;
 
 class KhatiyanListPage extends StatefulWidget {
   const KhatiyanListPage({super.key});
@@ -9,64 +14,50 @@ class KhatiyanListPage extends StatefulWidget {
 }
 
 class _KhatiyanListPageState extends State<KhatiyanListPage> {
-  TextEditingController name = TextEditingController();
+  Future createKhatiyan(String khatiyanName) async {
+    String finalUrl = "http://192.168.0.100:8000/createKhatiyan";
+    var url = Uri.parse(finalUrl);
+    http.Response response = await http.post(url, body: {
+      "khatiyanName": khatiyanName,
+    });
+
+    if (response.statusCode == 200) {
+      Fluttertoast.showToast(
+          msg: "Update Successful",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+      return jsonDecode(response.body);
+    } else {
+      throw Exception("Error loading data");
+    }
+  }
+
+  Future getKhatiyanList() async {
+    http.Response response = await http.get(
+      Uri.parse("http://192.168.0.100:8000/getKhatiyanList"),
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception("Error loading data");
+    }
+  }
+
+  TextEditingController khatiyanName = TextEditingController();
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  List<String> itemStrings = [
-    'Daily Sheet',
-  ];
-  List<Widget> itemWidgets = [
-    // const DailySheetPage(),
-    // const StaffKhataPage(),
-    // const PartyKhataPage(),
-    // const StaffAttendencePage(),
-    // const BillPage(),
-    // const VoucherPage(),
-    // const ChalanPage()
-    const KhatiyanViewPage()
-  ];
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(
-          // leading: IconButton(
-          //   onPressed: () {
-          //     _scaffoldKey.currentState?.openDrawer();
-          //   },
-          //  icon: Icon(Icons.upgrade_sharp)
-          // ),
-          automaticallyImplyLeading: false,
-          title: const Center(child: Text("BM Garments"))),
-      drawer: Drawer(
-        child: ListView(
-          children: const [
-            Column(
-              children: [
-                // DrawerHeader(
-                //    child: Image.memory(base64.decode(widget.UserIamge))),
-                ListTile(
-                  // title: Center(child: Text(widget.Username)),
-                  title: Center(child: Text("Profile")),
-                ),
-                ListTile(
-                  title:
-                      // Center(child: Text(" Address : ${widget.UserAddress}")),
-                      Center(child: Text("Daily Sheet")),
-                ),
-                ListTile(
-                  title: Center(child: Text("Khatiayn")),
-                  // title: Center(child: Text(" Phone : ${widget.UserPhone}")),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(20),
+      appBar: AppBar(title: const Text("BM Garments")),
+      body: Column(
         children: <Widget>[
           Container(
             alignment: Alignment.center,
@@ -93,19 +84,46 @@ class _KhatiyanListPageState extends State<KhatiyanListPage> {
                       content: Container(
                         padding: const EdgeInsets.all(10),
                         child: TextField(
-                          controller: name,
+                          controller: khatiyanName,
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
-                            labelText: 'Khatiyan',
+                            labelText: 'Khatiyan Name',
                           ),
                         ),
                       ),
                       actions: <Widget>[
-                        ElevatedButton(
-                          child: const Text("Create"),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            ElevatedButton(
+                              child: const Text("Create"),
+                              onPressed: () {
+                                if (khatiyanName.text.isEmpty) {
+                                  Fluttertoast.showToast(
+                                      msg: "Name Cannot be Blank",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.CENTER,
+                                      timeInSecForIosWeb: 1,
+                                      backgroundColor: Colors.red,
+                                      textColor: Colors.white,
+                                      fontSize: 16.0);
+                                } else {
+                                  createKhatiyan(khatiyanName.text);
+                                  khatiyanName.text = "";
+                                  Navigator.of(context).pop();
+                                }
+                              },
+                            ),
+                            Container(
+                              padding: const EdgeInsets.all(5),
+                              child: ElevatedButton(
+                                child: const Text("Cancel"),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     );
@@ -114,62 +132,55 @@ class _KhatiyanListPageState extends State<KhatiyanListPage> {
               },
             ),
           ),
-          Container(
-            alignment: Alignment.center,
-            padding: const EdgeInsets.all(10),
-            child: const Text(
-              'Joma',
-              style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 30),
-            ),
-          ),
-          for (int x = 0; x < itemStrings.length; x++)
-            GestureDetector(
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => itemWidgets[x]));
-              },
-              child: Card(
-                child: ListTile(
-                  title: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(itemStrings[x]),
-                    ],
-                  ),
-                ),
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.all(10),
+              child: FutureBuilder(
+                future: getKhatiyanList(),
+                builder: (BuildContext context, AsyncSnapshot sn) {
+                  if (sn.hasData) {
+                    List unis = sn.data;
+                    return ListView.builder(
+                      padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                      itemCount: unis.length,
+                      itemBuilder: (context, index) => GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => KhatiyanViewPage(
+                                      khatiyanName:
+                                          "${unis[index]["khatiyanName"]}")));
+                        },
+                        child: Card(
+                          child: ListTile(
+                            title: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text("${unis[index]["khatiyanName"]}"),
+                                IconButton(
+                                    onPressed: () {},
+                                    icon: const Icon(Icons.edit))
+                              ],
+                            ),
+                            trailing: IconButton(
+                                onPressed: () {},
+                                icon: const Icon(Icons.delete)),
+                          ),
+                        ),
+                      ),
+                    );
+                  }
+                  if (sn.hasError) {
+                    return const Center(child: Text("Error Loading Data"));
+                  }
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                },
               ),
             ),
-          Container(
-            alignment: Alignment.center,
-            padding: const EdgeInsets.all(10),
-            child: const Text(
-              'Khoroch',
-              style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 30),
-            ),
           ),
-          for (int x = 0; x < itemStrings.length; x++)
-            GestureDetector(
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => itemWidgets[x]));
-              },
-              child: Card(
-                child: ListTile(
-                  title: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(itemStrings[x]),
-                    ],
-                  ),
-                ),
-              ),
-            ),
         ],
       ),
     );

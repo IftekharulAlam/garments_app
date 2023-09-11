@@ -22,39 +22,7 @@ class _VoucherPageState extends State<VoucherPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(
-          leading: IconButton(
-              onPressed: () {
-                _scaffoldKey.currentState?.openDrawer();
-              },
-              icon: const Icon(Icons.account_circle_outlined)),
-          automaticallyImplyLeading: false,
-          title: const Center(child: Text("BM Garments"))),
-      drawer: Drawer(
-        child: ListView(
-          children: const [
-            Column(
-              children: [
-                // DrawerHeader(
-                //    child: Image.memory(base64.decode(widget.UserIamge))),
-                ListTile(
-                  // title: Center(child: Text(widget.Username)),
-                  title: Center(child: Text("Profile")),
-                ),
-                ListTile(
-                  title:
-                      // Center(child: Text(" Address : ${widget.UserAddress}")),
-                      Center(child: Text("Daily Sheet")),
-                ),
-                ListTile(
-                  title: Center(child: Text("Khatiayn")),
-                  // title: Center(child: Text(" Phone : ${widget.UserPhone}")),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
+      appBar: AppBar(title: const Text("BM Garments")),
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: <Widget>[
