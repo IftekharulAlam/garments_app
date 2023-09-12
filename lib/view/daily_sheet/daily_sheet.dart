@@ -31,13 +31,8 @@ class _DailySheetPageState extends State<DailySheetPage> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-          leading: IconButton(
-              onPressed: () {
-                _scaffoldKey.currentState?.openDrawer();
-              },
-              icon: const Icon(Icons.account_circle_outlined)),
-          automaticallyImplyLeading: false,
-          title: const Center(child: Text("BM Garments"))),
+          
+          title: const Text("BM Garments")),
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: <Widget>[

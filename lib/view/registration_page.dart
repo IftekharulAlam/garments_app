@@ -35,7 +35,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
       String salary,
       String type) async {
     http.Response response = await http
-        .post(Uri.parse("http://192.168.0.100:8080/registerUser"), body: {
+        .post(Uri.parse("http://192.168.0.100:8000/registerUser"), body: {
       "name": name,
       "address": address,
       "phone": phone,
