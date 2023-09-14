@@ -326,6 +326,16 @@ class _DailySheetAddPageState extends State<DailySheetAddPage> {
                     DataTable(columns: _createColumns(), rows: _createRows()),
               ),
             ),
+            Container(
+              height: 50,
+              padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+              child: ElevatedButton(
+                child: const Text('Submit'),
+                onPressed: () {
+                  // login(name.text, password.text, dropdownvalue);
+                },
+              ),
+            ),
           ],
         ),
       ),

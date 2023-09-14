@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:garments_app/controller/controller.dart';
+import 'package:garments_app/model/model.dart';
 
 import 'package:http/http.dart' as http;
 
@@ -13,6 +15,16 @@ class BillCreatePage extends StatefulWidget {
 }
 
 class _BillCreatePageState extends State<BillCreatePage> {
+  Future<GarmentsApp>? _future;
+  Products? _selected;
+  @override
+  void initState() {
+    _future = getProductsListmy();
+    // TODO: implement initState
+
+    super.initState();
+  }
+
   String dropdownvalue = 'Owner';
   var items = ['Owner', 'Manager', 'Staff', 'Designer'];
   static const String _title = 'BM Garments';
@@ -231,23 +243,33 @@ class _BillCreatePageState extends State<BillCreatePage> {
                 Expanded(
                   child: Container(
                     padding: const EdgeInsets.all(5),
-                    child: DropdownButton(
-                      underline: Container(),
-                      style: const TextStyle(
-                          //te
-                          color: Colors.black, //Font color
-                          fontSize: 15 //font size on dropdown button
-                          ),
-                      value: dropdownvalue,
-                      icon: const Icon(Icons.keyboard_arrow_down),
-                      items: items.map((String items) {
-                        return DropdownMenuItem(
-                            value: items, child: Text(items));
-                      }).toList(),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          dropdownvalue = newValue!;
-                        });
+                    child: FutureBuilder(
+                      future: _future,
+                      builder: (BuildContext context,
+                          AsyncSnapshot<GarmentsApp> sn) {
+                        if (sn.hasData) {
+                          return DropdownButton<Products>(
+                            items: sn.data!.products.map((products) {
+                              return DropdownMenuItem<Products>(
+                                value: products,
+                                child: Text(products.productModelNo.toString()),
+                              );
+                            }).toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                _selected = value;
+                              });
+                            },
+                            value: _selected,
+                          );
+                        }
+                        if (sn.hasError) {
+                          return const Center(
+                              child: Text("Error Loading Data"));
+                        }
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
                       },
                     ),
                   ),

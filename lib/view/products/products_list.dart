@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:garments_app/view/products/product_view.dart';
+import 'package:garments_app/controller/controller.dart';
+import 'package:garments_app/model/model.dart';
+
 import 'package:http/http.dart' as http;
 
 class ProductsListPage extends StatefulWidget {
@@ -13,29 +15,21 @@ class ProductsListPage extends StatefulWidget {
 }
 
 class _ProductsListPageState extends State<ProductsListPage> {
-  String dropdownvalue = 'Owner';
+  Future<GarmentsApp>? _future;
+  Products? _selected;
 
-  var items = ['Owner', 'Manager', 'Staff', 'Designer'];
   TextEditingController productModelNo = TextEditingController();
   TextEditingController productDetails = TextEditingController();
   TextEditingController productRate = TextEditingController();
   TextEditingController productQuantity = TextEditingController();
   TextEditingController name = TextEditingController();
+  TextEditingController productSize = TextEditingController();
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  List<String> itemStrings = [
-    'Products',
-  ];
-  List<Widget> itemWidgets = [
-    const ProductsViewPage(),
-  ];
+
   var list = [];
-  List unis = [];
-  bool isChecked = false;
-  bool isCheckedSizeXL = false;
-  bool isCheckedSizeXXL = false;
-  bool isCheckedSizeM = false;
-  bool isCheckedSizeS = false;
+  List unismy = [];
+
   Future createProduct(String productModelNo, String productDetails,
       String productRate, String productSize) async {
     String finalUrl = "http://192.168.0.100:8000/createProduct";
@@ -65,15 +59,19 @@ class _ProductsListPageState extends State<ProductsListPage> {
   Future getProductsList() async {
     http.Response response = await http.get(
       Uri.parse("http://192.168.0.100:8000/getProductsList"),
-      // body: {"userType": userType, "userPhone": userPhone}
     );
 
     if (response.statusCode == 200) {
-      unis = jsonDecode(response.body);
-      return unis;
+      return jsonDecode(response.body);
     } else {
       throw Exception("Error loading data");
     }
+  }
+
+  @override
+  void initState() {
+    _future = getProductsListmy();
+    super.initState();
   }
 
   @override
@@ -116,6 +114,7 @@ class _ProductsListPageState extends State<ProductsListPage> {
                                   padding: const EdgeInsets.all(10),
                                   child: TextField(
                                     controller: productModelNo,
+                                    keyboardType: TextInputType.number,
                                     decoration: const InputDecoration(
                                       border: OutlineInputBorder(),
                                       labelText: 'Model No',
@@ -132,91 +131,22 @@ class _ProductsListPageState extends State<ProductsListPage> {
                                     ),
                                   ),
                                 ),
-                                Row(
-                                  children: [
-                                    Container(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            10, 0, 0, 0),
-                                        child: const Text("XL")),
-                                    StatefulBuilder(builder:
-                                        (BuildContext context,
-                                            StateSetter setState) {
-                                      return Center(
-                                        child: Checkbox(
-                                          checkColor: Colors.white,
-                                          value: isCheckedSizeXL,
-                                          onChanged: (bool? value) {
-                                            setState(() {
-                                              isCheckedSizeXL = value!;
-                                            });
-                                          },
-                                        ),
-                                      );
-                                    }),
-                                    Container(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            0, 0, 0, 0),
-                                        child: const Text("XXL")),
-                                    StatefulBuilder(builder:
-                                        (BuildContext context,
-                                            StateSetter setState) {
-                                      return Center(
-                                        child: Checkbox(
-                                          checkColor: Colors.white,
-                                          value: isCheckedSizeXXL,
-                                          onChanged: (bool? value) {
-                                            setState(() {
-                                              isCheckedSizeXXL = value!;
-                                            });
-                                          },
-                                        ),
-                                      );
-                                    }),
-                                    Container(
-                                      padding:
-                                          const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                      child: const Text("M"),
+                                Container(
+                                  padding: const EdgeInsets.all(10),
+                                  child: TextField(
+                                    controller: productSize,
+                                    keyboardType: TextInputType.number,
+                                    decoration: const InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      labelText: 'Size',
                                     ),
-                                    StatefulBuilder(builder:
-                                        (BuildContext context,
-                                            StateSetter setState) {
-                                      return Center(
-                                        child: Checkbox(
-                                          checkColor: Colors.white,
-                                          value: isCheckedSizeM,
-                                          onChanged: (bool? value) {
-                                            setState(() {
-                                              isCheckedSizeM = value!;
-                                            });
-                                          },
-                                        ),
-                                      );
-                                    }),
-                                    Container(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            0, 0, 0, 0),
-                                        child: const Text("S")),
-                                    StatefulBuilder(builder:
-                                        (BuildContext context,
-                                            StateSetter setState) {
-                                      return Center(
-                                        child: Checkbox(
-                                          checkColor: Colors.white,
-                                          value: isCheckedSizeS,
-                                          onChanged: (bool? value) {
-                                            setState(() {
-                                              isCheckedSizeS = value!;
-                                            });
-                                          },
-                                        ),
-                                      );
-                                    }),
-                                  ],
+                                  ),
                                 ),
                                 Container(
                                   padding: const EdgeInsets.all(10),
                                   child: TextField(
                                     controller: productRate,
+                                    keyboardType: TextInputType.number,
                                     decoration: const InputDecoration(
                                       border: OutlineInputBorder(),
                                       labelText: 'Rate',
@@ -233,33 +163,19 @@ class _ProductsListPageState extends State<ProductsListPage> {
                                     list.clear();
                                     if (productModelNo.text.isEmpty ||
                                         productDetails.text.isEmpty ||
-                                        productRate.text.isEmpty) {
+                                        productRate.text.isEmpty ||
+                                        productSize.text.isEmpty) {
                                     } else {
-                                      if (isCheckedSizeXL == true) {
-                                        list.add("XL");
-                                      }
-                                      if (isCheckedSizeXXL == true) {
-                                        list.add("XXL");
-                                      }
-                                      if (isCheckedSizeM == true) {
-                                        list.add("M");
-                                      }
-                                      if (isCheckedSizeS == true) {
-                                        list.add("S");
-                                      }
-
                                       createProduct(
                                           productModelNo.text,
                                           productDetails.text,
                                           productRate.text,
-                                          list.join(","));
+                                          productSize.text);
                                       productModelNo.text = "";
                                       productDetails.text = "";
+                                      productSize.text = "";
                                       productRate.text = "";
-                                      isCheckedSizeXL = false;
-                                      isCheckedSizeXXL = false;
-                                      isCheckedSizeM = false;
-                                      isCheckedSizeS = false;
+
                                       Navigator.of(context).pop();
                                     }
                                   });
@@ -288,80 +204,109 @@ class _ProductsListPageState extends State<ProductsListPage> {
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text("Add Products"),
-                          content: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Text("Products List"),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: DropdownButton(
-                                      underline: Container(),
-                                      style: const TextStyle(
-                                          //te
-                                          color: Colors.black, //Font color
-                                          fontSize:
-                                              18 //font size on dropdown button
-                                          ),
-                                      value: dropdownvalue,
-                                      icon:
-                                          const Icon(Icons.keyboard_arrow_down),
-                                      items: items.map((String items) {
-                                        return DropdownMenuItem(
-                                            value: items, child: Text(items));
-                                      }).toList(),
-                                      onChanged: (String? newValue) {
-                                        setState(() {
-                                          dropdownvalue = newValue!;
-                                        });
-                                      },
+                        return StatefulBuilder(
+                            builder: (context, StateSetter setState) {
+                          return AlertDialog(
+                            title: const Text("Add Products"),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text("Products List"),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: FutureBuilder(
+                                        future: _future,
+                                        builder: (BuildContext context,
+                                            AsyncSnapshot<GarmentsApp> sn) {
+                                          if (sn.hasData) {
+                                            return DropdownButton<Products>(
+                                              items: sn.data!.products
+                                                  .map((products) {
+                                                return DropdownMenuItem<
+                                                    Products>(
+                                                  value: products,
+                                                  child: Text(products
+                                                      .productModelNo
+                                                      .toString()),
+                                                );
+                                              }).toList(),
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  _selected = value;
+                                                });
+                                              },
+                                              value: _selected,
+                                            );
+                                          }
+                                          if (sn.hasError) {
+                                            return const Center(
+                                                child:
+                                                    Text("Error Loading Data"));
+                                          }
+                                          return const Center(
+                                            child: CircularProgressIndicator(),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.all(10),
+                                  child: TextField(
+                                    controller: name,
+                                    keyboardType: TextInputType.number,
+                                    decoration: const InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      labelText: 'Production Date',
                                     ),
                                   ),
-                                ],
-                              ),
-                              Container(
-                                padding: const EdgeInsets.all(10),
-                                child: TextField(
-                                  controller: name,
-                                  decoration: const InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    labelText: 'Production Date',
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.all(10),
+                                  child: TextField(
+                                    controller: name,
+                                    keyboardType: TextInputType.number,
+                                    decoration: const InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      labelText: 'Size',
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Container(
-                                padding: const EdgeInsets.all(10),
-                                child: TextField(
-                                  controller: name,
-                                  decoration: const InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    labelText: 'Quantity',
+                                Container(
+                                  padding: const EdgeInsets.all(10),
+                                  child: TextField(
+                                    controller: name,
+                                    keyboardType: TextInputType.number,
+                                    decoration: const InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      labelText: 'Quantity',
+                                    ),
                                   ),
                                 ),
+                              ],
+                            ),
+                            actions: <Widget>[
+                              ElevatedButton(
+                                child: const Text("Add"),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                              ElevatedButton(
+                                child: const Text("Cancel"),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
                               ),
                             ],
-                          ),
-                          actions: <Widget>[
-                            ElevatedButton(
-                              child: const Text("Add"),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                            ElevatedButton(
-                              child: const Text("Cancel"),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                          ],
-                        );
+                          );
+                        });
                       },
                     );
                   },
@@ -376,80 +321,96 @@ class _ProductsListPageState extends State<ProductsListPage> {
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text("Update Products"),
-                          content: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Text("Products List"),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: DropdownButton(
-                                      underline: Container(),
-                                      style: const TextStyle(
-                                          //te
-                                          color: Colors.black, //Font color
-                                          fontSize:
-                                              18 //font size on dropdown button
-                                          ),
-                                      value: dropdownvalue,
-                                      icon:
-                                          const Icon(Icons.keyboard_arrow_down),
-                                      items: items.map((String items) {
-                                        return DropdownMenuItem(
-                                            value: items, child: Text(items));
-                                      }).toList(),
-                                      onChanged: (String? newValue) {
-                                        setState(() {
-                                          dropdownvalue = newValue!;
-                                        });
-                                      },
+                        return StatefulBuilder(
+                            builder: (context, StateSetter setState) {
+                          return AlertDialog(
+                            title: const Text("Update Products"),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text("Products List"),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: FutureBuilder(
+                                        future: _future,
+                                        builder: (BuildContext context,
+                                            AsyncSnapshot<GarmentsApp> sn) {
+                                          if (sn.hasData) {
+                                            return DropdownButton<Products>(
+                                              items: sn.data!.products
+                                                  .map((products) {
+                                                return DropdownMenuItem<
+                                                    Products>(
+                                                  value: products,
+                                                  child: Text(products
+                                                      .productModelNo
+                                                      .toString()),
+                                                );
+                                              }).toList(),
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  _selected = value;
+                                                });
+                                              },
+                                              value: _selected,
+                                            );
+                                          }
+                                          if (sn.hasError) {
+                                            return const Center(
+                                                child:
+                                                    Text("Error Loading Data"));
+                                          }
+                                          return const Center(
+                                            child: CircularProgressIndicator(),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.all(10),
+                                  child: TextField(
+                                    controller: name,
+                                    decoration: const InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      labelText: 'Rate',
                                     ),
                                   ),
-                                ],
-                              ),
-                              Container(
-                                padding: const EdgeInsets.all(10),
-                                child: TextField(
-                                  controller: name,
-                                  decoration: const InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    labelText: 'Rate',
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.all(10),
+                                  child: TextField(
+                                    controller: name,
+                                    decoration: const InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      labelText: 'Size',
+                                    ),
                                   ),
                                 ),
+                              ],
+                            ),
+                            actions: <Widget>[
+                              ElevatedButton(
+                                child: const Text("Update"),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
                               ),
-                              Container(
-                                padding: const EdgeInsets.all(10),
-                                child: TextField(
-                                  controller: name,
-                                  decoration: const InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    labelText: 'Size',
-                                  ),
-                                ),
+                              ElevatedButton(
+                                child: const Text("Cancel"),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
                               ),
                             ],
-                          ),
-                          actions: <Widget>[
-                            ElevatedButton(
-                              child: const Text("Update"),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                            ElevatedButton(
-                              child: const Text("Cancel"),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                          ],
-                        );
+                          );
+                        });
                       },
                     );
                   },
@@ -464,7 +425,7 @@ class _ProductsListPageState extends State<ProductsListPage> {
                 future: getProductsList(),
                 builder: (BuildContext context, AsyncSnapshot sn) {
                   if (sn.hasData) {
-                    unis = sn.data;
+                    List unis = sn.data;
                     return ListView.builder(
                       padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                       itemCount: unis.length,
