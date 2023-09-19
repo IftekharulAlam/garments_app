@@ -1,39 +1,42 @@
+// ignore_for_file: non_constant_identifier_names, unnecessary_new, must_be_immutable
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:garments_app/controller/controller.dart';
-import 'package:garments_app/model/model.dart';
 
 import 'package:http/http.dart' as http;
 
 class BillCreatePage extends StatefulWidget {
-  const BillCreatePage({super.key});
+  String myShopName;
+  BillCreatePage({super.key, required this.myShopName});
 
   @override
   State<BillCreatePage> createState() => _BillCreatePageState();
 }
 
 class _BillCreatePageState extends State<BillCreatePage> {
-  Future<GarmentsApp>? _future;
-  Products? _selected;
-  @override
-  void initState() {
-    _future = getProductsListmy();
-    // TODO: implement initState
+  Future getProductsList() async {
+    http.Response response = await http.get(
+      Uri.parse("http://192.168.0.100:8000/getProductsList"),
+    );
 
-    super.initState();
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception("Error loading data");
+    }
   }
 
-  String dropdownvalue = 'Owner';
-  var items = ['Owner', 'Manager', 'Staff', 'Designer'];
   static const String _title = 'BM Garments';
+
+  int totalAmount = 0;
   TextEditingController ProductDetails = TextEditingController();
   TextEditingController Size = TextEditingController();
   TextEditingController Quantity = TextEditingController();
   TextEditingController Rate = TextEditingController();
 
-  Future register(
+  Future createBill(
       String name,
       String address,
       String phone,
@@ -71,121 +74,61 @@ class _BillCreatePageState extends State<BillCreatePage> {
     }
   }
 
+  List<TextEditingController> listOfTextField = [];
+  List<String> listOFProductModelNo = [];
+  List<String> listOFProductRate = [];
+  List<String> listOFProductSize = [];
+  List<String> listOFProductQuantity = [];
+  List<int> listOFProductAmount = [];
+  List<DataColumn> _productListColumns() {
+    return [
+      const DataColumn(label: Text('ModelNo')),
+      const DataColumn(label: Text('Size')),
+      const DataColumn(label: Text('Available')),
+      const DataColumn(label: Text('Selected')),
+      const DataColumn(label: Text('Command')),
+    ];
+  }
+
   List<DataColumn> _createColumns() {
     return [
       const DataColumn(label: Text('Item')),
-      const DataColumn(label: Text('Rate')),
+      const DataColumn(label: Text('Size')),
       const DataColumn(label: Text('Quantity')),
+      const DataColumn(label: Text('Rate')),
       const DataColumn(label: Text('Amount')),
-      const DataColumn(label: Text('Update')),
       const DataColumn(label: Text('Delete')),
-    ];
-  }
-
-  List<DataColumn> _createColumns3() {
-    return [
-      const DataColumn(label: Text('')),
-      const DataColumn(label: Text('')),
-      const DataColumn(label: Text('')),
-      const DataColumn(label: Text('')),
-      const DataColumn(label: Text('')),
-      const DataColumn(label: Text('')),
-    ];
-  }
-
-  List<DataColumn> _createColumns2() {
-    return [
-      const DataColumn(label: Text('Total')),
-      const DataColumn(label: Text('100')),
     ];
   }
 
   List<DataRow> _createRows() {
     return [
-      DataRow(cells: [
-        DataCell(Text('#50')),
-        DataCell(Text('200')),
-        DataCell(Text('200')),
-        DataCell(Text('200')),
-        DataCell(
-          IconButton(icon: const Icon(Icons.edit), onPressed: () {}),
-        ),
-        DataCell(
-          IconButton(icon: const Icon(Icons.delete), onPressed: () {}),
-        ),
-      ]),
-      DataRow(cells: [
-        DataCell(Text('#50')),
-        DataCell(Text('200')),
-        DataCell(Text('200')),
-        DataCell(Text('200')),
-        DataCell(
-          IconButton(icon: const Icon(Icons.edit), onPressed: () {}),
-        ),
-        DataCell(
-          IconButton(icon: const Icon(Icons.delete), onPressed: () {}),
-        ),
-      ]),
-      DataRow(cells: [
-        DataCell(Text('#50')),
-        DataCell(Text('200')),
-        DataCell(Text('200')),
-        DataCell(Text('200')),
-        DataCell(
-          IconButton(icon: const Icon(Icons.edit), onPressed: () {}),
-        ),
-        DataCell(
-          IconButton(icon: const Icon(Icons.delete), onPressed: () {}),
-        ),
-      ]),
-      DataRow(cells: [
-        DataCell(Text('#50')),
-        DataCell(Text('200')),
-        DataCell(Text('200')),
-        DataCell(Text('200')),
-        DataCell(
-          IconButton(icon: const Icon(Icons.edit), onPressed: () {}),
-        ),
-        DataCell(
-          IconButton(icon: const Icon(Icons.delete), onPressed: () {}),
-        ),
-      ]),
-      DataRow(cells: [
-        DataCell(Text('#50')),
-        DataCell(Text('200')),
-        DataCell(Text('200')),
-        DataCell(Text('200')),
-        DataCell(
-          IconButton(icon: const Icon(Icons.edit), onPressed: () {}),
-        ),
-        DataCell(
-          IconButton(icon: const Icon(Icons.delete), onPressed: () {}),
-        ),
-      ]),
-      DataRow(cells: [
-        DataCell(Text('#50')),
-        DataCell(Text('200')),
-        DataCell(Text('200')),
-        DataCell(Text('200')),
-        DataCell(
-          IconButton(icon: const Icon(Icons.edit), onPressed: () {}),
-        ),
-        DataCell(
-          IconButton(icon: const Icon(Icons.delete), onPressed: () {}),
-        ),
-      ]),
-      DataRow(cells: [
-        DataCell(Text('#50')),
-        DataCell(Text('200')),
-        DataCell(Text('200')),
-        DataCell(Text('200')),
-        DataCell(
-          IconButton(icon: const Icon(Icons.edit), onPressed: () {}),
-        ),
-        DataCell(
-          IconButton(icon: const Icon(Icons.delete), onPressed: () {}),
-        ),
-      ]),
+      for (int i = 0; i < listOFProductModelNo.length; i++)
+        DataRow(cells: [
+          DataCell(Text(listOFProductModelNo[i])),
+          DataCell(Text(listOFProductSize[i])),
+          DataCell(Text(listOFProductQuantity[i])),
+          DataCell(Text(listOFProductRate[i])),
+          DataCell(Text(listOFProductAmount[i].toString())),
+          DataCell(
+            IconButton(
+                icon: const Icon(Icons.delete),
+                onPressed: () {
+                  setState(() {
+                    int myProductRate =
+                        int.parse(listOFProductRate.elementAt(i));
+                    int myProductQuantity =
+                        int.parse(listOFProductQuantity.elementAt(i));
+                    totalAmount -= myProductRate * myProductQuantity;
+                    listOFProductModelNo.removeAt(i);
+                    listOFProductRate.removeAt(i);
+                    listOFProductQuantity.removeAt(i);
+                    listOFProductSize.removeAt(i);
+                    listOFProductAmount.removeAt(i);
+                  });
+                }),
+          ),
+        ]),
     ];
   }
 
@@ -193,260 +136,178 @@ class _BillCreatePageState extends State<BillCreatePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text(_title)),
-      body: Padding(
-        padding: const EdgeInsets.all(5),
-        child: ListView(
-          children: <Widget>[
-            Row(
-              children: [
-                Expanded(
-                  flex: 3,
-                  child: Container(
-                    height: 40,
-                    padding: const EdgeInsets.all(5),
-                    child: TextField(
-                      controller: ProductDetails,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Name',
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 3,
-                  child: Container(
-                    height: 40,
-                    padding: const EdgeInsets.all(5),
-                    child: TextField(
-                      controller: ProductDetails,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Phone',
-                      ),
-                    ),
-                  ),
-                ),
-                Container(
-                  height: 30,
-                  padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                  child: ElevatedButton(
-                    child: const Text('Add'),
-                    onPressed: () {},
-                  ),
-                ),
-              ],
+      body: Column(
+        children: <Widget>[
+          Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.all(5),
+            child: Text(
+              'Name : ${widget.myShopName}',
+              style: const TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 20),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.all(5),
-                    child: FutureBuilder(
-                      future: _future,
-                      builder: (BuildContext context,
-                          AsyncSnapshot<GarmentsApp> sn) {
-                        if (sn.hasData) {
-                          return DropdownButton<Products>(
-                            items: sn.data!.products.map((products) {
-                              return DropdownMenuItem<Products>(
-                                value: products,
-                                child: Text(products.productModelNo.toString()),
-                              );
-                            }).toList(),
-                            onChanged: (value) {
-                              setState(() {
-                                _selected = value;
-                              });
-                            },
-                            value: _selected,
-                          );
-                        }
-                        if (sn.hasError) {
-                          return const Center(
-                              child: Text("Error Loading Data"));
-                        }
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-                Container(
-                  height: 30,
-                  padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                  child: ElevatedButton(
-                    child: const Text('Add'),
-                    onPressed: () {},
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Container(
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.all(5),
-                  child: const Text(
-                    'Products List',
-                    style: TextStyle(fontSize: 15),
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.all(5),
-                  child: DropdownButton(
-                    underline: Container(),
-                    style: const TextStyle(
-                        //te
-                        color: Colors.black, //Font color
-                        fontSize: 15 //font size on dropdown button
+          ),
+          DataTable(
+              showBottomBorder: true,
+              columnSpacing: 20.0,
+              columns: _productListColumns(),
+              rows: const []),
+          SizedBox(
+            height: 200,
+            child: FutureBuilder(
+              future: getProductsList(),
+              builder: (BuildContext context, AsyncSnapshot sn) {
+                if (sn.hasData) {
+                  List unis = sn.data;
+                  listOfTextField = List.generate(
+                      unis.length, (i) => TextEditingController());
+                  return ListView.builder(
+                    itemCount: unis.length,
+                    itemBuilder: (context, index) => GestureDetector(
+                      onTap: () {},
+                      child: Card(
+                        child: ListTile(
+                          title: Row(
+                            children: [
+                              Text("${unis[index]["productModelNo"]}"),
+                              const SizedBox(width: 45),
+                              Text("${unis[index]["productSize"]}"),
+                              const SizedBox(width: 35),
+                              Text("${unis[index]["productAvailable"]}"),
+                            ],
+                          ),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SizedBox(
+                                width: 50,
+                                height: 40,
+                                child: TextField(
+                                  keyboardType: TextInputType.number,
+                                  style: const TextStyle(fontSize: 18),
+                                  controller: listOfTextField[index],
+                                  decoration: const InputDecoration(
+                                    border: OutlineInputBorder(),
+                                  ),
+                                ),
+                              ),
+                              IconButton(
+                                  onPressed: () {
+                                    setState(
+                                      () {
+                                        if (int.parse(
+                                                listOfTextField[index].text) >
+                                            0) {
+                                          int myProductRate = int.parse(
+                                              unis[index]["productRate"]);
+                                          int myProductQuantity = int.parse(
+                                              listOfTextField[index].text);
+                                          listOFProductAmount.add(
+                                              myProductRate *
+                                                  myProductQuantity);
+                                          listOFProductSize
+                                              .add(unis[index]["productSize"]);
+                                          listOFProductModelNo.add(
+                                              unis[index]["productModelNo"]);
+                                          listOFProductRate
+                                              .add(unis[index]["productRate"]);
+                                          listOFProductQuantity
+                                              .add(listOfTextField[index].text);
+                                          totalAmount +=
+                                              myProductRate * myProductQuantity;
+                                        } else {
+                                          Fluttertoast.showToast(
+                                              msg: "Enter A Number",
+                                              toastLength: Toast.LENGTH_SHORT,
+                                              gravity: ToastGravity.CENTER,
+                                              timeInSecForIosWeb: 1,
+                                              backgroundColor: Colors.red,
+                                              textColor: Colors.white,
+                                              fontSize: 16.0);
+                                        }
+                                      },
+                                    );
+                                  },
+                                  icon: const Icon(Icons.add)),
+                            ],
+                          ),
                         ),
-                    value: dropdownvalue,
-                    icon: const Icon(Icons.keyboard_arrow_down),
-                    items: items.map((String items) {
-                      return DropdownMenuItem(value: items, child: Text(items));
-                    }).toList(),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        dropdownvalue = newValue!;
-                      });
-                    },
-                  ),
-                ),
-                Container(
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.all(5),
-                  child: const Text(
-                    'Size',
-                    style: TextStyle(fontSize: 15),
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.all(5),
-                  child: DropdownButton(
-                    underline: Container(),
-                    style: const TextStyle(
-                        //te
-                        color: Colors.black, //Font color
-                        fontSize: 15 //font size on dropdown button
-                        ),
-                    value: dropdownvalue,
-                    icon: const Icon(Icons.keyboard_arrow_down),
-                    items: items.map((String items) {
-                      return DropdownMenuItem(value: items, child: Text(items));
-                    }).toList(),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        dropdownvalue = newValue!;
-                      });
-                    },
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Container(
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.all(5),
-                  child: const Text(
-                    'Available:',
-                    style: TextStyle(fontSize: 15),
-                  ),
-                ),
-                Container(
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.all(5),
-                  child: const Text(
-                    '10',
-                    style: TextStyle(fontSize: 15),
-                  ),
-                ),
-                Expanded(
-                  child: Container(
-                    height: 50,
-                    padding: const EdgeInsets.all(5),
-                    child: TextField(
-                      controller: Size,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Quantity',
                       ),
                     ),
-                  ),
-                ),
-                Expanded(
-                  child: Container(
-                    height: 40,
-                    padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                    child: ElevatedButton(
-                      child: const Text('Add'),
-                      onPressed: () {},
-                    ),
-                  ),
-                ),
-              ],
+                  );
+                }
+                if (sn.hasError) {
+                  return const Center(child: Text("Error Loading Data"));
+                }
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              },
             ),
-            const Card(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  ListTile(
-                    leading: Icon(Icons.man_2_outlined,
-                        color: Colors.cyan, size: 40),
-                    title: Text(
-                      "Name : Kajol Khan",
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    subtitle: Row(
-                      children: [
-                        Text('Phone : Senior'),
-                      ],
-                    ),
-                  ),
-                ],
+          ),
+          SizedBox(
+            height: 200,
+            child: SingleChildScrollView(
+              child: DataTable(
+                  showBottomBorder: true,
+                  columnSpacing: 20.0,
+                  columns: _createColumns(),
+                  rows: _createRows()),
+            ),
+          ),
+          Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.all(5),
+            child: Text(
+              'Total : $totalAmount',
+              style: const TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 20),
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                height: 50,
+                padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                child: ElevatedButton(
+                  child: const Text('Save Bill'),
+                  onPressed: () {},
+                ),
               ),
-            ),
-            DataTable(
-                columnSpacing: 18.0, columns: _createColumns(), rows: const []),
-            SizedBox(
-              height: 300,
-              child: SingleChildScrollView(
-                child: DataTable(
-                    headingRowHeight: 0,
-                    columnSpacing: 33.0,
-                    columns: _createColumns3(),
-                    rows: _createRows()),
+              Container(
+                height: 50,
+                padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                child: ElevatedButton(
+                   style: ElevatedButton.styleFrom(
+                    primary: Colors.green,
+                  ),
+                  child: const Text('Paid'),
+                  onPressed: () {
+                    setState(() {});
+                  },
+                ),
               ),
-            ),
-            DataTable(
-                columnSpacing: 20.0,
-                columns: _createColumns2(),
-                rows: const []),
-            Row(
-              children: [
-                Container(
-                  height: 50,
-                  padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                  child: ElevatedButton(
-                    child: const Text('Save Bill'),
-                    onPressed: () {},
+              Container(
+                height: 50,
+                padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.red,
                   ),
+                  child: const Text('Cancel'),
+                  onPressed: () {
+                    setState(() {});
+                  },
                 ),
-                Container(
-                  height: 50,
-                  padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                  child: ElevatedButton(
-                    child: const Text('Paid'),
-                    onPressed: () {},
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

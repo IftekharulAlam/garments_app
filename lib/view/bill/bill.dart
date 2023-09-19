@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:garments_app/view/bill/bill_create.dart';
+
+import 'package:garments_app/view/bill/bill_create_one.dart';
 
 class BillPage extends StatefulWidget {
   const BillPage({super.key});
@@ -48,7 +49,7 @@ class _BillPageState extends State<BillPage> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const BillCreatePage()));
+                        builder: (context) => const BillCreateOnePage()));
               },
             ),
           ),

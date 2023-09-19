@@ -53,7 +53,6 @@ class _PartyKhataPageState extends State<PartyKhataPage> {
             child: ElevatedButton(
               child: const Text('Create Party'),
               onPressed: () {
-                // login(name.text, password.text, dropdownvalue);
                 Navigator.push(
                   context,
                   MaterialPageRoute(

@@ -9,7 +9,18 @@ Future<GarmentsApp> getProductsListmy() async {
   );
 
   if (response.statusCode == 200) {
-    return GarmentsApp.fromJson(jsonDecode(response.body));
+    return GarmentsApp.productsFromJson(jsonDecode(response.body));
+  } else {
+    throw Exception("Error loading data");
+  }
+}
+Future<GarmentsApp> getPartyListtmy() async {
+  http.Response response = await http.get(
+    Uri.parse("http://192.168.0.100:8000/getPartyList"),
+  );
+
+  if (response.statusCode == 200) {
+    return GarmentsApp.partyPersonalFromJson(jsonDecode(response.body));
   } else {
     throw Exception("Error loading data");
   }

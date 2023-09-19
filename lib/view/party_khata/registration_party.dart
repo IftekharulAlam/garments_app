@@ -84,16 +84,6 @@ class _RegistrationPagePartyState extends State<RegistrationPageParty> {
             Container(
               padding: const EdgeInsets.all(10),
               child: TextField(
-                controller: ownerName,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Owner Name',
-                ),
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.all(10),
-              child: TextField(
                 controller: shopName,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
@@ -104,7 +94,18 @@ class _RegistrationPagePartyState extends State<RegistrationPageParty> {
             Container(
               padding: const EdgeInsets.all(10),
               child: TextField(
+                controller: ownerName,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Owner Name',
+                ),
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.all(10),
+              child: TextField(
                 controller: ownerPhone,
+                keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Owner Phone',
@@ -135,6 +136,7 @@ class _RegistrationPagePartyState extends State<RegistrationPageParty> {
               padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
               child: TextField(
                 controller: shopPhone,
+                keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Shop Phone',
