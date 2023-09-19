@@ -19,6 +19,7 @@ class _BillCreateOnePageState extends State<BillCreateOnePage> {
 
   TextEditingController name = TextEditingController();
   TextEditingController password = TextEditingController();
+  TextEditingController password2 = TextEditingController();
 
   @override
   void initState() {
