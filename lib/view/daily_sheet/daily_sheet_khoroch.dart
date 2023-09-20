@@ -1,26 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
 import 'package:garments_app/controller/controller.dart';
 import 'package:garments_app/model/model.dart';
-import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
 
-class DailySheetAddPage extends StatefulWidget {
-  const DailySheetAddPage({super.key});
+class DailySheetKhorochPage extends StatefulWidget {
+  const DailySheetKhorochPage({super.key});
 
   @override
-  State<DailySheetAddPage> createState() => _DailySheetAddPageState();
+  State<DailySheetKhorochPage> createState() => _DailySheetKhorochPageState();
 }
 
-class _DailySheetAddPageState extends State<DailySheetAddPage> {
+class _DailySheetKhorochPageState extends State<DailySheetKhorochPage> {
   Future<GarmentsApp>? _future;
+  Future<GarmentsApp>? _future2;
   Khatiyan? _selected;
+  Staff? _selected2;
   String? datetime;
-  Future createDailysheetJoma(List<String> listOFItem,
+  Future createDailysheetKhoroch(List<String> listOFItem,
       List<String> listOFAmount, String datetime) async {
     http.Response response;
-    String finalUrl = "http://192.168.0.100:8000/createDailysheetJoma";
+    String finalUrl = "http://192.168.0.100:8000/createDailysheetKhoroch";
     var url = Uri.parse(finalUrl);
     for (int x = 0; x < listOFItem.length; x++) {
       response = await http.post(url, body: {
@@ -48,9 +49,10 @@ class _DailySheetAddPageState extends State<DailySheetAddPage> {
   TextEditingController name = TextEditingController();
   TextEditingController amount = TextEditingController();
   TextEditingController khatiyanAmount = TextEditingController();
+  TextEditingController staffAmount = TextEditingController();
+
   TextEditingController editFromListItem = TextEditingController();
   TextEditingController editFromListAmount = TextEditingController();
-
   List<DataColumn> _createColumns() {
     return [
       const DataColumn(label: Text('Item')),
@@ -142,8 +144,8 @@ class _DailySheetAddPageState extends State<DailySheetAddPage> {
   @override
   void initState() {
     _future = getKhatiyanListmy();
+    _future2 = getStaffKhatiyanListmy();
     datetime = DateFormat("dd-MM-yyyy").format(DateTime.now());
-
     super.initState();
   }
 
@@ -154,7 +156,7 @@ class _DailySheetAddPageState extends State<DailySheetAddPage> {
         title: const Text("Daily Sheet Khoroch"),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(5),
+        padding: const EdgeInsets.all(10),
         child: ListView(
           children: <Widget>[
             Container(
@@ -271,7 +273,6 @@ class _DailySheetAddPageState extends State<DailySheetAddPage> {
                     padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                     child: TextField(
                       controller: khatiyanAmount,
-                      keyboardType: TextInputType.number,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: 'Amount',
@@ -298,6 +299,84 @@ class _DailySheetAddPageState extends State<DailySheetAddPage> {
                 ),
               ],
             ),
+            Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(10),
+              child: const Text(
+                'Staff List:',
+                style: TextStyle(fontSize: 18),
+              ),
+            ),
+            Row(
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: FutureBuilder(
+                      future: _future2,
+                      builder: (BuildContext context,
+                          AsyncSnapshot<GarmentsApp> sn) {
+                        if (sn.hasData) {
+                          return DropdownButton<Staff>(
+                            items: sn.data!.staffList.map((staffList) {
+                              return DropdownMenuItem<Staff>(
+                                value: staffList,
+                                child: Text(staffList.staffName.toString()),
+                              );
+                            }).toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                _selected2 = value;
+                              });
+                            },
+                            value: _selected2,
+                          );
+                        }
+                        if (sn.hasError) {
+                          return const Center(
+                              child: Text("Error Loading Data"));
+                        }
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    height: 50,
+                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    child: TextField(
+                      controller: staffAmount,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Amount',
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  height: 50,
+                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                  child: ElevatedButton(
+                    child: const Text('Add'),
+                    onPressed: () {
+                      setState(() {
+                        if (staffAmount.text.isEmpty) {
+                        } else {
+                          listOFItem.add(_selected2!.staffName.toString());
+                          listOFAmount.add(staffAmount.text);
+                          staffAmount.text = "";
+                        }
+                      });
+                    },
+                  ),
+                ),
+              ],
+            ),
             SizedBox(
               height: 300,
               child: SingleChildScrollView(
@@ -314,7 +393,8 @@ class _DailySheetAddPageState extends State<DailySheetAddPage> {
                   setState(() {
                     if (listOFItem.isEmpty && listOFAmount.isEmpty) {
                     } else {
-                      createDailysheetJoma(listOFItem, listOFAmount, datetime!);
+                      createDailysheetKhoroch(
+                          listOFItem, listOFAmount, datetime!);
                       listOFAmount.clear();
                       listOFItem.clear();
                     }

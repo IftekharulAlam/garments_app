@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously, unnecessary_null_comparison
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:garments_app/controller/controller.dart';
 import 'package:garments_app/model/model.dart';
@@ -17,9 +18,10 @@ class _BillCreateOnePageState extends State<BillCreateOnePage> {
   Future<GarmentsApp>? _future;
   PartyPersonal? _selected;
 
-  TextEditingController name = TextEditingController();
-  TextEditingController password = TextEditingController();
-  TextEditingController password2 = TextEditingController();
+  TextEditingController shopName = TextEditingController();
+  TextEditingController shopAddress = TextEditingController();
+  TextEditingController shopOwner = TextEditingController();
+  TextEditingController ownerPhone = TextEditingController();
 
   @override
   void initState() {
@@ -52,7 +54,7 @@ class _BillCreateOnePageState extends State<BillCreateOnePage> {
             Container(
               padding: const EdgeInsets.all(10),
               child: TextField(
-                controller: name,
+                controller: shopName,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Shop Name',
@@ -62,7 +64,7 @@ class _BillCreateOnePageState extends State<BillCreateOnePage> {
             Container(
               padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
               child: TextField(
-                controller: password,
+                controller: shopAddress,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Shop Address',
@@ -72,7 +74,7 @@ class _BillCreateOnePageState extends State<BillCreateOnePage> {
             Container(
               padding: const EdgeInsets.all(10),
               child: TextField(
-                controller: name,
+                controller: shopOwner,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Owner Name',
@@ -82,7 +84,7 @@ class _BillCreateOnePageState extends State<BillCreateOnePage> {
             Container(
               padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
               child: TextField(
-                controller: password,
+                controller: ownerPhone,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Owner Phone',
@@ -147,7 +149,19 @@ class _BillCreateOnePageState extends State<BillCreateOnePage> {
               child: ElevatedButton(
                 child: const Text('Create Bill'),
                 onPressed: () {
-                  if (_selected!.shopName == null) {
+                  if (_selected!.shopName.isEmpty ||
+                      shopName.text.isEmpty &&
+                          shopAddress.text.isEmpty &&
+                          shopOwner.text.isEmpty &&
+                          ownerPhone.text.isEmpty) {
+                    Fluttertoast.showToast(
+                        msg: "Select A Shop",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.CENTER,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.red,
+                        textColor: Colors.white,
+                        fontSize: 16.0);
                   } else {
                     Navigator.push(
                       context,

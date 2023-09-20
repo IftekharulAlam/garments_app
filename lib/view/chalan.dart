@@ -37,6 +37,14 @@ class _ChalanPageState extends State<ChalanPage> {
                   fontSize: 30),
             ),
           ),
+          Container(
+            height: 50,
+            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+            child: ElevatedButton(
+              child: const Text('Create New Chalan'),
+              onPressed: () {},
+            ),
+          ),
           for (int x = 1; x < itemStrings.length; x++)
             GestureDetector(
               onTap: () {

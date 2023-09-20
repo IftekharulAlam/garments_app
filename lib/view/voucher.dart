@@ -37,6 +37,14 @@ class _VoucherPageState extends State<VoucherPage> {
                   fontSize: 30),
             ),
           ),
+          Container(
+            height: 50,
+            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+            child: ElevatedButton(
+              child: const Text('Create New Voucher'),
+              onPressed: () {},
+            ),
+          ),
           for (int x = 1; x < itemStrings.length; x++)
             GestureDetector(
               onTap: () {

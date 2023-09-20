@@ -38,17 +38,7 @@ class _DailySheetViewPageState extends State<DailySheetViewPage> {
           backgroundColor: Colors.red,
           textColor: Colors.white,
           fontSize: 16.0);
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(
-      //     builder: (context) => const HomePage(),
-      //   ),
-      // );
     }
-  }
-
-  DataTable _createDataTable() {
-    return DataTable(columns: _createColumns(), rows: _createRows());
   }
 
   List<DataColumn> _createColumns() {

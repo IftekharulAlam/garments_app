@@ -9,25 +9,13 @@ import 'package:garments_app/view/daily_sheet/daily_sheet.dart';
 import 'package:garments_app/view/khatiyan/khatiyan_list.dart';
 import 'package:garments_app/view/party_khata/party_khata.dart';
 import 'package:garments_app/view/products/products_list.dart';
-import 'package:garments_app/view/staff_khata/staff_attendence.dart';
+
 import 'package:garments_app/view/staff_khata/staff_khata.dart';
 import 'package:garments_app/view/voucher.dart';
 
 class HomePage extends StatefulWidget {
-  // String Username;
-  // String Usertype;
-  // String UserAddress;
-  // String UserIamge;
-  // String UserPhone;
-  // String UserWorkingHour;
   const HomePage({
     Key? key,
-    // required this.Username,
-    // required this.Usertype,
-    // required this.UserAddress,
-    // required this.UserIamge,
-    // required this.UserPhone,
-    // required this.UserWorkingHour,
   }) : super(key: key);
 
   @override
@@ -42,7 +30,6 @@ class _HomePageState extends State<HomePage> {
     'Khatiyan',
     'Staff Khata',
     'Party Khata',
-    'Staff Attendence',
     'Bill',
     'Voucher',
     'Chalan'
@@ -53,7 +40,6 @@ class _HomePageState extends State<HomePage> {
     const KhatiyanListPage(),
     const StaffKhataPage(),
     const PartyKhataPage(),
-    const StaffAttendencePage(),
     const BillPage(),
     const VoucherPage(),
     const ChalanPage()

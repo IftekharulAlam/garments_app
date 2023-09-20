@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:garments_app/view/staff_khata/staff_attendence.dart';
 import 'package:garments_app/view/staff_khata/staff_profile.dart';
 
 import 'package:http/http.dart' as http;
@@ -55,29 +56,37 @@ class _StaffKhataPageState extends State<StaffKhataPage> {
                     return ListView.builder(
                       padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                       itemCount: unis.length,
-                      itemBuilder: (context, index) => GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => StaffProfile(
-                                      staffName:
-                                          "${unis[index]["staffName"]}")));
-                        },
-                        child: Card(
-                          child: ListTile(
-                            title: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text("${unis[index]["staffName"]}"),
-                                IconButton(
-                                    onPressed: () {},
-                                    icon: const Icon(Icons.edit))
-                              ],
-                            ),
-                            trailing: IconButton(
-                                onPressed: () {},
-                                icon: const Icon(Icons.delete)),
+                      itemBuilder: (context, index) => Card(
+                        child: ListTile(
+                          title: Text("${unis[index]["staffName"]}"),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: ElevatedButton(
+                                  child: const Text('Attendence'),
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const StaffAttendencePage()));
+                                  },
+                                ),
+                              ),
+                              ElevatedButton(
+                                child: const Text('Profile'),
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => StaffProfile(
+                                              staffName:
+                                                  "${unis[index]["staffName"]}")));
+                                },
+                              ),
+                            ],
                           ),
                         ),
                       ),

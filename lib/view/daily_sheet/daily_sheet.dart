@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:garments_app/view/daily_sheet/daily_sheet_add.dart';
-import 'package:garments_app/view/daily_sheet/daily_sheet_view.dart';
+import 'package:garments_app/view/daily_sheet/daily_sheet_khoroch.dart';
+
+import 'package:http/http.dart' as http;
 
 class DailySheetPage extends StatefulWidget {
   const DailySheetPage({super.key});
@@ -9,32 +13,27 @@ class DailySheetPage extends StatefulWidget {
   State<DailySheetPage> createState() => _DailySheetPageState();
 }
 
+Future dailysheetJomaKhorochList() async {
+  http.Response response = await http.get(
+    Uri.parse("http://192.168.0.100:8000/dailysheetJomaKhorochList"),
+  );
+
+  if (response.statusCode == 200) {
+    return jsonDecode(response.body);
+  } else {
+    throw Exception("Error loading data");
+  }
+}
+
 class _DailySheetPageState extends State<DailySheetPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  List<String> itemStrings = [
-    'Date 1/10/13',
-    'Date 1/10/13',
-    'Date 1/10/13',
-    'Date 1/10/13',
-    'Date 1/10/13',
-  ];
-  List<Widget> itemsWidgets = [
-    const DailySheetViewPage(),
-    const DailySheetViewPage(),
-    const DailySheetViewPage(),
-    const DailySheetViewPage(),
-    const DailySheetViewPage(),
-  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(
-          
-          title: const Text("BM Garments")),
-      body: ListView(
-        padding: const EdgeInsets.all(20),
+      appBar: AppBar(title: const Text("BM Garments")),
+      body: Column(
         children: <Widget>[
           Container(
             alignment: Alignment.center,
@@ -59,7 +58,8 @@ class _DailySheetPageState extends State<DailySheetPage> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const DailySheetAddPage()));
+                            builder: (context) =>
+                                const DailySheetKhorochPage()));
                   },
                 ),
               ),
@@ -82,24 +82,48 @@ class _DailySheetPageState extends State<DailySheetPage> {
           const SizedBox(
             height: 20,
           ),
-          for (int x = 1; x < itemStrings.length; x++)
-            GestureDetector(
-              onTap: () {
-                //items_widgets[x];
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => itemsWidgets[x]));
-              },
-              child: Card(
-                child: ListTile(
-                  title: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(itemStrings[x]),
-                    ],
-                  ),
-                ),
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.all(10),
+              child: FutureBuilder(
+                future: dailysheetJomaKhorochList(),
+                builder: (BuildContext context, AsyncSnapshot sn) {
+                  if (sn.hasData) {
+                    List unis = sn.data;
+                    return ListView.builder(
+                      padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                      itemCount: unis.length,
+                      itemBuilder: (context, index) => GestureDetector(
+                        onTap: () {},
+                        child: Card(
+                          child: ListTile(
+                            title: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text("${unis[index]["date"]}"),
+                                IconButton(
+                                    onPressed: () {},
+                                    icon: const Icon(Icons.edit))
+                              ],
+                            ),
+                            trailing: IconButton(
+                                onPressed: () {},
+                                icon: const Icon(Icons.delete)),
+                          ),
+                        ),
+                      ),
+                    );
+                  }
+                  if (sn.hasError) {
+                    return const Center(child: Text("Error Loading Data"));
+                  }
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                },
               ),
             ),
+          ),
         ],
       ),
     );

@@ -1,8 +1,14 @@
 class GarmentsApp {
   late List<Products> products;
   late List<PartyPersonal> partyPersonal;
+  late List<Khatiyan> khatiyanList;
+  late List<Staff> staffList;
 
-  GarmentsApp({required this.products, required this.partyPersonal});
+  GarmentsApp(
+      {required this.products,
+      required this.staffList,
+      required this.partyPersonal,
+      required this.khatiyanList});
   GarmentsApp.productsFromJson(List json) {
     products = [];
 
@@ -15,6 +21,20 @@ class GarmentsApp {
 
     for (var v in json) {
       partyPersonal.add(PartyPersonal.fromJson(v));
+    }
+  }
+  GarmentsApp.khatiyanListFromJson(List json) {
+    khatiyanList = [];
+
+    for (var v in json) {
+      khatiyanList.add(Khatiyan.fromJson(v));
+    }
+  }
+  GarmentsApp.StaffListFromJson(List json) {
+    staffList = [];
+
+    for (var v in json) {
+      staffList.add(Staff.fromJson(v));
     }
   }
 }
@@ -90,5 +110,25 @@ class PartyKhatiyan {
     Joma = json['Joma'];
     Khoroch = json['Khoroch'];
     Balance = json['Balance'];
+  }
+}
+
+class Khatiyan {
+  late String khatiyanName;
+
+  Khatiyan({required this.khatiyanName});
+
+  Khatiyan.fromJson(Map<String, dynamic> json) {
+    khatiyanName = json['khatiyanName'];
+  }
+}
+
+class Staff{
+  late String staffName;
+
+  Staff({required this.staffName});
+
+  Staff.fromJson(Map<String, dynamic> json) {
+    staffName = json['staffName'];
   }
 }

@@ -6,6 +6,7 @@ import 'package:garments_app/controller/controller.dart';
 import 'package:garments_app/model/model.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class ProductsListPage extends StatefulWidget {
   const ProductsListPage({super.key});
@@ -24,6 +25,7 @@ class _ProductsListPageState extends State<ProductsListPage> {
   TextEditingController productQuantity = TextEditingController();
   TextEditingController name = TextEditingController();
   TextEditingController productSize = TextEditingController();
+  TextEditingController productionDate = TextEditingController();
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -39,6 +41,32 @@ class _ProductsListPageState extends State<ProductsListPage> {
       "productDetails": productDetails,
       "productRate": productRate,
       "productSize": productSize
+    });
+
+    if (response.statusCode == 200) {
+      Fluttertoast.showToast(
+          msg: "Update Successful",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+      return jsonDecode(response.body);
+    } else {
+      throw Exception("Error loading data");
+    }
+  }
+
+  Future addProduct(String productModelNo, String productionDate,
+      String productSize, String productQuantity) async {
+    String finalUrl = "http://192.168.0.100:8000/addProduct";
+    var url = Uri.parse(finalUrl);
+    http.Response response = await http.post(url, body: {
+      "productModelNo": productModelNo,
+      "productionDate": productionDate,
+      "productSize": productSize,
+      "productQuantity": productQuantity
     });
 
     if (response.statusCode == 200) {
@@ -259,18 +287,38 @@ class _ProductsListPageState extends State<ProductsListPage> {
                                 Container(
                                   padding: const EdgeInsets.all(10),
                                   child: TextField(
-                                    controller: name,
+                                    controller: productionDate,
                                     keyboardType: TextInputType.number,
                                     decoration: const InputDecoration(
                                       border: OutlineInputBorder(),
                                       labelText: 'Production Date',
                                     ),
+                                    onTap: () async {
+                                      DateTime? pickedDate =
+                                          await showDatePicker(
+                                              context: context,
+                                              initialDate: DateTime
+                                                  .now(), //get today's date
+                                              firstDate: DateTime(
+                                                  2000), //DateTime.now() - not to allow to choose before today.
+                                              lastDate: DateTime(2101));
+
+                                      if (pickedDate != null) {
+                                        String formattedDate =
+                                            DateFormat('dd-MM-yyyy').format(
+                                                pickedDate); // format date in required form here we use yyyy-MM-dd that means time is removed
+                                        setState(() {
+                                          productionDate.text =
+                                              formattedDate; //set foratted date to TextField value.
+                                        });
+                                      } else {}
+                                    },
                                   ),
                                 ),
                                 Container(
                                   padding: const EdgeInsets.all(10),
                                   child: TextField(
-                                    controller: name,
+                                    controller: productSize,
                                     keyboardType: TextInputType.number,
                                     decoration: const InputDecoration(
                                       border: OutlineInputBorder(),
@@ -281,7 +329,7 @@ class _ProductsListPageState extends State<ProductsListPage> {
                                 Container(
                                   padding: const EdgeInsets.all(10),
                                   child: TextField(
-                                    controller: name,
+                                    controller: productQuantity,
                                     keyboardType: TextInputType.number,
                                     decoration: const InputDecoration(
                                       border: OutlineInputBorder(),
@@ -295,7 +343,21 @@ class _ProductsListPageState extends State<ProductsListPage> {
                               ElevatedButton(
                                 child: const Text("Add"),
                                 onPressed: () {
-                                  Navigator.of(context).pop();
+                                  if (_selected!.productModelNo.isEmpty ||
+                                      productionDate.text.isEmpty ||
+                                      productSize.text.isEmpty ||
+                                      productQuantity.text.isEmpty) {
+                                  } else {
+                                    addProduct(
+                                        _selected!.productModelNo.toString(),
+                                        productionDate.text,
+                                        productSize.text,
+                                        productQuantity.text);
+                                    productionDate.text = "";
+                                    productSize.text = "";
+                                    productQuantity.text = "";
+                                    Navigator.of(context).pop();
+                                  }
                                 },
                               ),
                               ElevatedButton(
@@ -373,23 +435,58 @@ class _ProductsListPageState extends State<ProductsListPage> {
                                     ),
                                   ],
                                 ),
-                                Container(
-                                  padding: const EdgeInsets.all(10),
-                                  child: TextField(
-                                    controller: name,
-                                    decoration: const InputDecoration(
-                                      border: OutlineInputBorder(),
-                                      labelText: 'Rate',
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text("Size List"),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: FutureBuilder(
+                                        future: _future,
+                                        builder: (BuildContext context,
+                                            AsyncSnapshot<GarmentsApp> sn) {
+                                          if (sn.hasData) {
+                                            return DropdownButton<Products>(
+                                              items: sn.data!.products
+                                                  .map((products) {
+                                                return DropdownMenuItem<
+                                                    Products>(
+                                                  value: products,
+                                                  child: Text(products
+                                                      .productSize
+                                                      .toString()),
+                                                );
+                                              }).toList(),
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  _selected = value;
+                                                });
+                                              },
+                                              value: _selected,
+                                            );
+                                          }
+                                          if (sn.hasError) {
+                                            return const Center(
+                                                child:
+                                                    Text("Error Loading Data"));
+                                          }
+                                          return const Center(
+                                            child: CircularProgressIndicator(),
+                                          );
+                                        },
+                                      ),
                                     ),
-                                  ),
+                                  ],
                                 ),
                                 Container(
                                   padding: const EdgeInsets.all(10),
                                   child: TextField(
-                                    controller: name,
+                                    controller: productRate,
                                     decoration: const InputDecoration(
                                       border: OutlineInputBorder(),
-                                      labelText: 'Size',
+                                      labelText: 'Rate',
                                     ),
                                   ),
                                 ),
