@@ -1,78 +1,165 @@
+// ignore_for_file: must_be_immutable
+
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class ProductsViewPage extends StatefulWidget {
-  const ProductsViewPage({super.key});
+  String productModelNo;
+  ProductsViewPage({super.key, required this.productModelNo});
 
   @override
   State<ProductsViewPage> createState() => _ProductsViewPageState();
 }
 
-class _ProductsViewPageState extends State<ProductsViewPage> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  List<String> itemStrings = [
-    'Name : Sahidul Islam',
-    'NID : 123456789',
-    'Phone',
-    'Address',
-    'Fathers Name',
-    'Mothers Name',
-  ];
-  List<Widget> itemWidgets = [];
+Future getProductProductionDetails(String productModelNo) async {
+  String finalUrl = "http://192.168.0.100:8000/getProductProductionDetails";
+  var url = Uri.parse(finalUrl);
+  http.Response response = await http.post(url, body: {
+    "productModelNo": productModelNo,
+  });
 
+  if (response.statusCode == 200) {
+    return jsonDecode(response.body);
+  } else {
+    throw Exception("Error loading data");
+  }
+}
+
+Future getProductDetails(String productModelNo) async {
+  String finalUrl = "http://192.168.0.100:8000/getProductDetails";
+  var url = Uri.parse(finalUrl);
+  http.Response response = await http.post(url, body: {
+    "productModelNo": productModelNo,
+  });
+
+  if (response.statusCode == 200) {
+    return jsonDecode(response.body);
+  } else {
+    throw Exception("Error loading data");
+  }
+}
+
+class _ProductsViewPageState extends State<ProductsViewPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
       appBar: AppBar(title: const Text("BM Garments")),
-      body: ListView(
-        padding: const EdgeInsets.all(20),
+      body: Column(
         children: <Widget>[
           Container(
             alignment: Alignment.center,
             padding: const EdgeInsets.all(10),
             child: const Text(
-              'Staff Profile',
+              'Product Details',
               style: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.w500,
                   fontSize: 30),
             ),
           ),
-          const Card(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                ListTile(
-                  leading:
-                      Icon(Icons.man_2_outlined, color: Colors.cyan, size: 40),
-                  title: Text(
-                    "Name : Kajol Khan",
-                    style: TextStyle(fontSize: 20),
-                  ),
-                  subtitle: Row(
-                    children: [
-                      Text('Designation : Senior'),
-                      SizedBox(
-                        width: 5,
+          Expanded(
+            flex: 1,
+            child: Container(
+              padding: const EdgeInsets.all(10),
+              child: FutureBuilder(
+                future: getProductDetails(widget.productModelNo),
+                builder: (BuildContext context, AsyncSnapshot sn) {
+                  if (sn.hasData) {
+                    List unis = sn.data;
+                    return ListView.builder(
+                      padding: const EdgeInsets.all(10),
+                      itemCount: unis.length,
+                      itemBuilder: (context, index) => Column(
+                        children: [
+                          Card(
+                            child: ListTile(
+                              title: Text(
+                                  "Product Model: ${unis[index]["productModelNo"]}"),
+                            ),
+                          ),
+                          Card(
+                            child: ListTile(
+                              title: Text(
+                                  "Product Details: ${unis[index]["productDetails"]}"),
+                            ),
+                          ),
+                          Card(
+                            child: ListTile(
+                              title: Text(
+                                  "Product Rate: ${unis[index]["productRate"]}"),
+                            ),
+                          ),
+                          Card(
+                            child: ListTile(
+                              title: Text(
+                                  "Product Available: ${unis[index]["productAvailable"]}"),
+                            ),
+                          ),
+                        ],
                       ),
-                      Text('Salary : 20000'),
-                    ],
-                  ),
-                ),
-              ],
+                    );
+                  }
+                  if (sn.hasError) {
+                    return const Center(child: Text("Error Loading Data"));
+                  }
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                },
+              ),
             ),
           ),
-          for (int x = 1; x < itemStrings.length; x++)
-            Card(
+          const Padding(
+            padding: EdgeInsets.all(10.0),
+            child: Card(
               child: ListTile(
                 title: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(itemStrings[x]),
+                    Text("Production Date"),
+                    Text("Size"),
+                    Text("Quantity"),
                   ],
                 ),
               ),
             ),
+          ),
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+              child: FutureBuilder(
+                future: getProductProductionDetails(widget.productModelNo),
+                builder: (BuildContext context, AsyncSnapshot sn) {
+                  if (sn.hasData) {
+                    List unis = sn.data;
+                    return ListView.builder(
+                      itemCount: unis.length,
+                      itemBuilder: (context, index) => Card(
+                        child: ListTile(
+                          title: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text("${unis[index]["productionDate"]}"),
+                              Text("${unis[index]["productSize"]}"),
+                              Text("${unis[index]["productQuantity"]}"),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  }
+                  if (sn.hasError) {
+                    return const Center(child: Text("Error Loading Data"));
+                  }
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                },
+              ),
+            ),
+          ),
         ],
       ),
     );

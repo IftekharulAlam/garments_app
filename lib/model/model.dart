@@ -43,20 +43,18 @@ class Products {
   late String productModelNo;
   late String productDetails;
   late String productRate;
-  late String productSize;
   late String productAvailable;
   Products(
       {required this.productModelNo,
       required this.productDetails,
       required this.productRate,
-      required this.productSize,
       required this.productAvailable});
 
   Products.fromJson(Map<String, dynamic> json) {
     productModelNo = json['productModelNo'];
     productDetails = json['productDetails'];
     productRate = json['productRate'];
-    productSize = json['productSize'];
+   
     productAvailable = json['productAvailable'];
   }
 }
@@ -123,7 +121,7 @@ class Khatiyan {
   }
 }
 
-class Staff{
+class Staff {
   late String staffName;
 
   Staff({required this.staffName});
