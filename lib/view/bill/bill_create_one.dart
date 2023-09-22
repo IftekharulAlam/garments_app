@@ -149,11 +149,7 @@ class _BillCreateOnePageState extends State<BillCreateOnePage> {
               child: ElevatedButton(
                 child: const Text('Create Bill'),
                 onPressed: () {
-                  if (_selected!.shopName.isEmpty ||
-                      shopName.text.isEmpty &&
-                          shopAddress.text.isEmpty &&
-                          shopOwner.text.isEmpty &&
-                          ownerPhone.text.isEmpty) {
+                  if (_selected!.shopName.isEmpty) {
                     Fluttertoast.showToast(
                         msg: "Select A Shop",
                         toastLength: Toast.LENGTH_SHORT,

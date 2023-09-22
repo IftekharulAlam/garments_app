@@ -98,20 +98,22 @@ class _KhatiyanListPageState extends State<KhatiyanListPage> {
                             ElevatedButton(
                               child: const Text("Create"),
                               onPressed: () {
-                                if (khatiyanName.text.isEmpty) {
-                                  Fluttertoast.showToast(
-                                      msg: "Name Cannot be Blank",
-                                      toastLength: Toast.LENGTH_SHORT,
-                                      gravity: ToastGravity.CENTER,
-                                      timeInSecForIosWeb: 1,
-                                      backgroundColor: Colors.red,
-                                      textColor: Colors.white,
-                                      fontSize: 16.0);
-                                } else {
-                                  createKhatiyan(khatiyanName.text);
-                                  khatiyanName.text = "";
-                                  Navigator.of(context).pop();
-                                }
+                                setState(() {
+                                  if (khatiyanName.text.isEmpty) {
+                                    Fluttertoast.showToast(
+                                        msg: "Name Cannot be Blank",
+                                        toastLength: Toast.LENGTH_SHORT,
+                                        gravity: ToastGravity.CENTER,
+                                        timeInSecForIosWeb: 1,
+                                        backgroundColor: Colors.red,
+                                        textColor: Colors.white,
+                                        fontSize: 16.0);
+                                  } else {
+                                    createKhatiyan(khatiyanName.text);
+                                    khatiyanName.text = "";
+                                    Navigator.of(context).pop();
+                                  }
+                                });
                               },
                             ),
                             Container(
