@@ -17,15 +17,16 @@ class BillCreateOnePage extends StatefulWidget {
 class _BillCreateOnePageState extends State<BillCreateOnePage> {
   Future<GarmentsApp>? _future;
   PartyPersonal? _selected;
-
+  TextEditingController ownerName = TextEditingController();
   TextEditingController shopName = TextEditingController();
-  TextEditingController shopAddress = TextEditingController();
-  TextEditingController shopOwner = TextEditingController();
   TextEditingController ownerPhone = TextEditingController();
+  TextEditingController ownerAddress = TextEditingController();
+  TextEditingController shopAddress = TextEditingController();
+  TextEditingController shopPhone = TextEditingController();
 
   @override
   void initState() {
-    // TODO: implement initState
+   
     _future = getPartyListtmy();
     super.initState();
   }
@@ -72,9 +73,19 @@ class _BillCreateOnePageState extends State<BillCreateOnePage> {
               ),
             ),
             Container(
+              padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+              child: TextField(
+                controller: shopPhone,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Shop Phone',
+                ),
+              ),
+            ),
+            Container(
               padding: const EdgeInsets.all(10),
               child: TextField(
-                controller: shopOwner,
+                controller: ownerName,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Owner Name',
@@ -88,6 +99,16 @@ class _BillCreateOnePageState extends State<BillCreateOnePage> {
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Owner Phone',
+                ),
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+              child: TextField(
+                controller: ownerAddress,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Owner Address',
                 ),
               ),
             ),

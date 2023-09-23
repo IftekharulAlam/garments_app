@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class BillCreatePage extends StatefulWidget {
   String myShopName;
@@ -16,19 +17,21 @@ class BillCreatePage extends StatefulWidget {
 }
 
 class _BillCreatePageState extends State<BillCreatePage> {
-  Future getProductsList() async {
-    http.Response response = await http.get(
-      Uri.parse("http://192.168.0.100:8000/getProductsList"),
-    );
-
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body);
-    } else {
-      throw Exception("Error loading data");
-    }
-  }
+  List<TextEditingController> listOfTextField = [];
+  List<String> listOFProductModelNo = [];
+  List<String> listOFProductRate = [];
+  List<String> listOFProductSize = [];
+  List<String> listOFProductQuantity = [];
+  List<int> listOFProductAmount = [];
 
   static const String _title = 'BM Garments';
+  String? datetime;
+  @override
+  void initState() {
+    // TODO: implement initState
+    datetime = DateFormat("dd-MM-yyyy").format(DateTime.now());
+    super.initState();
+  }
 
   int totalAmount = 0;
   TextEditingController ProductDetails = TextEditingController();
@@ -36,50 +39,7 @@ class _BillCreatePageState extends State<BillCreatePage> {
   TextEditingController Quantity = TextEditingController();
   TextEditingController Rate = TextEditingController();
 
-  Future createBill(
-      String name,
-      String address,
-      String phone,
-      String nid,
-      String password,
-      String fathersName,
-      String mothersName,
-      String salary,
-      String type) async {
-    http.Response response = await http
-        .post(Uri.parse("http://192.168.0.50:8080/registerUser"), body: {
-      "name": name,
-      "address": address,
-      "phone": phone,
-      "nid": nid,
-      "password": password,
-      "fathersName": fathersName,
-      "mothersName": mothersName,
-      "salary": salary,
-      "type": type,
-    });
-
-    if (response.statusCode == 200) {
-      Fluttertoast.showToast(
-          msg: "Update Successful",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0);
-      return jsonDecode(response.body);
-    } else {
-      throw Exception("Error loading data");
-    }
-  }
-
-  List<TextEditingController> listOfTextField = [];
-  List<String> listOFProductModelNo = [];
-  List<String> listOFProductRate = [];
-  List<String> listOFProductSize = [];
-  List<String> listOFProductQuantity = [];
-  List<int> listOFProductAmount = [];
+  late List unis;
   List<DataColumn> _productListColumns() {
     return [
       const DataColumn(label: Text('ModelNo')),
@@ -99,6 +59,45 @@ class _BillCreatePageState extends State<BillCreatePage> {
       const DataColumn(label: Text('Amount')),
       const DataColumn(label: Text('Delete')),
     ];
+  }
+
+  Future getProductsList() async {
+    http.Response response = await http.get(
+      Uri.parse("http://192.168.0.100:8000/getProductsList"),
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception("Error loading data");
+    }
+  }
+
+  Future createBill(
+      String shopName,
+      String date,
+      List<String> listOFProductModelNo,
+      List<String> listOFProductRate,
+      List<String> listOFProductSize,
+      List<String> listOFProductQuantity,
+      String totalAmount) async {
+    late http.Response response;
+    for (int i = 0; i < listOFProductModelNo.length; i++) {
+      response = await http
+          .post(Uri.parse("http://192.168.0.100:8000/createBill"), body: {
+        "shopName": shopName,
+        "date": date,
+        "listOFProductModelNo": listOFProductModelNo[i],
+        "listOFProductRate": listOFProductRate[i],
+        "listOFProductSize": listOFProductSize[i],
+        "listOFProductQuantity": listOFProductQuantity[i],
+        "totalAmount": totalAmount,
+      });
+      if (response.statusCode == 200) {
+      } else {
+        throw Exception("Error loading data");
+      }
+    }
   }
 
   List<DataRow> _createRows() {
@@ -138,16 +137,29 @@ class _BillCreatePageState extends State<BillCreatePage> {
       appBar: AppBar(title: const Text(_title)),
       body: Column(
         children: <Widget>[
-          Container(
-            alignment: Alignment.center,
-            padding: const EdgeInsets.all(5),
-            child: Text(
-              'Name : ${widget.myShopName}',
-              style: const TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 20),
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                alignment: Alignment.center,
+                padding: const EdgeInsets.all(5),
+                child: Text(
+                  'Name : ${widget.myShopName}',
+                  style: const TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 18),
+                ),
+              ),
+              Container(
+                alignment: Alignment.center,
+                padding: const EdgeInsets.all(10),
+                child: Text(
+                  'Date : $datetime',
+                  style: const TextStyle(fontSize: 18),
+                ),
+              ),
+            ],
           ),
           DataTable(
               showBottomBorder: true,
@@ -160,7 +172,7 @@ class _BillCreatePageState extends State<BillCreatePage> {
               future: getProductsList(),
               builder: (BuildContext context, AsyncSnapshot sn) {
                 if (sn.hasData) {
-                  List unis = sn.data;
+                  unis = sn.data;
                   listOfTextField = List.generate(
                       unis.length, (i) => TextEditingController());
                   return ListView.builder(
@@ -182,7 +194,7 @@ class _BillCreatePageState extends State<BillCreatePage> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               SizedBox(
-                                width: 50,
+                                width: 60,
                                 height: 40,
                                 child: TextField(
                                   keyboardType: TextInputType.number,
@@ -200,23 +212,38 @@ class _BillCreatePageState extends State<BillCreatePage> {
                                         if (int.parse(
                                                 listOfTextField[index].text) >
                                             0) {
-                                          int myProductRate = int.parse(
-                                              unis[index]["productRate"]);
-                                          int myProductQuantity = int.parse(
+                                          int available = int.parse(
+                                              unis[index]["productAvailable"]);
+                                          int requested = int.parse(
                                               listOfTextField[index].text);
-                                          listOFProductAmount.add(
-                                              myProductRate *
-                                                  myProductQuantity);
-                                          listOFProductSize
-                                              .add(unis[index]["productSize"]);
-                                          listOFProductModelNo.add(
-                                              unis[index]["productModelNo"]);
-                                          listOFProductRate
-                                              .add(unis[index]["productRate"]);
-                                          listOFProductQuantity
-                                              .add(listOfTextField[index].text);
-                                          totalAmount +=
-                                              myProductRate * myProductQuantity;
+                                          if (requested <= available) {
+                                            int myProductRate = int.parse(
+                                                unis[index]["productRate"]);
+                                            int myProductQuantity = int.parse(
+                                                listOfTextField[index].text);
+                                            listOFProductAmount.add(
+                                                myProductRate *
+                                                    myProductQuantity);
+                                            listOFProductSize.add(
+                                                unis[index]["productSize"]);
+                                            listOFProductModelNo.add(
+                                                unis[index]["productModelNo"]);
+                                            listOFProductRate.add(
+                                                unis[index]["productRate"]);
+                                            listOFProductQuantity.add(
+                                                listOfTextField[index].text);
+                                            totalAmount += myProductRate *
+                                                myProductQuantity;
+                                          } else {
+                                            Fluttertoast.showToast(
+                                                msg: "Not Available",
+                                                toastLength: Toast.LENGTH_SHORT,
+                                                gravity: ToastGravity.CENTER,
+                                                timeInSecForIosWeb: 1,
+                                                backgroundColor: Colors.red,
+                                                textColor: Colors.white,
+                                                fontSize: 16.0);
+                                          }
                                         } else {
                                           Fluttertoast.showToast(
                                               msg: "Enter A Number",
@@ -276,20 +303,34 @@ class _BillCreatePageState extends State<BillCreatePage> {
                 padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
                 child: ElevatedButton(
                   child: const Text('Save Bill'),
-                  onPressed: () {},
+                  onPressed: () {
+                    setState(() {
+                      createBill(
+                          widget.myShopName,
+                          datetime!,
+                          listOFProductModelNo,
+                          listOFProductRate,
+                          listOFProductSize,
+                          listOFProductQuantity,
+                          totalAmount.toString());
+                      listOFProductModelNo.clear();
+                      listOFProductRate.clear();
+                      listOFProductSize.clear();
+                      listOFProductQuantity.clear();
+                      totalAmount = 0;
+                    });
+                  },
                 ),
               ),
               Container(
                 height: 50,
                 padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
                 child: ElevatedButton(
-                   style: ElevatedButton.styleFrom(
+                  style: ElevatedButton.styleFrom(
                     primary: Colors.green,
                   ),
                   child: const Text('Paid'),
-                  onPressed: () {
-                    setState(() {});
-                  },
+                  onPressed: () {},
                 ),
               ),
               Container(
@@ -301,7 +342,13 @@ class _BillCreatePageState extends State<BillCreatePage> {
                   ),
                   child: const Text('Cancel'),
                   onPressed: () {
-                    setState(() {});
+                    setState(() {
+                      listOFProductModelNo.clear();
+                      listOFProductRate.clear();
+                      listOFProductSize.clear();
+                      listOFProductQuantity.clear();
+                      totalAmount = 0;
+                    });
                   },
                 ),
               ),
