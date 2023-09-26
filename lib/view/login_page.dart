@@ -63,6 +63,12 @@ class _LoginPageState extends State<LoginPage> {
       child: ListView(
         children: <Widget>[
           Container(
+              width: 150,
+              height: 150,
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(10),
+              child: Image.asset('assets/bmlogo.jpg')),
+          Container(
             alignment: Alignment.center,
             padding: const EdgeInsets.all(10),
             child: const Text(
@@ -70,15 +76,7 @@ class _LoginPageState extends State<LoginPage> {
               style: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.w500,
-                  fontSize: 30),
-            ),
-          ),
-          Container(
-            alignment: Alignment.center,
-            padding: const EdgeInsets.all(10),
-            child: const Text(
-              'Login',
-              style: TextStyle(fontSize: 20),
+                  fontSize: 25),
             ),
           ),
           Container(

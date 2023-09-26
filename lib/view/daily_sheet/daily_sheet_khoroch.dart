@@ -18,6 +18,7 @@ class _DailySheetKhorochPageState extends State<DailySheetKhorochPage> {
   Khatiyan? _selected;
   Staff? _selected2;
   String? datetime;
+  int totalAmount = 0;
   Future createDailysheetKhoroch(List<String> listOFItem,
       List<String> listOFAmount, String datetime) async {
     http.Response response;
@@ -79,7 +80,7 @@ class _DailySheetKhorochPageState extends State<DailySheetKhorochPage> {
                     context: context,
                     builder: (context) {
                       return AlertDialog(
-                        title: const Text('TextField AlertDemo'),
+                        title: const Text('Update'),
                         content: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -132,6 +133,8 @@ class _DailySheetKhorochPageState extends State<DailySheetKhorochPage> {
                 icon: const Icon(Icons.delete),
                 onPressed: () {
                   setState(() {
+                    int available = int.parse(listOFAmount[i]);
+                    totalAmount -= available;
                     listOFItem.removeAt(i);
                     listOFAmount.removeAt(i);
                   });
@@ -208,6 +211,8 @@ class _DailySheetKhorochPageState extends State<DailySheetKhorochPage> {
                         setState(() {
                           if (name.text.isEmpty && amount.text.isEmpty) {
                           } else {
+                            int available = int.parse(amount.text);
+                            totalAmount += available;
                             listOFItem.add(name.text);
                             listOFAmount.add(amount.text);
                             name.text = "";
@@ -289,6 +294,8 @@ class _DailySheetKhorochPageState extends State<DailySheetKhorochPage> {
                       setState(() {
                         if (khatiyanAmount.text.isEmpty) {
                         } else {
+                          int available = int.parse(khatiyanAmount.text);
+                          totalAmount += available;
                           listOFItem.add(_selected!.khatiyanName.toString());
                           listOFAmount.add(khatiyanAmount.text);
                           khatiyanAmount.text = "";
@@ -367,6 +374,8 @@ class _DailySheetKhorochPageState extends State<DailySheetKhorochPage> {
                       setState(() {
                         if (staffAmount.text.isEmpty) {
                         } else {
+                          int available = int.parse(staffAmount.text);
+                          totalAmount += available;
                           listOFItem.add(_selected2!.staffName.toString());
                           listOFAmount.add(staffAmount.text);
                           staffAmount.text = "";
@@ -378,10 +387,21 @@ class _DailySheetKhorochPageState extends State<DailySheetKhorochPage> {
               ],
             ),
             SizedBox(
-              height: 300,
+              height: 200,
               child: SingleChildScrollView(
                 child:
                     DataTable(columns: _createColumns(), rows: _createRows()),
+              ),
+            ),
+            Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(5),
+              child: Text(
+                'Total : $totalAmount',
+                style: const TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 20),
               ),
             ),
             Container(

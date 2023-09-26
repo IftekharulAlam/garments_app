@@ -13,12 +13,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       title: _title,
       home: Scaffold(
-        appBar: AppBar(title: const Center(child: Text(_title))),
-        body: const LoginPage(),
+        // appBar: AppBar(title: const Center(child: Text(_title))),
+        body: LoginPage(),
       ),
     );
   }

@@ -52,23 +52,20 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(title: Text("BM Garments")),
       drawer: Drawer(
         child: ListView(
-          children: const [
+          children: [
             Column(
               children: [
-                // DrawerHeader(
-                //    child: Image.memory(base64.decode(widget.UserIamge))),
+                DrawerHeader(
+                  child: Image.asset('assets/bmlogo.jpg'),
+                ),
                 ListTile(
-                  // title: Center(child: Text(widget.Username)),
                   title: Center(child: Text("Profile")),
                 ),
                 ListTile(
-                  title:
-                      // Center(child: Text(" Address : ${widget.UserAddress}")),
-                      Center(child: Text("Daily Sheet")),
+                  title: Center(child: Text("Daily Sheet")),
                 ),
                 ListTile(
                   title: Center(child: Text("Khatiayn")),
-                  // title: Center(child: Text(" Phone : ${widget.UserPhone}")),
                 ),
               ],
             ),
