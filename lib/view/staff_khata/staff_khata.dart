@@ -15,9 +15,9 @@ class StaffKhataPage extends StatefulWidget {
 
 class _StaffKhataPageState extends State<StaffKhataPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  Future getStaffKhatiyanList() async {
+  Future getStaffList() async {
     http.Response response = await http.get(
-      Uri.parse("http://192.168.0.100:8000/getStaffKhatiyanList"),
+      Uri.parse("http://192.168.0.100:8000/getStaffList"),
     );
 
     if (response.statusCode == 200) {
@@ -49,7 +49,7 @@ class _StaffKhataPageState extends State<StaffKhataPage> {
             child: Container(
               padding: const EdgeInsets.all(10),
               child: FutureBuilder(
-                future: getStaffKhatiyanList(),
+                future: getStaffList(),
                 builder: (BuildContext context, AsyncSnapshot sn) {
                   if (sn.hasData) {
                     List unis = sn.data;
@@ -58,7 +58,7 @@ class _StaffKhataPageState extends State<StaffKhataPage> {
                       itemCount: unis.length,
                       itemBuilder: (context, index) => Card(
                         child: ListTile(
-                          title: Text("${unis[index]["staffName"]}"),
+                          title: Text("${unis[index]["Name"]}"),
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -83,7 +83,7 @@ class _StaffKhataPageState extends State<StaffKhataPage> {
                                       MaterialPageRoute(
                                           builder: (context) => StaffProfile(
                                               staffName:
-                                                  "${unis[index]["staffName"]}")));
+                                                  "${unis[index]["Name"]}")));
                                 },
                               ),
                             ],

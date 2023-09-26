@@ -1,4 +1,4 @@
-// ignore_for_file: sort_child_properties_last,, use_build_context_synchronously
+
 
 import 'package:flutter/material.dart';
 
@@ -17,7 +17,6 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: _title,
       home: Scaffold(
-        // appBar: AppBar(title: const Center(child: Text(_title))),
         body: LoginPage(),
       ),
     );

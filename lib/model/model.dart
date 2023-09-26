@@ -41,20 +41,15 @@ class GarmentsApp {
 
 class Products {
   late String productModelNo;
-  late String productSize;
   late String productRate;
-  late String productAvailable;
-  Products(
-      {required this.productModelNo,
-      required this.productSize,
-      required this.productRate,
-      required this.productAvailable});
+  Products({
+    required this.productModelNo,
+    required this.productRate,
+  });
 
   Products.fromJson(Map<String, dynamic> json) {
     productModelNo = json['productModelNo'];
-    productSize = json['productSize'];
     productRate = json['productRate'];
-    productAvailable = json['productAvailable'];
   }
 }
 

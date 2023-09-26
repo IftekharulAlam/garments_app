@@ -33,14 +33,13 @@ class _ProductsListPageState extends State<ProductsListPage> {
   var list = [];
   List unismy = [];
 
-  Future createProduct(String productModelNo, String productDetails,
-      String productSize, String productRate) async {
+  Future createProduct(
+      String productModelNo, String productDetails, String productRate) async {
     String finalUrl = "http://192.168.0.100:8000/createProduct";
     var url = Uri.parse(finalUrl);
     http.Response response = await http.post(url, body: {
       "productModelNo": productModelNo,
       "productDetails": productDetails,
-      "productSize": productSize,
       "productRate": productRate,
     });
 
@@ -89,7 +88,6 @@ class _ProductsListPageState extends State<ProductsListPage> {
     http.Response response = await http.get(
       Uri.parse("http://192.168.0.100:8000/getProductsList"),
     );
-
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
     } else {
@@ -163,17 +161,7 @@ class _ProductsListPageState extends State<ProductsListPage> {
                                 Container(
                                   padding: const EdgeInsets.all(10),
                                   child: TextField(
-                                    controller: productSize,
                                     keyboardType: TextInputType.number,
-                                    decoration: const InputDecoration(
-                                      border: OutlineInputBorder(),
-                                      labelText: 'Size',
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  padding: const EdgeInsets.all(10),
-                                  child: TextField(
                                     controller: productRate,
                                     decoration: const InputDecoration(
                                       border: OutlineInputBorder(),
@@ -191,17 +179,15 @@ class _ProductsListPageState extends State<ProductsListPage> {
                                     list.clear();
                                     if (productModelNo.text.isEmpty ||
                                         productDetails.text.isEmpty ||
-                                        productSize.text.isEmpty ||
                                         productRate.text.isEmpty) {
                                     } else {
                                       createProduct(
                                           productModelNo.text,
                                           productDetails.text,
-                                          productSize.text,
                                           productRate.text);
                                       productModelNo.text = "";
                                       productDetails.text = "";
-                                      productSize.text = "";
+
                                       productRate.text = "";
                                       Navigator.of(context).pop();
                                     }

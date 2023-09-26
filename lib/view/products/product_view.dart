@@ -91,12 +91,6 @@ class _ProductsViewPageState extends State<ProductsViewPage> {
                                   "Product Rate: ${unis[index]["productRate"]}"),
                             ),
                           ),
-                          Card(
-                            child: ListTile(
-                              title: Text(
-                                  "Product Available: ${unis[index]["productAvailable"]}"),
-                            ),
-                          ),
                         ],
                       ),
                     );
