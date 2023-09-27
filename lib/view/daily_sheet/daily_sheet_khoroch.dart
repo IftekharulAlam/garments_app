@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+// import 'package:fluttertoast/fluttertoast.dart';
 import 'package:garments_app/controller/controller.dart';
 import 'package:garments_app/model/model.dart';
 import 'package:intl/intl.dart';
@@ -21,10 +22,10 @@ class _DailySheetKhorochPageState extends State<DailySheetKhorochPage> {
   int totalAmount = 0;
   Future createDailysheetKhoroch(List<String> listOFItem,
       List<String> listOFAmount, String datetime) async {
-    http.Response response;
     String finalUrl = "http://192.168.0.100:8000/createDailysheetKhoroch";
     var url = Uri.parse(finalUrl);
     for (int x = 0; x < listOFItem.length; x++) {
+      late http.Response response;
       response = await http.post(url, body: {
         "datetime": datetime.toString(),
         "listOFItem": listOFItem[x],
@@ -43,6 +44,11 @@ class _DailySheetKhorochPageState extends State<DailySheetKhorochPage> {
         throw Exception("Error loading data");
       }
     }
+    setState(() {
+      listOFAmount.clear();
+      listOFItem.clear();
+      totalAmount = 0;
+    });
   }
 
   List<String> listOFItem = [];
@@ -170,61 +176,61 @@ class _DailySheetKhorochPageState extends State<DailySheetKhorochPage> {
                 style: const TextStyle(fontSize: 18),
               ),
             ),
-            Row(
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: Container(
-                    height: 50,
-                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                    child: TextField(
-                      controller: name,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'New Entry',
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 2,
-                  child: Container(
-                    height: 50,
-                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                    child: TextField(
-                      controller: amount,
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Amount',
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Container(
-                    height: 50,
-                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                    child: ElevatedButton(
-                      child: const Text('Add'),
-                      onPressed: () {
-                        setState(() {
-                          if (name.text.isEmpty && amount.text.isEmpty) {
-                          } else {
-                            int available = int.parse(amount.text);
-                            totalAmount += available;
-                            listOFItem.add(name.text);
-                            listOFAmount.add(amount.text);
-                            name.text = "";
-                            amount.text = "";
-                          }
-                        });
-                      },
-                    ),
-                  ),
-                ),
-              ],
-            ),
+            // Row(
+            //   children: [
+            //     Expanded(
+            //       flex: 2,
+            //       child: Container(
+            //         height: 50,
+            //         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+            //         child: TextField(
+            //           controller: name,
+            //           decoration: const InputDecoration(
+            //             border: OutlineInputBorder(),
+            //             labelText: 'New Entry',
+            //           ),
+            //         ),
+            //       ),
+            //     ),
+            //     Expanded(
+            //       flex: 2,
+            //       child: Container(
+            //         height: 50,
+            //         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+            //         child: TextField(
+            //           controller: amount,
+            //           keyboardType: TextInputType.number,
+            //           decoration: const InputDecoration(
+            //             border: OutlineInputBorder(),
+            //             labelText: 'Amount',
+            //           ),
+            //         ),
+            //       ),
+            //     ),
+            //     Expanded(
+            //       child: Container(
+            //         height: 50,
+            //         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+            //         child: ElevatedButton(
+            //           child: const Text('Add'),
+            //           onPressed: () {
+            //             setState(() {
+            //               if (name.text.isEmpty && amount.text.isEmpty) {
+            //               } else {
+            //                 int available = int.parse(amount.text);
+            //                 totalAmount += available;
+            //                 listOFItem.add(name.text);
+            //                 listOFAmount.add(amount.text);
+            //                 name.text = "";
+            //                 amount.text = "";
+            //               }
+            //             });
+            //           },
+            //         ),
+            //       ),
+            //     ),
+            //   ],
+            // ),
             Container(
               alignment: Alignment.center,
               padding: const EdgeInsets.all(10),
@@ -415,8 +421,6 @@ class _DailySheetKhorochPageState extends State<DailySheetKhorochPage> {
                     } else {
                       createDailysheetKhoroch(
                           listOFItem, listOFAmount, datetime!);
-                      listOFAmount.clear();
-                      listOFItem.clear();
                     }
                   });
                 },

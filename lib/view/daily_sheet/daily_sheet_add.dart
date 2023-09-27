@@ -17,12 +17,13 @@ class _DailySheetAddPageState extends State<DailySheetAddPage> {
   Future<GarmentsApp>? _future;
   Khatiyan? _selected;
   String? datetime;
+  int totalAmount = 0;
   Future createDailysheetJoma(List<String> listOFItem,
       List<String> listOFAmount, String datetime) async {
-    http.Response response;
     String finalUrl = "http://192.168.0.100:8000/createDailysheetJoma";
     var url = Uri.parse(finalUrl);
     for (int x = 0; x < listOFItem.length; x++) {
+      http.Response response;
       response = await http.post(url, body: {
         "datetime": datetime.toString(),
         "listOFItem": listOFItem[x],
@@ -41,6 +42,11 @@ class _DailySheetAddPageState extends State<DailySheetAddPage> {
         throw Exception("Error loading data");
       }
     }
+    setState(() {
+      listOFAmount.clear();
+      listOFItem.clear();
+      totalAmount = 0;
+    });
   }
 
   List<String> listOFItem = [];
@@ -77,7 +83,7 @@ class _DailySheetAddPageState extends State<DailySheetAddPage> {
                     context: context,
                     builder: (context) {
                       return AlertDialog(
-                        title: const Text('TextField AlertDemo'),
+                        title: const Text('Update'),
                         content: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -130,6 +136,8 @@ class _DailySheetAddPageState extends State<DailySheetAddPage> {
                 icon: const Icon(Icons.delete),
                 onPressed: () {
                   setState(() {
+                    int available = int.parse(listOFAmount[i]);
+                    totalAmount -= available;
                     listOFItem.removeAt(i);
                     listOFAmount.removeAt(i);
                   });
@@ -151,7 +159,7 @@ class _DailySheetAddPageState extends State<DailySheetAddPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Daily Sheet Khoroch"),
+        title: const Text("Daily Sheet Joma"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(5),
@@ -165,59 +173,59 @@ class _DailySheetAddPageState extends State<DailySheetAddPage> {
                 style: const TextStyle(fontSize: 18),
               ),
             ),
-            Row(
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: Container(
-                    height: 50,
-                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                    child: TextField(
-                      controller: name,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'New Entry',
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 2,
-                  child: Container(
-                    height: 50,
-                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                    child: TextField(
-                      controller: amount,
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Amount',
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Container(
-                    height: 50,
-                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                    child: ElevatedButton(
-                      child: const Text('Add'),
-                      onPressed: () {
-                        setState(() {
-                          if (name.text.isEmpty && amount.text.isEmpty) {
-                          } else {
-                            listOFItem.add(name.text);
-                            listOFAmount.add(amount.text);
-                            name.text = "";
-                            amount.text = "";
-                          }
-                        });
-                      },
-                    ),
-                  ),
-                ),
-              ],
-            ),
+            // Row(
+            //   children: [
+            //     Expanded(
+            //       flex: 2,
+            //       child: Container(
+            //         height: 50,
+            //         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+            //         child: TextField(
+            //           controller: name,
+            //           decoration: const InputDecoration(
+            //             border: OutlineInputBorder(),
+            //             labelText: 'New Entry',
+            //           ),
+            //         ),
+            //       ),
+            //     ),
+            //     Expanded(
+            //       flex: 2,
+            //       child: Container(
+            //         height: 50,
+            //         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+            //         child: TextField(
+            //           controller: amount,
+            //           keyboardType: TextInputType.number,
+            //           decoration: const InputDecoration(
+            //             border: OutlineInputBorder(),
+            //             labelText: 'Amount',
+            //           ),
+            //         ),
+            //       ),
+            //     ),
+            //     Expanded(
+            //       child: Container(
+            //         height: 50,
+            //         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+            //         child: ElevatedButton(
+            //           child: const Text('Add'),
+            //           onPressed: () {
+            //             setState(() {
+            //               if (name.text.isEmpty && amount.text.isEmpty) {
+            //               } else {
+            //                 listOFItem.add(name.text);
+            //                 listOFAmount.add(amount.text);
+            //                 name.text = "";
+            //                 amount.text = "";
+            //               }
+            //             });
+            //           },
+            //         ),
+            //       ),
+            //     ),
+            //   ],
+            // ),
             Container(
               alignment: Alignment.center,
               padding: const EdgeInsets.all(10),
@@ -288,6 +296,8 @@ class _DailySheetAddPageState extends State<DailySheetAddPage> {
                       setState(() {
                         if (khatiyanAmount.text.isEmpty) {
                         } else {
+                          int available = int.parse(khatiyanAmount.text);
+                          totalAmount += available;
                           listOFItem.add(_selected!.khatiyanName.toString());
                           listOFAmount.add(khatiyanAmount.text);
                           khatiyanAmount.text = "";
@@ -306,6 +316,17 @@ class _DailySheetAddPageState extends State<DailySheetAddPage> {
               ),
             ),
             Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(5),
+              child: Text(
+                'Total : $totalAmount',
+                style: const TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 20),
+              ),
+            ),
+            Container(
               height: 50,
               padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
               child: ElevatedButton(
@@ -315,8 +336,7 @@ class _DailySheetAddPageState extends State<DailySheetAddPage> {
                     if (listOFItem.isEmpty && listOFAmount.isEmpty) {
                     } else {
                       createDailysheetJoma(listOFItem, listOFAmount, datetime!);
-                      listOFAmount.clear();
-                      listOFItem.clear();
+                    
                     }
                   });
                 },

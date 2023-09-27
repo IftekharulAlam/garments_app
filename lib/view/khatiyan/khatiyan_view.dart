@@ -53,7 +53,7 @@ class _KhatiyanViewPageState extends State<KhatiyanViewPage> {
               ],
             ),
             Container(
-            padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+              padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
               child: const Card(
                 child: ListTile(
                   title: Row(
@@ -83,10 +83,9 @@ class _KhatiyanViewPageState extends State<KhatiyanViewPage> {
                             title: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text("${unis[index]["Date"]}"),
-                                Text("${unis[index]["Joma"]}"),
-                                Text("${unis[index]["Khoroch"]}"),
-                                Text("${unis[index]["Balance"]}"),
+                                Text("${unis[index]["date"]}"),
+                                Text("${unis[index]["totalJoma"]}"),
+                                Text("${unis[index]["totalKhoroch"]}"),
                               ],
                             ),
                           ),

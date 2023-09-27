@@ -121,6 +121,6 @@ class Staff {
   Staff({required this.staffName});
 
   Staff.fromJson(Map<String, dynamic> json) {
-    staffName = json['staffName'];
+    staffName = json['Name'];
   }
 }

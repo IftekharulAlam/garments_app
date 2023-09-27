@@ -63,7 +63,7 @@ class _StaffProfileState extends State<StaffProfile> {
             ),
           ),
           SizedBox(
-          height: 70,
+            height: 70,
             child: FutureBuilder(
               future: getProfileDetailsStaff(widget.staffName),
               builder: (BuildContext context, AsyncSnapshot sn) {
@@ -140,7 +140,6 @@ class _StaffProfileState extends State<StaffProfile> {
                               Text("${unis[index]["Date"]}"),
                               Text("${unis[index]["Joma"]}"),
                               Text("${unis[index]["Khoroch"]}"),
-                              Text("${unis[index]["Balance"]}"),
                             ],
                           ),
                         ),
