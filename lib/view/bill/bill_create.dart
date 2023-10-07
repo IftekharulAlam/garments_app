@@ -80,7 +80,7 @@ class _BillCreatePageState extends State<BillCreatePage> {
       List<String> listOFProductRate,
       List<String> listOFProductSize,
       List<String> listOFProductQuantity,
-      String totalAmount) async {
+      int totalAmount2) async {
     late http.Response response;
     for (int i = 0; i < listOFProductModelNo.length; i++) {
       response = await http
@@ -91,12 +91,37 @@ class _BillCreatePageState extends State<BillCreatePage> {
         "listOFProductRate": listOFProductRate[i],
         "listOFProductSize": listOFProductSize[i],
         "listOFProductQuantity": listOFProductQuantity[i],
-        "totalAmount": totalAmount,
+        "totalAmount": totalAmount2.toString()
       });
       if (response.statusCode == 200) {
       } else {
         throw Exception("Error loading data");
       }
+    }
+    addBillToPartyKhatiyan(shopName, date, totalAmount);
+    setState(() {
+      listOFProductModelNo.clear();
+      listOFProductRate.clear();
+      listOFProductSize.clear();
+      listOFProductQuantity.clear();
+      totalAmount = 0;
+    });
+  }
+
+  Future addBillToPartyKhatiyan(
+      String shopName, String date, int totalAmount2) async {
+    late http.Response response;
+
+    response = await http.post(
+        Uri.parse("http://192.168.0.100:8000/addBillToPartyKhatiyan"),
+        body: {
+          "shopName": shopName,
+          "date": date,
+          "totalAmount": totalAmount2.toString()
+        });
+    if (response.statusCode == 200) {
+    } else {
+      throw Exception("Error loading data");
     }
   }
 
@@ -312,12 +337,7 @@ class _BillCreatePageState extends State<BillCreatePage> {
                           listOFProductRate,
                           listOFProductSize,
                           listOFProductQuantity,
-                          totalAmount.toString());
-                      listOFProductModelNo.clear();
-                      listOFProductRate.clear();
-                      listOFProductSize.clear();
-                      listOFProductQuantity.clear();
-                      totalAmount = 0;
+                          totalAmount);
                     });
                   },
                 ),
