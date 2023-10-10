@@ -3,6 +3,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:garments_app/controller/controller.dart';
 import 'package:http/http.dart' as http;
 
 class ProductsViewPage extends StatefulWidget {
@@ -14,7 +15,7 @@ class ProductsViewPage extends StatefulWidget {
 }
 
 Future getProductProductionDetails(String productModelNo) async {
-  String finalUrl = "http://192.168.0.100:8000/getProductProductionDetails";
+  String finalUrl = "http://$mydeviceIP:8000/getProductProductionDetails";
   var url = Uri.parse(finalUrl);
   http.Response response = await http.post(url, body: {
     "productModelNo": productModelNo,
@@ -28,7 +29,7 @@ Future getProductProductionDetails(String productModelNo) async {
 }
 
 Future getProductDetails(String productModelNo) async {
-  String finalUrl = "http://192.168.0.100:8000/getProductDetails";
+  String finalUrl = "http://$mydeviceIP:8000/getProductDetails";
   var url = Uri.parse(finalUrl);
   http.Response response = await http.post(url, body: {
     "productModelNo": productModelNo,

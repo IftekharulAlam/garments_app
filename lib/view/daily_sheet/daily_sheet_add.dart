@@ -20,7 +20,7 @@ class _DailySheetAddPageState extends State<DailySheetAddPage> {
   int totalAmount = 0;
   Future createDailysheetJoma(List<String> listOFItem,
       List<String> listOFAmount, String datetime) async {
-    String finalUrl = "http://192.168.0.100:8000/createDailysheetJoma";
+    String finalUrl = "http://$mydeviceIP:8000/createDailysheetJoma";
     var url = Uri.parse(finalUrl);
     for (int x = 0; x < listOFItem.length; x++) {
       http.Response response;
@@ -46,6 +46,7 @@ class _DailySheetAddPageState extends State<DailySheetAddPage> {
       listOFAmount.clear();
       listOFItem.clear();
       totalAmount = 0;
+      Navigator.pop(context);
     });
   }
 
@@ -147,6 +148,23 @@ class _DailySheetAddPageState extends State<DailySheetAddPage> {
     ];
   }
 
+  List<DataColumn> _createColumns2() {
+    return [
+      const DataColumn(label: Text('Item')),
+      const DataColumn(label: Text('Amount')),
+    ];
+  }
+
+  List<DataRow> _createRows2() {
+    return [
+      for (int i = 0; i < listOFItem.length; i++)
+        DataRow(cells: [
+          DataCell(Text(listOFItem[i])),
+          DataCell(Text(listOFAmount[i])),
+        ]),
+    ];
+  }
+
   @override
   void initState() {
     _future = getKhatiyanListmy();
@@ -173,59 +191,61 @@ class _DailySheetAddPageState extends State<DailySheetAddPage> {
                 style: const TextStyle(fontSize: 18),
               ),
             ),
-            // Row(
-            //   children: [
-            //     Expanded(
-            //       flex: 2,
-            //       child: Container(
-            //         height: 50,
-            //         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-            //         child: TextField(
-            //           controller: name,
-            //           decoration: const InputDecoration(
-            //             border: OutlineInputBorder(),
-            //             labelText: 'New Entry',
-            //           ),
-            //         ),
-            //       ),
-            //     ),
-            //     Expanded(
-            //       flex: 2,
-            //       child: Container(
-            //         height: 50,
-            //         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-            //         child: TextField(
-            //           controller: amount,
-            //           keyboardType: TextInputType.number,
-            //           decoration: const InputDecoration(
-            //             border: OutlineInputBorder(),
-            //             labelText: 'Amount',
-            //           ),
-            //         ),
-            //       ),
-            //     ),
-            //     Expanded(
-            //       child: Container(
-            //         height: 50,
-            //         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-            //         child: ElevatedButton(
-            //           child: const Text('Add'),
-            //           onPressed: () {
-            //             setState(() {
-            //               if (name.text.isEmpty && amount.text.isEmpty) {
-            //               } else {
-            //                 listOFItem.add(name.text);
-            //                 listOFAmount.add(amount.text);
-            //                 name.text = "";
-            //                 amount.text = "";
-            //               }
-            //             });
-            //           },
-            //         ),
-            //       ),
-            //     ),
-            //   ],
-            // ),
+            Row(
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    height: 50,
+                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    child: TextField(
+                      controller: name,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'New Entry',
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    height: 50,
+                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    child: TextField(
+                      controller: amount,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Amount',
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Container(
+                    height: 50,
+                    padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                    child: ElevatedButton(
+                      child: const Text('Add'),
+                      onPressed: () {
+                        setState(() {
+                          if (name.text.isEmpty && amount.text.isEmpty) {
+                          } else {
+                            int available = int.parse(amount.text);
+                            totalAmount += available;
+                            listOFItem.add(name.text);
+                            listOFAmount.add(amount.text);
+                            name.text = "";
+                            amount.text = "";
+                          }
+                        });
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
             Container(
               alignment: Alignment.center,
               padding: const EdgeInsets.all(10),
@@ -326,21 +346,104 @@ class _DailySheetAddPageState extends State<DailySheetAddPage> {
                     fontSize: 20),
               ),
             ),
-            Container(
-              height: 50,
-              padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-              child: ElevatedButton(
-                child: const Text('Submit'),
-                onPressed: () {
-                  setState(() {
-                    if (listOFItem.isEmpty && listOFAmount.isEmpty) {
-                    } else {
-                      createDailysheetJoma(listOFItem, listOFAmount, datetime!);
-                    
-                    }
-                  });
-                },
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  height: 50,
+                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                  child: ElevatedButton(
+                    child: const Text('Submit'),
+                    onPressed: () {
+                      setState(
+                        () {
+                          if (listOFItem.isEmpty && listOFAmount.isEmpty) {
+                          } else {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  content: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      DataTable(
+                                          showBottomBorder: true,
+                                          columnSpacing: 9.0,
+                                          columns: _createColumns2(),
+                                          rows: _createRows2()),
+                                      Container(
+                                        alignment: Alignment.center,
+                                        padding: const EdgeInsets.all(5),
+                                        child: Text(
+                                          'Total : $totalAmount',
+                                          style: const TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 20),
+                                        ),
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Container(
+                                            height: 30,
+                                            padding: const EdgeInsets.fromLTRB(
+                                                5, 0, 5, 0),
+                                            child: ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                primary: Colors.blue,
+                                              ),
+                                              child: const Text('Submit'),
+                                              onPressed: () {
+                                                createDailysheetJoma(listOFItem,
+                                                    listOFAmount, datetime!);
+                                              },
+                                            ),
+                                          ),
+                                          Container(
+                                            height: 30,
+                                            padding: const EdgeInsets.fromLTRB(
+                                                5, 0, 5, 0),
+                                            child: ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                primary: Colors.green,
+                                              ),
+                                              child: const Text('Cancel'),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            );
+                          }
+                        },
+                      );
+                    },
+                  ),
+                ),
+                Container(
+                  height: 50,
+                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                  child: ElevatedButton(
+                    child: const Text('Cancel'),
+                    onPressed: () {
+                      setState(
+                        () {
+                          listOFAmount.clear();
+                          listOFItem.clear();
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
           ],
         ),

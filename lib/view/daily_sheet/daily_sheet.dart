@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:garments_app/controller/controller.dart';
 import 'package:garments_app/view/daily_sheet/daily_sheet_add.dart';
 import 'package:garments_app/view/daily_sheet/daily_sheet_khoroch.dart';
 
@@ -15,7 +16,7 @@ class DailySheetPage extends StatefulWidget {
 
 Future dailysheetJomaKhorochList() async {
   http.Response response = await http.get(
-    Uri.parse("http://192.168.0.100:8000/dailysheetJomaKhorochList"),
+    Uri.parse("http://$mydeviceIP:8000/dailysheetJomaKhorochList"),
   );
 
   if (response.statusCode == 200) {

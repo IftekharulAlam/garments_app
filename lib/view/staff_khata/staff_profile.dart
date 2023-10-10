@@ -3,6 +3,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:garments_app/controller/controller.dart';
 import 'package:http/http.dart' as http;
 
 class StaffProfile extends StatefulWidget {
@@ -17,7 +18,7 @@ class _StaffProfileState extends State<StaffProfile> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   Future getProfileDetailsStaff(String staffName) async {
-    String finalUrl = "http://192.168.0.100:8000/getProfileDetailsStaff";
+    String finalUrl = "http://$mydeviceIP:8000/getProfileDetailsStaff";
     var url = Uri.parse(finalUrl);
     http.Response response = await http.post(url, body: {
       "staffName": staffName,
@@ -31,7 +32,7 @@ class _StaffProfileState extends State<StaffProfile> {
   }
 
   Future getKhatiyanDetailsStaff(String staffName) async {
-    String finalUrl = "http://192.168.0.100:8000/getKhatiyanDetailsStaff";
+    String finalUrl = "http://$mydeviceIP:8000/getKhatiyanDetailsStaff";
     var url = Uri.parse(finalUrl);
     http.Response response = await http.post(url, body: {
       "staffName": staffName,

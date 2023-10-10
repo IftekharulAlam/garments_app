@@ -2,10 +2,10 @@ import 'dart:convert';
 
 import 'package:garments_app/model/model.dart';
 import 'package:http/http.dart' as http;
-
+String mydeviceIP = "192.168.68.150";
 Future<GarmentsApp> getProductsListmy() async {
   http.Response response = await http.get(
-    Uri.parse("http://192.168.0.100:8000/getProductsList"),
+    Uri.parse("http://$mydeviceIP:8000/getProductsList"),
   );
 
   if (response.statusCode == 200) {
@@ -17,7 +17,7 @@ Future<GarmentsApp> getProductsListmy() async {
 
 Future<GarmentsApp> getPartyListtmy() async {
   http.Response response = await http.get(
-    Uri.parse("http://192.168.0.100:8000/getPartyList"),
+    Uri.parse("http://$mydeviceIP:8000/getPartyList"),
   );
 
   if (response.statusCode == 200) {
@@ -29,7 +29,7 @@ Future<GarmentsApp> getPartyListtmy() async {
 
 Future<GarmentsApp> getKhatiyanListmy() async {
   http.Response response = await http.get(
-    Uri.parse("http://192.168.0.100:8000/getKhatiyanList"),
+    Uri.parse("http://$mydeviceIP:8000/getKhatiyanList"),
   );
 
   if (response.statusCode == 200) {
@@ -41,7 +41,7 @@ Future<GarmentsApp> getKhatiyanListmy() async {
 
 Future<GarmentsApp> getStaffKhatiyanListmy() async {
   http.Response response = await http.get(
-    Uri.parse("http://192.168.0.100:8000/getStaffKhatiyanList"),
+    Uri.parse("http://$mydeviceIP:8000/getStaffKhatiyanList"),
   );
 
   if (response.statusCode == 200) {
@@ -50,3 +50,4 @@ Future<GarmentsApp> getStaffKhatiyanListmy() async {
     throw Exception("Error loading data");
   }
 }
+

@@ -35,7 +35,7 @@ class _ProductsListPageState extends State<ProductsListPage> {
 
   Future createProduct(
       String productModelNo, String productDetails, String productRate) async {
-    String finalUrl = "http://192.168.0.100:8000/createProduct";
+    String finalUrl = "http://$mydeviceIP:8000/createProduct";
     var url = Uri.parse(finalUrl);
     http.Response response = await http.post(url, body: {
       "productModelNo": productModelNo,
@@ -60,7 +60,7 @@ class _ProductsListPageState extends State<ProductsListPage> {
 
   Future addProduct(String productModelNo, String productionDate,
       String productSize, String productQuantity) async {
-    String finalUrl = "http://192.168.0.100:8000/addProduct";
+    String finalUrl = "http://$mydeviceIP:8000/addProduct";
     var url = Uri.parse(finalUrl);
     http.Response response = await http.post(url, body: {
       "productModelNo": productModelNo,
@@ -86,7 +86,7 @@ class _ProductsListPageState extends State<ProductsListPage> {
 
   Future getProductsList() async {
     http.Response response = await http.get(
-      Uri.parse("http://192.168.0.100:8000/getProductsList"),
+      Uri.parse("http://$mydeviceIP:8000/getProductsList"),
     );
     if (response.statusCode == 200) {
       return jsonDecode(response.body);

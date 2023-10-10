@@ -49,7 +49,7 @@ class Products {
 
   Products.fromJson(Map<String, dynamic> json) {
     productModelNo = json['productModelNo'];
-    productRate = json['productRate'];
+    productRate = json['productDetails'];
   }
 }
 

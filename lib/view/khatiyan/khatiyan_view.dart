@@ -3,6 +3,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:garments_app/controller/controller.dart';
 
 import 'package:http/http.dart' as http;
 
@@ -16,7 +17,7 @@ class KhatiyanViewPage extends StatefulWidget {
 
 class _KhatiyanViewPageState extends State<KhatiyanViewPage> {
   Future getKhatiyanDetails(String khatiyanName) async {
-    String finalUrl = "http://192.168.0.100:8000/getKhatiyanDetails";
+    String finalUrl = "http://$mydeviceIP:8000/getKhatiyanDetails";
     var url = Uri.parse(finalUrl);
     http.Response response = await http.post(url, body: {
       "khatiyanName": khatiyanName,

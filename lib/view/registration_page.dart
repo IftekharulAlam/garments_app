@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:garments_app/controller/controller.dart';
 
 import 'package:http/http.dart' as http;
 
@@ -35,7 +36,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
       String salary,
       String type) async {
     http.Response response = await http
-        .post(Uri.parse("http://192.168.0.100:8000/registerUser"), body: {
+        .post(Uri.parse("http://$mydeviceIP:8000/registerUser"), body: {
       "name": name,
       "address": address,
       "phone": phone,

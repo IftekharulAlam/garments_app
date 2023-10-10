@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:garments_app/controller/controller.dart';
 import 'package:garments_app/view/staff_khata/staff_attendence.dart';
 import 'package:garments_app/view/staff_khata/staff_profile.dart';
 
@@ -17,7 +18,7 @@ class _StaffKhataPageState extends State<StaffKhataPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   Future getStaffList() async {
     http.Response response = await http.get(
-      Uri.parse("http://192.168.0.100:8000/getStaffList"),
+      Uri.parse("http://$mydeviceIP:8000/getStaffList"),
     );
 
     if (response.statusCode == 200) {

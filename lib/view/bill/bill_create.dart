@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:garments_app/controller/controller.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -61,9 +62,18 @@ class _BillCreatePageState extends State<BillCreatePage> {
     ];
   }
 
-  Future getProductsList() async {
+  List<DataColumn> _createColumns2() {
+    return [
+      const DataColumn(label: Text('Item')),
+      const DataColumn(label: Text('Size')),
+      const DataColumn(label: Text('Quantity')),
+      const DataColumn(label: Text('Amount')),
+    ];
+  }
+
+  Future getProductsAvailableList() async {
     http.Response response = await http.get(
-      Uri.parse("http://192.168.0.100:8000/getProductsList"),
+      Uri.parse("http://$mydeviceIP:8000/getProductsAvailableList"),
     );
 
     if (response.statusCode == 200) {
@@ -84,7 +94,7 @@ class _BillCreatePageState extends State<BillCreatePage> {
     late http.Response response;
     for (int i = 0; i < listOFProductModelNo.length; i++) {
       response = await http
-          .post(Uri.parse("http://192.168.0.100:8000/createBill"), body: {
+          .post(Uri.parse("http://$mydeviceIP:8000/createBill"), body: {
         "shopName": shopName,
         "date": date,
         "listOFProductModelNo": listOFProductModelNo[i],
@@ -104,6 +114,7 @@ class _BillCreatePageState extends State<BillCreatePage> {
       listOFProductRate.clear();
       listOFProductSize.clear();
       listOFProductQuantity.clear();
+      listOFProductAmount.clear();
       totalAmount = 0;
     });
   }
@@ -113,7 +124,7 @@ class _BillCreatePageState extends State<BillCreatePage> {
     late http.Response response;
 
     response = await http.post(
-        Uri.parse("http://192.168.0.100:8000/addBillToPartyKhatiyan"),
+        Uri.parse("http://$mydeviceIP:8000/addBillToPartyKhatiyan"),
         body: {
           "shopName": shopName,
           "date": date,
@@ -156,112 +167,138 @@ class _BillCreatePageState extends State<BillCreatePage> {
     ];
   }
 
+  List<DataRow> _createRows2() {
+    return [
+      for (int i = 0; i < listOFProductModelNo.length; i++)
+        DataRow(cells: [
+          DataCell(Text(listOFProductModelNo[i])),
+          DataCell(Text(listOFProductSize[i])),
+          DataCell(Text(listOFProductQuantity[i])),
+          DataCell(Text(listOFProductAmount[i].toString())),
+        ]),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text(_title)),
-      body: Column(
-        children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.all(5),
-                child: Text(
-                  'Name : ${widget.myShopName}',
-                  style: const TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 18),
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.all(5),
+                  child: Text(
+                    'Name : ${widget.myShopName}',
+                    style: const TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 18),
+                  ),
                 ),
-              ),
-              Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.all(10),
-                child: Text(
-                  'Date : $datetime',
-                  style: const TextStyle(fontSize: 18),
+                Container(
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.all(10),
+                  child: Text(
+                    'Date : $datetime',
+                    style: const TextStyle(fontSize: 18),
+                  ),
                 ),
-              ),
-            ],
-          ),
-          DataTable(
-              showBottomBorder: true,
-              columnSpacing: 20.0,
-              columns: _productListColumns(),
-              rows: const []),
-          SizedBox(
-            height: 200,
-            child: FutureBuilder(
-              future: getProductsList(),
-              builder: (BuildContext context, AsyncSnapshot sn) {
-                if (sn.hasData) {
-                  unis = sn.data;
-                  listOfTextField = List.generate(
-                      unis.length, (i) => TextEditingController());
-                  return ListView.builder(
-                    itemCount: unis.length,
-                    itemBuilder: (context, index) => GestureDetector(
-                      onTap: () {},
-                      child: Card(
-                        child: ListTile(
-                          title: Row(
-                            children: [
-                              Text("${unis[index]["productModelNo"]}"),
-                              const SizedBox(width: 45),
-                              Text("${unis[index]["productSize"]}"),
-                              const SizedBox(width: 35),
-                              Text("${unis[index]["productAvailable"]}"),
-                            ],
-                          ),
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              SizedBox(
-                                width: 60,
-                                height: 40,
-                                child: TextField(
-                                  keyboardType: TextInputType.number,
-                                  style: const TextStyle(fontSize: 18),
-                                  controller: listOfTextField[index],
-                                  decoration: const InputDecoration(
-                                    border: OutlineInputBorder(),
+              ],
+            ),
+            DataTable(
+                showBottomBorder: true,
+                columnSpacing: 20.0,
+                columns: _productListColumns(),
+                rows: const []),
+            SizedBox(
+              height: 200,
+              child: FutureBuilder(
+                future: getProductsAvailableList(),
+                builder: (BuildContext context, AsyncSnapshot sn) {
+                  if (sn.hasData) {
+                    unis = sn.data;
+                    listOfTextField = List.generate(
+                        unis.length, (i) => TextEditingController());
+                    return ListView.builder(
+                      itemCount: unis.length,
+                      itemBuilder: (context, index) => GestureDetector(
+                        onTap: () {},
+                        child: Card(
+                          child: ListTile(
+                            title: Row(
+                              children: [
+                                Text("${unis[index]["productModelNo"]}"),
+                                const SizedBox(width: 45),
+                                Text("${unis[index]["productSize"]}"),
+                                const SizedBox(width: 35),
+                                Text("${unis[index]["productAvailable"]}"),
+                              ],
+                            ),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                SizedBox(
+                                  width: 60,
+                                  height: 40,
+                                  child: TextField(
+                                    keyboardType: TextInputType.number,
+                                    style: const TextStyle(fontSize: 18),
+                                    controller: listOfTextField[index],
+                                    decoration: const InputDecoration(
+                                      border: OutlineInputBorder(),
+                                    ),
                                   ),
                                 ),
-                              ),
-                              IconButton(
-                                  onPressed: () {
-                                    setState(
-                                      () {
-                                        if (int.parse(
-                                                listOfTextField[index].text) >
-                                            0) {
-                                          int available = int.parse(
-                                              unis[index]["productAvailable"]);
-                                          int requested = int.parse(
-                                              listOfTextField[index].text);
-                                          if (requested <= available) {
-                                            int myProductRate = int.parse(
-                                                unis[index]["productRate"]);
-                                            int myProductQuantity = int.parse(
+                                IconButton(
+                                    onPressed: () {
+                                      setState(
+                                        () {
+                                          if (int.parse(
+                                                  listOfTextField[index].text) >
+                                              0) {
+                                            int available = int.parse(
+                                                unis[index]
+                                                    ["productAvailable"]);
+                                            int requested = int.parse(
                                                 listOfTextField[index].text);
-                                            listOFProductAmount.add(
-                                                myProductRate *
-                                                    myProductQuantity);
-                                            listOFProductSize.add(
-                                                unis[index]["productSize"]);
-                                            listOFProductModelNo.add(
-                                                unis[index]["productModelNo"]);
-                                            listOFProductRate.add(
-                                                unis[index]["productRate"]);
-                                            listOFProductQuantity.add(
-                                                listOfTextField[index].text);
-                                            totalAmount += myProductRate *
-                                                myProductQuantity;
+                                            if (requested <= available) {
+                                              int myProductRate = int.parse(
+                                                  unis[index]["productRate"]);
+                                              int myProductQuantity = int.parse(
+                                                  listOfTextField[index].text);
+                                              listOFProductAmount.add(
+                                                  myProductRate *
+                                                      myProductQuantity);
+                                              listOFProductSize.add(
+                                                  unis[index]["productSize"]);
+                                              listOFProductModelNo.add(
+                                                  unis[index]
+                                                      ["productModelNo"]);
+                                              listOFProductRate.add(
+                                                  unis[index]["productRate"]);
+                                              listOFProductQuantity.add(
+                                                  listOfTextField[index].text);
+                                              totalAmount += myProductRate *
+                                                  myProductQuantity;
+                                            } else {
+                                              Fluttertoast.showToast(
+                                                  msg: "Not Available",
+                                                  toastLength:
+                                                      Toast.LENGTH_SHORT,
+                                                  gravity: ToastGravity.CENTER,
+                                                  timeInSecForIosWeb: 1,
+                                                  backgroundColor: Colors.red,
+                                                  textColor: Colors.white,
+                                                  fontSize: 16.0);
+                                            }
                                           } else {
                                             Fluttertoast.showToast(
-                                                msg: "Not Available",
+                                                msg: "Enter A Number",
                                                 toastLength: Toast.LENGTH_SHORT,
                                                 gravity: ToastGravity.CENTER,
                                                 timeInSecForIosWeb: 1,
@@ -269,112 +306,167 @@ class _BillCreatePageState extends State<BillCreatePage> {
                                                 textColor: Colors.white,
                                                 fontSize: 16.0);
                                           }
-                                        } else {
-                                          Fluttertoast.showToast(
-                                              msg: "Enter A Number",
-                                              toastLength: Toast.LENGTH_SHORT,
-                                              gravity: ToastGravity.CENTER,
-                                              timeInSecForIosWeb: 1,
-                                              backgroundColor: Colors.red,
-                                              textColor: Colors.white,
-                                              fontSize: 16.0);
-                                        }
-                                      },
-                                    );
-                                  },
-                                  icon: const Icon(Icons.add)),
-                            ],
+                                        },
+                                      );
+                                    },
+                                    icon: const Icon(Icons.add)),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
+                    );
+                  }
+                  if (sn.hasError) {
+                    return const Center(child: Text("Error Loading Data"));
+                  }
+                  return const Center(
+                    child: CircularProgressIndicator(),
                   );
-                }
-                if (sn.hasError) {
-                  return const Center(child: Text("Error Loading Data"));
-                }
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              },
-            ),
-          ),
-          SizedBox(
-            height: 200,
-            child: SingleChildScrollView(
-              child: DataTable(
-                  showBottomBorder: true,
-                  columnSpacing: 20.0,
-                  columns: _createColumns(),
-                  rows: _createRows()),
-            ),
-          ),
-          Container(
-            alignment: Alignment.center,
-            padding: const EdgeInsets.all(5),
-            child: Text(
-              'Total : $totalAmount',
-              style: const TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 20),
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                height: 50,
-                padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                child: ElevatedButton(
-                  child: const Text('Save Bill'),
-                  onPressed: () {
-                    setState(() {
-                      createBill(
-                          widget.myShopName,
-                          datetime!,
-                          listOFProductModelNo,
-                          listOFProductRate,
-                          listOFProductSize,
-                          listOFProductQuantity,
-                          totalAmount);
-                    });
-                  },
-                ),
+                },
               ),
-              Container(
-                height: 50,
-                padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.green,
+            ),
+            SizedBox(
+              height: 200,
+              child: SingleChildScrollView(
+                child: DataTable(
+                    showBottomBorder: true,
+                    columnSpacing: 20.0,
+                    columns: _createColumns(),
+                    rows: _createRows()),
+              ),
+            ),
+            Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(5),
+              child: Text(
+                'Total : $totalAmount',
+                style: const TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 20),
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  height: 50,
+                  padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                  child: ElevatedButton(
+                    child: const Text('Save Bill'),
+                    onPressed: () {
+                      setState(() {
+                        if (listOFProductModelNo.isNotEmpty) {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    DataTable(
+                                        showBottomBorder: true,
+                                        columnSpacing: 9.0,
+                                        columns: _createColumns2(),
+                                        rows: _createRows2()),
+                                    Container(
+                                      alignment: Alignment.center,
+                                      padding: const EdgeInsets.all(5),
+                                      child: Text(
+                                        'Total : $totalAmount',
+                                        style: const TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 20),
+                                      ),
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Container(
+                                          height: 30,
+                                          padding: const EdgeInsets.fromLTRB(
+                                              5, 0, 5, 0),
+                                          child: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              primary: Colors.blue,
+                                            ),
+                                            child: const Text('Save'),
+                                            onPressed: () {
+                                              createBill(
+                                                  widget.myShopName,
+                                                  datetime!,
+                                                  listOFProductModelNo,
+                                                  listOFProductRate,
+                                                  listOFProductSize,
+                                                  listOFProductQuantity,
+                                                  totalAmount);
+                                            },
+                                          ),
+                                        ),
+                                        Container(
+                                          height: 30,
+                                          padding: const EdgeInsets.fromLTRB(
+                                              5, 0, 5, 0),
+                                          child: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              primary: Colors.green,
+                                            ),
+                                            child: const Text('Cancel'),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+                        }
+                      });
+                    },
                   ),
-                  child: const Text('Paid'),
-                  onPressed: () {},
                 ),
-              ),
-              Container(
-                height: 50,
-                padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.red,
+                Container(
+                  height: 50,
+                  padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.green,
+                    ),
+                    child: const Text('Paid'),
+                    onPressed: () {},
                   ),
-                  child: const Text('Cancel'),
-                  onPressed: () {
-                    setState(() {
-                      listOFProductModelNo.clear();
-                      listOFProductRate.clear();
-                      listOFProductSize.clear();
-                      listOFProductQuantity.clear();
-                      totalAmount = 0;
-                    });
-                  },
                 ),
-              ),
-            ],
-          ),
-        ],
+                Container(
+                  height: 50,
+                  padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.red,
+                    ),
+                    child: const Text('Cancel'),
+                    onPressed: () {
+                      setState(() {
+                        listOFProductModelNo.clear();
+                        listOFProductRate.clear();
+                        listOFProductSize.clear();
+                        listOFProductQuantity.clear();
+                        listOFProductAmount.clear();
+                        totalAmount = 0;
+                      });
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

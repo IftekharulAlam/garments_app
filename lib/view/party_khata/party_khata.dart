@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:garments_app/controller/controller.dart';
 import 'package:garments_app/view/party_khata/party_khata_details.dart';
 
 import 'package:garments_app/view/party_khata/registration_party.dart';
@@ -19,7 +20,7 @@ class _PartyKhataPageState extends State<PartyKhataPage> {
 
   Future getPartyList() async {
     http.Response response = await http.get(
-      Uri.parse("http://192.168.0.100:8000/getPartyList"),
+      Uri.parse("http://$mydeviceIP:8000/getPartyList"),
     );
 
     if (response.statusCode == 200) {

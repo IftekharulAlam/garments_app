@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:garments_app/controller/controller.dart';
 import 'package:garments_app/view/khatiyan/khatiyan_view.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -15,7 +16,7 @@ class KhatiyanListPage extends StatefulWidget {
 
 class _KhatiyanListPageState extends State<KhatiyanListPage> {
   Future createKhatiyan(String khatiyanName) async {
-    String finalUrl = "http://192.168.0.100:8000/createKhatiyan";
+    String finalUrl = "http://$mydeviceIP:8000/createKhatiyan";
     var url = Uri.parse(finalUrl);
     http.Response response = await http.post(url, body: {
       "khatiyanName": khatiyanName,
@@ -38,7 +39,7 @@ class _KhatiyanListPageState extends State<KhatiyanListPage> {
 
   Future getKhatiyanList() async {
     http.Response response = await http.get(
-      Uri.parse("http://192.168.0.100:8000/getKhatiyanList"),
+      Uri.parse("http://$mydeviceIP:8000/getKhatiyanList"),
     );
 
     if (response.statusCode == 200) {

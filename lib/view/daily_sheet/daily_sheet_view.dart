@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:garments_app/controller/controller.dart';
 import 'package:http/http.dart' as http;
 
 class DailySheetViewPage extends StatefulWidget {
@@ -13,7 +14,7 @@ class DailySheetViewPage extends StatefulWidget {
 
 class _DailySheetViewPageState extends State<DailySheetViewPage> {
   Future login(String name, String password, String userType) async {
-    String finalUrl = "http://192.168.0.100:8000/login";
+    String finalUrl = "http://$mydeviceIP:8000/login";
     var url = Uri.parse(finalUrl);
     var response = await http.post(url,
         body: {"name": name, "password": password, "userType": userType});

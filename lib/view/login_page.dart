@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:garments_app/controller/controller.dart';
 
 import 'package:garments_app/view/home_page.dart';
 import 'package:garments_app/view/registration_page.dart';
@@ -22,7 +23,7 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController name = TextEditingController();
   TextEditingController password = TextEditingController();
   Future login(String name, String password, String userType) async {
-    String finalUrl = "http://192.168.0.100:8000/login";
+    String finalUrl = "http://$mydeviceIP:8000/login";
     var url = Uri.parse(finalUrl);
     var response = await http.post(url,
         body: {"name": name, "password": password, "userType": userType});
