@@ -392,7 +392,7 @@ class _DailySheetAddPageState extends State<DailySheetAddPage> {
                                                 5, 0, 5, 0),
                                             child: ElevatedButton(
                                               style: ElevatedButton.styleFrom(
-                                                primary: Colors.blue,
+                                                backgroundColor: Colors.blue,
                                               ),
                                               child: const Text('Submit'),
                                               onPressed: () {
@@ -407,7 +407,7 @@ class _DailySheetAddPageState extends State<DailySheetAddPage> {
                                                 5, 0, 5, 0),
                                             child: ElevatedButton(
                                               style: ElevatedButton.styleFrom(
-                                                primary: Colors.green,
+                                                backgroundColor: Colors.green,
                                               ),
                                               child: const Text('Cancel'),
                                               onPressed: () {

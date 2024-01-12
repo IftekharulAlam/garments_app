@@ -29,7 +29,7 @@ class _BillCreatePageState extends State<BillCreatePage> {
   String? datetime;
   @override
   void initState() {
-    // TODO: implement initState
+
     datetime = DateFormat("dd-MM-yyyy").format(DateTime.now());
     super.initState();
   }
@@ -391,7 +391,7 @@ class _BillCreatePageState extends State<BillCreatePage> {
                                               5, 0, 5, 0),
                                           child: ElevatedButton(
                                             style: ElevatedButton.styleFrom(
-                                              primary: Colors.blue,
+                                              backgroundColor: Colors.blue,
                                             ),
                                             child: const Text('Save'),
                                             onPressed: () {
@@ -412,7 +412,7 @@ class _BillCreatePageState extends State<BillCreatePage> {
                                               5, 0, 5, 0),
                                           child: ElevatedButton(
                                             style: ElevatedButton.styleFrom(
-                                              primary: Colors.green,
+                                              backgroundColor: Colors.green,
                                             ),
                                             child: const Text('Cancel'),
                                             onPressed: () {
@@ -437,7 +437,7 @@ class _BillCreatePageState extends State<BillCreatePage> {
                   padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      primary: Colors.green,
+                      backgroundColor: Colors.green,
                     ),
                     child: const Text('Paid'),
                     onPressed: () {},
@@ -448,7 +448,7 @@ class _BillCreatePageState extends State<BillCreatePage> {
                   padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      primary: Colors.red,
+                      backgroundColor: Colors.red,
                     ),
                     child: const Text('Cancel'),
                     onPressed: () {

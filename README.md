@@ -1,16 +1,14 @@
-# garments_app
-
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Garments App for BM Garments 
+- Garments Stock 
+- Garments Product List
+- Staff List
+- Partners List
+- Staff Create Account
+- Staff List Account
+- Partners Create Account
+- Delete Account
+- Staff Salary 
+- Staff Salary List
+![Screenshot](Screenshot_20240113-014920.jpg)
+![Screenshot](Screenshot_20240113-014925.jpg)
+![Screenshot](Screenshot_20240113-015019.jpg)

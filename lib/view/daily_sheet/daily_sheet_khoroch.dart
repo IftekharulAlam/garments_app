@@ -476,7 +476,7 @@ class _DailySheetKhorochPageState extends State<DailySheetKhorochPage> {
                                               5, 0, 5, 0),
                                           child: ElevatedButton(
                                             style: ElevatedButton.styleFrom(
-                                              primary: Colors.blue,
+                                              backgroundColor: Colors.blue,
                                             ),
                                             child: const Text('Submit'),
                                             onPressed: () {
@@ -493,7 +493,7 @@ class _DailySheetKhorochPageState extends State<DailySheetKhorochPage> {
                                               5, 0, 5, 0),
                                           child: ElevatedButton(
                                             style: ElevatedButton.styleFrom(
-                                              primary: Colors.green,
+                                              backgroundColor: Colors.green,
                                             ),
                                             child: const Text('Cancel'),
                                             onPressed: () {
@@ -518,7 +518,7 @@ class _DailySheetKhorochPageState extends State<DailySheetKhorochPage> {
                   padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      primary: Colors.green,
+                      backgroundColor: Colors.green,
                     ),
                     child: const Text('Cancel'),
                     onPressed: () {
