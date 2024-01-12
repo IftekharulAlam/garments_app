@@ -9,6 +9,6 @@ Garments App for BM Garments
 - Delete Account
 - Staff Salary 
 - Staff Salary List
-![Screenshot](Screenshot_20240113-014920.jpg)
-![Screenshot](Screenshot_20240113-014925.jpg)
-![Screenshot](Screenshot_20240113-015019.jpg)
+![Screenshot](screenshots/Screenshot_20240113-014920.jpg)
+![Screenshot](screenshots/Screenshot_20240113-014925.jpg)
+![Screenshot](screenshots/Screenshot_20240113-015019.jpg)
