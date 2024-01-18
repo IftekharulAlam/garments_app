@@ -124,3 +124,22 @@ class Staff {
     staffName = json['Name'];
   }
 }
+
+class DailySheetJoma {
+  DailySheetJoma({
+    required this.item,
+    required this.amount,
+  });
+  final String item;
+  final int amount;
+
+  factory DailySheetJoma.fromJson(Map<String, dynamic> json) => DailySheetJoma(
+        item: json["item"],
+        amount: json["amount"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "item": item,
+        "amount": amount,
+      };
+}

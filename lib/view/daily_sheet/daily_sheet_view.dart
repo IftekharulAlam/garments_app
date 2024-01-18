@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -6,39 +8,33 @@ import 'package:garments_app/controller/controller.dart';
 import 'package:http/http.dart' as http;
 
 class DailySheetViewPage extends StatefulWidget {
-  const DailySheetViewPage({super.key});
+  String date;
+  DailySheetViewPage({super.key, required this.date});
 
   @override
   State<DailySheetViewPage> createState() => _DailySheetViewPageState();
 }
 
 class _DailySheetViewPageState extends State<DailySheetViewPage> {
-  Future login(String name, String password, String userType) async {
-    String finalUrl = "http://$mydeviceIP:8000/login";
+  Future getJomaDataList(String date) async {
+    String finalUrl = "http://$mydeviceIP:8000/getJomaDataList";
     var url = Uri.parse(finalUrl);
-    var response = await http.post(url,
-        body: {"name": name, "password": password, "userType": userType});
+    http.Response response = await http.post(url, body: {
+      "date": date,
+    });
 
-    var data = json.decode(response.body);
-
-    if (data[0]["message"] == "Wrong") {
+    if (response.statusCode == 200) {
       Fluttertoast.showToast(
-          msg: "Login Unsuccessful",
+          msg: "Update Successful",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.CENTER,
           timeInSecForIosWeb: 1,
           backgroundColor: Colors.red,
           textColor: Colors.white,
           fontSize: 16.0);
+      return jsonDecode(response.body);
     } else {
-      Fluttertoast.showToast(
-          msg: "Login successful",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0);
+      throw Exception("Error loading data");
     }
   }
 
@@ -92,41 +88,14 @@ class _DailySheetViewPageState extends State<DailySheetViewPage> {
         padding: const EdgeInsets.all(10),
         child: ListView(
           children: <Widget>[
+            Center(
+                child: Text(
+              'Date :${widget.date}',
+              style: const TextStyle(fontSize: 20),
+            )),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.all(10),
-                  child: const Text(
-                    'Date :',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                ),
-                Container(
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.all(10),
-                  child: const Text(
-                    'Joma :',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(
-              child: DataTable(columns: _createColumns(), rows: _createRows()),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.all(10),
-                  child: const Text(
-                    'Date :',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                ),
                 Container(
                   alignment: Alignment.center,
                   padding: const EdgeInsets.all(10),

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:garments_app/controller/controller.dart';
 import 'package:garments_app/view/daily_sheet/daily_sheet_add.dart';
 import 'package:garments_app/view/daily_sheet/daily_sheet_khoroch.dart';
+import 'package:garments_app/view/daily_sheet/daily_sheet_view.dart';
 
 import 'package:http/http.dart' as http;
 
@@ -95,7 +96,12 @@ class _DailySheetPageState extends State<DailySheetPage> {
                       padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                       itemCount: unis.length,
                       itemBuilder: (context, index) => GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>  DailySheetViewPage(date :unis[index]["date"])));
+                        },
                         child: Card(
                           child: ListTile(
                             title: Row(
