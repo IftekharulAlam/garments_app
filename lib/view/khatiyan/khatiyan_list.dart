@@ -6,6 +6,7 @@ import 'package:garments_app/view/khatiyan/khatiyan_view.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class KhatiyanListPage extends StatefulWidget {
   const KhatiyanListPage({super.key});
@@ -15,11 +16,20 @@ class KhatiyanListPage extends StatefulWidget {
 }
 
 class _KhatiyanListPageState extends State<KhatiyanListPage> {
-  Future createKhatiyan(String khatiyanName) async {
+  String? datetime;
+  @override
+  void initState() {
+    datetime = DateFormat("dd-MM-yyyy").format(DateTime.now());
+
+    super.initState();
+  }
+
+  Future createKhatiyan(String khatiyanName, String datetime) async {
     String finalUrl = "http://$mydeviceIP:8000/createKhatiyan";
     var url = Uri.parse(finalUrl);
     http.Response response = await http.post(url, body: {
       "khatiyanName": khatiyanName,
+      "date": datetime,
     });
 
     if (response.statusCode == 200) {
@@ -110,7 +120,8 @@ class _KhatiyanListPageState extends State<KhatiyanListPage> {
                                         textColor: Colors.white,
                                         fontSize: 16.0);
                                   } else {
-                                    createKhatiyan(khatiyanName.text);
+                                    createKhatiyan(
+                                        khatiyanName.text, datetime!);
                                     khatiyanName.text = "";
                                     Navigator.of(context).pop();
                                   }

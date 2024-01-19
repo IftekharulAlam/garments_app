@@ -52,13 +52,15 @@ Future<GarmentsApp> getStaffKhatiyanListmy() async {
   }
 }
 
-Future<DailySheetJoma> fetchDate() async {
-  http.Response response = await http.get(
-    Uri.parse("http://$mydeviceIP:8000/getStaffKhatiyanList"),
-  );
+Future<List> fetchDate(String date) async {
+  String finalUrl = "http://$mydeviceIP:8000/getJomaDataList";
+  var url = Uri.parse(finalUrl);
+  http.Response response = await http.post(url, body: {
+    "date": date,
+  });
 
   if (response.statusCode == 200) {
-    return DailySheetJoma.fromJson(jsonDecode(response.body));
+    return DailySheetJoma.fromJson(jsonDecode(response.body)) as List;
   } else {
     throw Exception("Error loading data");
   }

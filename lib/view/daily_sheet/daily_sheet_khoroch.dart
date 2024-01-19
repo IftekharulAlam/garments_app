@@ -228,7 +228,7 @@ class _DailySheetKhorochPageState extends State<DailySheetKhorochPage> {
                 Expanded(
                   child: Container(
                     height: 50,
-                    padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                     child: ElevatedButton(
                       child: const Text('Add'),
                       onPressed: () {
