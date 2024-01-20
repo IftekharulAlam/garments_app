@@ -266,6 +266,7 @@ class _DailySheetAddPageState extends State<DailySheetAddPage> {
                           AsyncSnapshot<GarmentsApp> sn) {
                         if (sn.hasData) {
                           return DropdownButton<Khatiyan>(
+                             isExpanded: true,
                             items: sn.data!.khatiyanList.map((khatiyanList) {
                               return DropdownMenuItem<Khatiyan>(
                                 value: khatiyanList,

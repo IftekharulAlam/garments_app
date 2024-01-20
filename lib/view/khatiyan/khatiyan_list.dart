@@ -171,7 +171,10 @@ class _KhatiyanListPageState extends State<KhatiyanListPage> {
                             title: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text("${unis[index]["khatiyanName"]}"),
+                                SizedBox(
+                                  width: 200,
+                                  child: Text("${unis[index]["khatiyanName"]}"),
+                                ),
                                 IconButton(
                                     onPressed: () {},
                                     icon: const Icon(Icons.edit))

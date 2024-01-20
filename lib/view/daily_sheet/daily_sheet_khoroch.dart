@@ -269,6 +269,7 @@ class _DailySheetKhorochPageState extends State<DailySheetKhorochPage> {
                           AsyncSnapshot<GarmentsApp> sn) {
                         if (sn.hasData) {
                           return DropdownButton<Khatiyan>(
+                             isExpanded: true,
                             items: sn.data!.khatiyanList.map((khatiyanList) {
                               return DropdownMenuItem<Khatiyan>(
                                 value: khatiyanList,
@@ -296,9 +297,10 @@ class _DailySheetKhorochPageState extends State<DailySheetKhorochPage> {
                   ),
                 ),
                 Expanded(
-                  flex: 2,
+                  flex: 1,
                   child: Container(
                     height: 50,
+                  
                     padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                     child: TextField(
                       controller: khatiyanAmount,
@@ -309,23 +311,26 @@ class _DailySheetKhorochPageState extends State<DailySheetKhorochPage> {
                     ),
                   ),
                 ),
-                Container(
-                  height: 50,
-                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                  child: ElevatedButton(
-                    child: const Text('Add'),
-                    onPressed: () {
-                      setState(() {
-                        if (khatiyanAmount.text.isEmpty) {
-                        } else {
-                          int available = int.parse(khatiyanAmount.text);
-                          totalAmount += available;
-                          listOFItem.add(_selected!.khatiyanName.toString());
-                          listOFAmount.add(khatiyanAmount.text);
-                          khatiyanAmount.text = "";
-                        }
-                      });
-                    },
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    height: 50,
+                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    child: ElevatedButton(
+                      child: const Text('Add'),
+                      onPressed: () {
+                        setState(() {
+                          if (khatiyanAmount.text.isEmpty) {
+                          } else {
+                            int available = int.parse(khatiyanAmount.text);
+                            totalAmount += available;
+                            listOFItem.add(_selected!.khatiyanName.toString());
+                            listOFAmount.add(khatiyanAmount.text);
+                            khatiyanAmount.text = "";
+                          }
+                        });
+                      },
+                    ),
                   ),
                 ),
               ],
@@ -350,6 +355,7 @@ class _DailySheetKhorochPageState extends State<DailySheetKhorochPage> {
                           AsyncSnapshot<GarmentsApp> sn) {
                         if (sn.hasData) {
                           return DropdownButton<Staff>(
+                             isExpanded: true,
                             items: sn.data!.staffList.map((staffList) {
                               return DropdownMenuItem<Staff>(
                                 value: staffList,
