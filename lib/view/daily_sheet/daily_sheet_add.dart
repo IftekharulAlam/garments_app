@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -18,30 +20,30 @@ class _DailySheetAddPageState extends State<DailySheetAddPage> {
   Khatiyan? _selected;
   String? datetime;
   int totalAmount = 0;
-  Future createDailysheetJoma(List<String> listOFItem,
-      List<String> listOFAmount, String datetime) async {
+  Future createDailysheetJoma(
+      List<DailySheetJoma> listOfData, String datetime) async {
     String finalUrl = "http://$mydeviceIP:8000/createDailysheetJoma";
+    String jsonOfListOfData = jsonEncode(listOfData);
     var url = Uri.parse(finalUrl);
-    for (int x = 0; x < listOFItem.length; x++) {
-      http.Response response;
-      response = await http.post(url, body: {
-        "datetime": datetime.toString(),
-        "listOFItem": listOFItem[x],
-        "listOFAmount": listOFAmount[x],
-      });
-      if (response.statusCode == 200) {
-        Fluttertoast.showToast(
-            msg: "Update Successful",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.CENTER,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Colors.red,
-            textColor: Colors.white,
-            fontSize: 16.0);
-      } else {
-        throw Exception("Error loading data");
-      }
+
+    http.Response response;
+    response = await http.post(url, body: {
+      "datetime": datetime.toString(),
+      "listOFItem": jsonOfListOfData
+    });
+    if (response.statusCode == 200) {
+      Fluttertoast.showToast(
+          msg: "Update Successful",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    } else {
+      throw Exception("Error loading data");
     }
+
     setState(() {
       listOFAmount.clear();
       listOFItem.clear();
@@ -49,6 +51,8 @@ class _DailySheetAddPageState extends State<DailySheetAddPage> {
       Navigator.pop(context);
     });
   }
+
+  List<DailySheetJoma> myList = [];
 
   List<String> listOFItem = [];
   List<String> listOFAmount = [];
@@ -111,6 +115,9 @@ class _DailySheetAddPageState extends State<DailySheetAddPage> {
                                     setState(() {
                                       listOFItem[i] = editFromListItem.text;
                                       listOFAmount[i] = editFromListAmount.text;
+                                      myList[i] = DailySheetJoma(
+                                          item: editFromListItem.text,
+                                          amount: editFromListAmount.text);
                                       Navigator.pop(context);
                                     });
                                   },
@@ -141,6 +148,7 @@ class _DailySheetAddPageState extends State<DailySheetAddPage> {
                     totalAmount -= available;
                     listOFItem.removeAt(i);
                     listOFAmount.removeAt(i);
+                    myList.removeAt(i);
                   });
                 }),
           ),
@@ -232,6 +240,8 @@ class _DailySheetAddPageState extends State<DailySheetAddPage> {
                         setState(() {
                           if (name.text.isEmpty && amount.text.isEmpty) {
                           } else {
+                            myList.add(DailySheetJoma(
+                                item: name.text, amount: amount.text));
                             int available = int.parse(amount.text);
                             totalAmount += available;
                             listOFItem.add(name.text);
@@ -266,7 +276,7 @@ class _DailySheetAddPageState extends State<DailySheetAddPage> {
                           AsyncSnapshot<GarmentsApp> sn) {
                         if (sn.hasData) {
                           return DropdownButton<Khatiyan>(
-                             isExpanded: true,
+                            isExpanded: true,
                             items: sn.data!.khatiyanList.map((khatiyanList) {
                               return DropdownMenuItem<Khatiyan>(
                                 value: khatiyanList,
@@ -317,6 +327,9 @@ class _DailySheetAddPageState extends State<DailySheetAddPage> {
                       setState(() {
                         if (khatiyanAmount.text.isEmpty) {
                         } else {
+                          myList.add(DailySheetJoma(
+                              item: _selected!.khatiyanName.toString(),
+                              amount: khatiyanAmount.text));
                           int available = int.parse(khatiyanAmount.text);
                           totalAmount += available;
                           listOFItem.add(_selected!.khatiyanName.toString());
@@ -397,8 +410,8 @@ class _DailySheetAddPageState extends State<DailySheetAddPage> {
                                               ),
                                               child: const Text('Submit'),
                                               onPressed: () {
-                                                createDailysheetJoma(listOFItem,
-                                                    listOFAmount, datetime!);
+                                                createDailysheetJoma(
+                                                    myList, datetime!);
                                               },
                                             ),
                                           ),

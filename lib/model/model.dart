@@ -131,14 +131,14 @@ class DailySheetJoma {
     required this.amount,
   });
   final String item;
-  final int amount;
+  final String amount;
 
   factory DailySheetJoma.fromJson(Map<String, dynamic> json) => DailySheetJoma(
         item: json["item"],
         amount: json["amount"],
       );
 
-  Map<String, dynamic> toJson() => {
+  Map<String, String> toJson() => {
         "item": item,
         "amount": amount,
       };

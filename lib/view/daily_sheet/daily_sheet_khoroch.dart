@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 // import 'package:fluttertoast/fluttertoast.dart';
@@ -20,30 +22,30 @@ class _DailySheetKhorochPageState extends State<DailySheetKhorochPage> {
   Staff? _selected2;
   String? datetime;
   int totalAmount = 0;
-  Future createDailysheetKhoroch(List<String> listOFItem,
-      List<String> listOFAmount, String datetime) async {
+  Future createDailysheetKhoroch(
+      List<DailySheetJoma> listOfData, String datetime) async {
     String finalUrl = "http://$mydeviceIP:8000/createDailysheetKhoroch";
+    String jsonOfListOfData = jsonEncode(listOfData);
     var url = Uri.parse(finalUrl);
-    for (int x = 0; x < listOFItem.length; x++) {
-      late http.Response response;
-      response = await http.post(url, body: {
-        "datetime": datetime.toString(),
-        "listOFItem": listOFItem[x],
-        "listOFAmount": listOFAmount[x],
-      });
-      if (response.statusCode == 200) {
-        Fluttertoast.showToast(
-            msg: "Update Successful",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.CENTER,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Colors.red,
-            textColor: Colors.white,
-            fontSize: 16.0);
-      } else {
-        throw Exception("Error loading data");
-      }
+
+    late http.Response response;
+    response = await http.post(url, body: {
+      "datetime": datetime.toString(),
+      "listOFItem": jsonOfListOfData
+    });
+    if (response.statusCode == 200) {
+      Fluttertoast.showToast(
+          msg: "Update Successful",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    } else {
+      throw Exception("Error loading data");
     }
+
     setState(() {
       listOFAmount.clear();
       listOFItem.clear();
@@ -52,6 +54,7 @@ class _DailySheetKhorochPageState extends State<DailySheetKhorochPage> {
     });
   }
 
+  List<DailySheetJoma> myList = [];
   List<String> listOFItem = [];
   List<String> listOFAmount = [];
   TextEditingController name = TextEditingController();
@@ -114,6 +117,9 @@ class _DailySheetKhorochPageState extends State<DailySheetKhorochPage> {
                                     setState(() {
                                       listOFItem[i] = editFromListItem.text;
                                       listOFAmount[i] = editFromListAmount.text;
+                                      myList[i] = DailySheetJoma(
+                                          item: editFromListItem.text,
+                                          amount: editFromListAmount.text);
                                       Navigator.pop(context);
                                     });
                                   },
@@ -144,6 +150,7 @@ class _DailySheetKhorochPageState extends State<DailySheetKhorochPage> {
                     totalAmount -= available;
                     listOFItem.removeAt(i);
                     listOFAmount.removeAt(i);
+                    myList.removeAt(i);
                   });
                 }),
           ),
@@ -235,6 +242,8 @@ class _DailySheetKhorochPageState extends State<DailySheetKhorochPage> {
                         setState(() {
                           if (name.text.isEmpty && amount.text.isEmpty) {
                           } else {
+                            myList.add(DailySheetJoma(
+                                item: name.text, amount: amount.text));
                             int available = int.parse(amount.text);
                             totalAmount += available;
                             listOFItem.add(name.text);
@@ -269,7 +278,7 @@ class _DailySheetKhorochPageState extends State<DailySheetKhorochPage> {
                           AsyncSnapshot<GarmentsApp> sn) {
                         if (sn.hasData) {
                           return DropdownButton<Khatiyan>(
-                             isExpanded: true,
+                            isExpanded: true,
                             items: sn.data!.khatiyanList.map((khatiyanList) {
                               return DropdownMenuItem<Khatiyan>(
                                 value: khatiyanList,
@@ -300,7 +309,6 @@ class _DailySheetKhorochPageState extends State<DailySheetKhorochPage> {
                   flex: 1,
                   child: Container(
                     height: 50,
-                  
                     padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                     child: TextField(
                       controller: khatiyanAmount,
@@ -322,6 +330,9 @@ class _DailySheetKhorochPageState extends State<DailySheetKhorochPage> {
                         setState(() {
                           if (khatiyanAmount.text.isEmpty) {
                           } else {
+                            myList.add(DailySheetJoma(
+                                item: _selected!.khatiyanName.toString(),
+                                amount: khatiyanAmount.text));
                             int available = int.parse(khatiyanAmount.text);
                             totalAmount += available;
                             listOFItem.add(_selected!.khatiyanName.toString());
@@ -355,7 +366,7 @@ class _DailySheetKhorochPageState extends State<DailySheetKhorochPage> {
                           AsyncSnapshot<GarmentsApp> sn) {
                         if (sn.hasData) {
                           return DropdownButton<Staff>(
-                             isExpanded: true,
+                            isExpanded: true,
                             items: sn.data!.staffList.map((staffList) {
                               return DropdownMenuItem<Staff>(
                                 value: staffList,
@@ -405,6 +416,9 @@ class _DailySheetKhorochPageState extends State<DailySheetKhorochPage> {
                       setState(() {
                         if (staffAmount.text.isEmpty) {
                         } else {
+                          myList.add(DailySheetJoma(
+                              item: _selected2!.staffName.toString(),
+                              amount: staffAmount.text));
                           int available = int.parse(staffAmount.text);
                           totalAmount += available;
                           listOFItem.add(_selected2!.staffName.toString());
@@ -487,9 +501,7 @@ class _DailySheetKhorochPageState extends State<DailySheetKhorochPage> {
                                             child: const Text('Submit'),
                                             onPressed: () {
                                               createDailysheetKhoroch(
-                                                  listOFItem,
-                                                  listOFAmount,
-                                                  datetime!);
+                                                  myList, datetime!);
                                             },
                                           ),
                                         ),
