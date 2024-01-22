@@ -19,18 +19,15 @@ class _DailySheetAddPageState extends State<DailySheetAddPage> {
   Future<GarmentsApp>? _future;
   Khatiyan? _selected;
   String? datetime;
+  String status = "pending";
   int totalAmount = 0;
-  Future createDailysheetJoma(
-      List<DailySheetJoma> listOfData, String datetime) async {
+  Future createDailysheetJoma(List<DailySheetJoma> listOfData) async {
     String finalUrl = "http://$mydeviceIP:8000/createDailysheetJoma";
     String jsonOfListOfData = jsonEncode(listOfData);
     var url = Uri.parse(finalUrl);
 
     http.Response response;
-    response = await http.post(url, body: {
-      "datetime": datetime.toString(),
-      "listOFItem": jsonOfListOfData
-    });
+    response = await http.post(url, body: {"listOFItem": jsonOfListOfData});
     if (response.statusCode == 200) {
       Fluttertoast.showToast(
           msg: "Update Successful",
@@ -117,7 +114,9 @@ class _DailySheetAddPageState extends State<DailySheetAddPage> {
                                       listOFAmount[i] = editFromListAmount.text;
                                       myList[i] = DailySheetJoma(
                                           item: editFromListItem.text,
-                                          amount: editFromListAmount.text);
+                                          amount: editFromListAmount.text,
+                                          date: datetime!,
+                                          status: status);
                                       Navigator.pop(context);
                                     });
                                   },
@@ -241,7 +240,10 @@ class _DailySheetAddPageState extends State<DailySheetAddPage> {
                           if (name.text.isEmpty && amount.text.isEmpty) {
                           } else {
                             myList.add(DailySheetJoma(
-                                item: name.text, amount: amount.text));
+                                item: name.text,
+                                amount: amount.text,
+                                date: datetime.toString(),
+                                status: status));
                             int available = int.parse(amount.text);
                             totalAmount += available;
                             listOFItem.add(name.text);
@@ -329,7 +331,9 @@ class _DailySheetAddPageState extends State<DailySheetAddPage> {
                         } else {
                           myList.add(DailySheetJoma(
                               item: _selected!.khatiyanName.toString(),
-                              amount: khatiyanAmount.text));
+                              amount: khatiyanAmount.text,
+                              date: datetime!,
+                              status: status));
                           int available = int.parse(khatiyanAmount.text);
                           totalAmount += available;
                           listOFItem.add(_selected!.khatiyanName.toString());
@@ -410,8 +414,7 @@ class _DailySheetAddPageState extends State<DailySheetAddPage> {
                                               ),
                                               child: const Text('Submit'),
                                               onPressed: () {
-                                                createDailysheetJoma(
-                                                    myList, datetime!);
+                                                createDailysheetJoma(myList);
                                               },
                                             ),
                                           ),
