@@ -24,21 +24,10 @@ class _BillPageState extends State<BillPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(title: const Text("BM Garments")),
+      appBar: AppBar(title: const Text("Bill")),
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: <Widget>[
-          Container(
-            alignment: Alignment.center,
-            padding: const EdgeInsets.all(10),
-            child: const Text(
-              'Bill',
-              style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 30),
-            ),
-          ),
           Container(
             height: 50,
             padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),

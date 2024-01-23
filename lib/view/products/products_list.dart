@@ -105,20 +105,9 @@ class _ProductsListPageState extends State<ProductsListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(title: const Text("BM Garments")),
+      appBar: AppBar(title: const Text("Products")),
       body: Column(
         children: <Widget>[
-          Container(
-            alignment: Alignment.center,
-            padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-            child: const Text(
-              'Products',
-              style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 30),
-            ),
-          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

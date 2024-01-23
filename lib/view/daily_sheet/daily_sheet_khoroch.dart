@@ -46,6 +46,7 @@ class _DailySheetKhorochPageState extends State<DailySheetKhorochPage> {
     setState(() {
       listOFAmount.clear();
       listOFItem.clear();
+      myList.clear();
       totalAmount = 0;
       Navigator.of(context).pop();
     });
@@ -506,8 +507,7 @@ class _DailySheetKhorochPageState extends State<DailySheetKhorochPage> {
                                             ),
                                             child: const Text('Submit'),
                                             onPressed: () {
-                                              createDailysheetKhoroch(
-                                                  myList);
+                                              createDailysheetKhoroch(myList);
                                             },
                                           ),
                                         ),

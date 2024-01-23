@@ -42,6 +42,7 @@ class _DailySheetAddPageState extends State<DailySheetAddPage> {
     }
 
     setState(() {
+      myList.clear();
       listOFAmount.clear();
       listOFItem.clear();
       totalAmount = 0;

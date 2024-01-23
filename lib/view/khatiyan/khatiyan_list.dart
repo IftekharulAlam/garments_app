@@ -67,20 +67,9 @@ class _KhatiyanListPageState extends State<KhatiyanListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(title: const Text("BM Garments")),
+      appBar: AppBar(title: const Text("Khatiyan")),
       body: Column(
         children: <Widget>[
-          Container(
-            alignment: Alignment.center,
-            padding: const EdgeInsets.all(5),
-            child: const Text(
-              'Khatiyan',
-              style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 30),
-            ),
-          ),
           Container(
             height: 50,
             padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),

@@ -25,7 +25,7 @@ class _BillCreatePageState extends State<BillCreatePage> {
   List<String> listOFProductQuantity = [];
   List<int> listOFProductAmount = [];
 
-  static const String _title = 'BM Garments';
+  static const String _title = 'Create Bill';
   String? datetime;
   @override
   void initState() {

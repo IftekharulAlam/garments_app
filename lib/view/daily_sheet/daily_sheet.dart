@@ -34,20 +34,9 @@ class _DailySheetPageState extends State<DailySheetPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(title: const Text("BM Garments")),
+      appBar: AppBar(title: const Text("Daily Sheet")),
       body: Column(
         children: <Widget>[
-          Container(
-            alignment: Alignment.center,
-            padding: const EdgeInsets.all(10),
-            child: const Text(
-              'Daily Sheet',
-              style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 25),
-            ),
-          ),
           Row(
             children: [
               Container(
@@ -100,7 +89,8 @@ class _DailySheetPageState extends State<DailySheetPage> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) =>  DailySheetViewPage(date :unis[index]["date"])));
+                                  builder: (context) => DailySheetViewPage(
+                                      date: unis[index]["date"])));
                         },
                         child: Card(
                           child: ListTile(

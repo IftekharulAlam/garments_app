@@ -17,6 +17,21 @@ class DailySheetViewPage extends StatefulWidget {
 }
 
 class _DailySheetViewPageState extends State<DailySheetViewPage> {
+  Future approveDeclineDailySheet(String date, String status) async {
+    String finalUrl = "http://$mydeviceIP:8000/approveDeclineDailySheet";
+    var url = Uri.parse(finalUrl);
+    http.Response response = await http.post(url, body: {
+      "date": date,
+      "status": status,
+    });
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception("Error loading data");
+    }
+  }
+
   Future getJomaDataList(String date) async {
     String finalUrl = "http://$mydeviceIP:8000/getJomaDataList";
     var url = Uri.parse(finalUrl);
@@ -49,17 +64,12 @@ class _DailySheetViewPageState extends State<DailySheetViewPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Daily Sheet"),
+        title: Text("Date :${widget.date}"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(10),
-        child: ListView(
+        child: Column(
           children: <Widget>[
-            Center(
-                child: Text(
-              'Date :${widget.date}',
-              style: const TextStyle(fontSize: 20),
-            )),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -148,6 +158,31 @@ class _DailySheetViewPageState extends State<DailySheetViewPage> {
                 },
               ),
             ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  height: 50,
+                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                  child: ElevatedButton(
+                    child: const Text('Approve'),
+                    onPressed: () {
+                      approveDeclineDailySheet(widget.date, "Approve");
+                    },
+                  ),
+                ),
+                Container(
+                  height: 50,
+                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                  child: ElevatedButton(
+                    child: const Text('Decline'),
+                    onPressed: () {
+                      approveDeclineDailySheet(widget.date, "Decline");
+                    },
+                  ),
+                ),
+              ],
+            )
           ],
         ),
       ),
