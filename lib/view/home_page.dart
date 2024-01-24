@@ -59,13 +59,13 @@ class _HomePageState extends State<HomePage> {
                   child: Image.asset('assets/bmlogo.jpg'),
                 ),
                 ListTile(
-                  title: Center(child: Text("Profile")),
+                  title: Center(child: Text("BM Garments")),
                 ),
                 ListTile(
-                  title: Center(child: Text("Daily Sheet")),
+                  title: Center(child: Text("Sabbir Sheikh")),
                 ),
                 ListTile(
-                  title: Center(child: Text("Khatiayn")),
+                  title: Center(child: Text("Manager")),
                 ),
               ],
             ),

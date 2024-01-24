@@ -22,19 +22,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
   TextEditingController phone = TextEditingController();
   TextEditingController nid = TextEditingController();
   TextEditingController password = TextEditingController();
-  TextEditingController fathersName = TextEditingController();
-  TextEditingController mothersName = TextEditingController();
+
   TextEditingController salary = TextEditingController();
-  Future register(
-      String name,
-      String address,
-      String phone,
-      String nid,
-      String password,
-      String fathersName,
-      String mothersName,
-      String salary,
-      String type) async {
+  Future register(String name, String address, String phone, String nid,
+      String password, String salary, String type) async {
     http.Response response = await http
         .post(Uri.parse("http://$mydeviceIP:8000/registerUser"), body: {
       "name": name,
@@ -42,8 +33,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
       "phone": phone,
       "nid": nid,
       "password": password,
-      "fathersName": fathersName,
-      "mothersName": mothersName,
       "salary": salary,
       "type": type,
     });
@@ -72,20 +61,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
         child: ListView(
           children: <Widget>[
             Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.all(10),
-                child: const Text(
-                  'BM Garments',
-                  style: TextStyle(
-                      color: Colors.blue,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 30),
-                )),
-            Container(
               alignment: Alignment.center,
-              padding: const EdgeInsets.all(10),
               child: const Text(
-                'User Registration',
+                'Registration',
                 style: TextStyle(fontSize: 20),
               ),
             ),
@@ -143,26 +121,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
             Container(
               padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
               child: TextField(
-                controller: fathersName,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Fathers Name',
-                ),
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-              child: TextField(
-                controller: mothersName,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Mothers Name',
-                ),
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-              child: TextField(
                 controller: salary,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
@@ -171,26 +129,40 @@ class _RegistrationPageState extends State<RegistrationPage> {
               ),
             ),
             Center(
-              child: Container(
-                padding: const EdgeInsets.all(10),
-                child: DropdownButton(
-                  underline: Container(),
-                  style: const TextStyle(
-                      //te
-                      color: Colors.black, //Font color
-                      fontSize: 18 //font size on dropdown button
-                      ),
-                  value: dropdownvalue,
-                  icon: const Icon(Icons.keyboard_arrow_down),
-                  items: items.map((String items) {
-                    return DropdownMenuItem(value: items, child: Text(items));
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      dropdownvalue = newValue!;
-                    });
-                  },
-                ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.all(10),
+                    child: const Text(
+                      'User Type',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    child: DropdownButton(
+                      underline: Container(),
+                      style: const TextStyle(
+                          //te
+                          color: Colors.black, //Font color
+                          fontSize: 18 //font size on dropdown button
+                          ),
+                      value: dropdownvalue,
+                      icon: const Icon(Icons.keyboard_arrow_down),
+                      items: items.map((String items) {
+                        return DropdownMenuItem(
+                            value: items, child: Text(items));
+                      }).toList(),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          dropdownvalue = newValue!;
+                        });
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
             Container(
@@ -199,16 +171,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
               child: ElevatedButton(
                 child: const Text('Register'),
                 onPressed: () {
-                  register(
-                      name.text,
-                      address.text,
-                      phone.text,
-                      nid.text,
-                      password.text,
-                      fathersName.text,
-                      mothersName.text,
-                      salary.text,
-                      dropdownvalue);
+                  register(name.text, address.text, phone.text, nid.text,
+                      password.text, salary.text, dropdownvalue);
                 },
               ),
             ),
