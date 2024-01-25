@@ -85,8 +85,9 @@ class _KhatiyanViewPageState extends State<KhatiyanViewPage> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text("${unis[index]["date"]}"),
-                                Text("${unis[index]["totalJoma"]}"),
-                                Text("${unis[index]["totalKhoroch"]}"),
+                                Text("${unis[index]["joma"]}"),
+                                Text("${unis[index]["khoroch"]}"),
+                                Text("${unis[index]["balance"]}"),
                               ],
                             ),
                           ),

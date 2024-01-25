@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:garments_app/controller/controller.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class RegistrationPage extends StatefulWidget {
   const RegistrationPage({super.key});
@@ -17,6 +18,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
   String dropdownvalue = 'Owner';
   var items = ['Owner', 'Manager', 'Staff', 'Designer'];
   static const String _title = 'BM Garments';
+  String? datetime;
   TextEditingController name = TextEditingController();
   TextEditingController address = TextEditingController();
   TextEditingController phone = TextEditingController();
@@ -25,13 +27,14 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
   TextEditingController salary = TextEditingController();
   Future register(String name, String address, String phone, String nid,
-      String password, String salary, String type) async {
+      String date, String password, String salary, String type) async {
     http.Response response = await http
         .post(Uri.parse("http://$mydeviceIP:8000/registerUser"), body: {
       "name": name,
       "address": address,
       "phone": phone,
       "nid": nid,
+      "date": date,
       "password": password,
       "salary": salary,
       "type": type,
@@ -50,6 +53,13 @@ class _RegistrationPageState extends State<RegistrationPage> {
     } else {
       throw Exception("Error loading data");
     }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    datetime = DateFormat("dd-MM-yyyy").format(DateTime.now());
+    super.initState();
   }
 
   @override
@@ -172,7 +182,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 child: const Text('Register'),
                 onPressed: () {
                   register(name.text, address.text, phone.text, nid.text,
-                      password.text, salary.text, dropdownvalue);
+                      datetime!, password.text, salary.text, dropdownvalue);
                 },
               ),
             ),
