@@ -1,7 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:garments_app/controller/controller.dart';
+import 'package:garments_app/controller/garmentsApp.dart';
+
 import 'package:garments_app/view/khatiyan/khatiyan_view.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 

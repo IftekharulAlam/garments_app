@@ -2,9 +2,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:garments_app/controller/party.dart';
+import 'package:garments_app/model/garmentsApp.dart';
+import 'package:garments_app/model/party.dart';
 
-import 'package:garments_app/controller/controller.dart';
-import 'package:garments_app/model/model.dart';
+
 import 'package:garments_app/view/bill/bill_create.dart';
 
 class BillCreateOnePage extends StatefulWidget {

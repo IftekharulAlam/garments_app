@@ -3,8 +3,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:garments_app/controller/controller.dart';
-import 'package:garments_app/model/model.dart';
+import 'package:garments_app/controller/garmentsApp.dart';
+
+import 'package:garments_app/model/khatiyan.dart';
 
 import 'package:http/http.dart' as http;
 
@@ -17,19 +18,6 @@ class KhatiyanViewPage extends StatefulWidget {
 }
 
 class _KhatiyanViewPageState extends State<KhatiyanViewPage> {
-  // Future getKhatiyanDetails(String khatiyanName) async {
-  //   String finalUrl = "http://$mydeviceIP:8000/getKhatiyanDetails";
-  //   var url = Uri.parse(finalUrl);
-  //   http.Response response = await http.post(url, body: {
-  //     "khatiyanName": khatiyanName,
-  //   });
-
-  //   if (response.statusCode == 200) {
-  //     return jsonDecode(response.body);
-  //   } else {
-  //     throw Exception("Error loading data");
-  //   }
-  // }
   Future<List<KhatiyanData>> getKhatiyanDetails(String khatiyanName) async {
     String finalUrl = "http://$mydeviceIP:8000/getKhatiyanDetails";
     var url = Uri.parse(finalUrl);

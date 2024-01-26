@@ -2,7 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:garments_app/controller/controller.dart';
+import 'package:garments_app/controller/garmentsApp.dart';
+
 
 import 'package:garments_app/view/home_page.dart';
 import 'package:garments_app/view/registration_page.dart';

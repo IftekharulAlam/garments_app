@@ -2,8 +2,12 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:garments_app/controller/controller.dart';
-import 'package:garments_app/model/model.dart';
+import 'package:garments_app/controller/garmentsApp.dart';
+import 'package:garments_app/controller/products.dart';
+
+import 'package:garments_app/model/garmentsApp.dart';
+import 'package:garments_app/model/products.dart';
+
 import 'package:garments_app/view/products/product_view.dart';
 
 import 'package:http/http.dart' as http;
