@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:garments_app/controller/garmentsApp.dart';
 
-
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class RegistrationPageParty extends StatefulWidget {
   const RegistrationPageParty({super.key});
@@ -15,6 +15,8 @@ class RegistrationPageParty extends StatefulWidget {
 }
 
 class _RegistrationPagePartyState extends State<RegistrationPageParty> {
+  String? datetime;
+
   static const String _title = 'BM Garments';
 
   TextEditingController ownerName = TextEditingController();
@@ -23,15 +25,21 @@ class _RegistrationPagePartyState extends State<RegistrationPageParty> {
   TextEditingController ownerAddress = TextEditingController();
   TextEditingController shopAddress = TextEditingController();
   TextEditingController shopPhone = TextEditingController();
+  @override
+  void initState() {
+    datetime = DateFormat("dd-MM-yyyy").format(DateTime.now());
+
+    super.initState();
+  }
 
   Future createParty(
-    String ownerName,
-    String shopName,
-    String ownerPhone,
-    String ownerAddress,
-    String shopAddress,
-    String shopPhone,
-  ) async {
+      String ownerName,
+      String shopName,
+      String ownerPhone,
+      String ownerAddress,
+      String shopAddress,
+      String shopPhone,
+      String datetime) async {
     http.Response response = await http
         .post(Uri.parse("http://$mydeviceIP:8000/createParty"), body: {
       "ownerName": ownerName,
@@ -39,7 +47,8 @@ class _RegistrationPagePartyState extends State<RegistrationPageParty> {
       "ownerPhone": ownerPhone,
       "ownerAddress": ownerAddress,
       "shopAddress": shopAddress,
-      "shopPhone": shopPhone
+      "shopPhone": shopPhone,
+      "datetime": datetime
     });
 
     if (response.statusCode == 200) {
@@ -159,13 +168,13 @@ class _RegistrationPagePartyState extends State<RegistrationPageParty> {
                       shopPhone.text.isEmpty) {
                   } else {
                     createParty(
-                      ownerName.text,
-                      shopName.text,
-                      ownerPhone.text,
-                      ownerAddress.text,
-                      shopAddress.text,
-                      shopPhone.text,
-                    );
+                        ownerName.text,
+                        shopName.text,
+                        ownerPhone.text,
+                        ownerAddress.text,
+                        shopAddress.text,
+                        shopPhone.text,
+                        datetime!);
                     ownerName.text = '';
                     shopName.text = '';
                     ownerPhone.text = '';
