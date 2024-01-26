@@ -105,6 +105,27 @@ class PartyKhatiyan {
   }
 }
 
+class KhatiyanData {
+  final String date;
+  final int joma;
+  final int khoroch;
+  final int balance;
+
+  KhatiyanData({
+    required this.date,
+    required this.joma,
+    required this.khoroch,
+    required this.balance,
+  });
+
+  factory KhatiyanData.fromJson(Map<String, dynamic> json) => KhatiyanData(
+        date: json["date"],
+        joma: json["joma"],
+        khoroch: json["khoroch"],
+        balance: json["balance"],
+      );
+}
+
 class Khatiyan {
   late String khatiyanName;
 
@@ -131,7 +152,6 @@ class DailySheetJoma {
     required this.amount,
     required this.date,
     required this.status,
-
   });
   final String item;
   final String amount;
