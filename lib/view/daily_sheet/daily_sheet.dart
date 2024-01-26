@@ -80,6 +80,7 @@ class _DailySheetPageState extends State<DailySheetPage> {
               child: FutureBuilder(
                 future: dailysheetJomaKhorochList(),
                 builder: (BuildContext context, AsyncSnapshot sn) {
+                  print(sn.error);
                   if (sn.hasData) {
                     List unis = sn.data;
                     return ListView.builder(
