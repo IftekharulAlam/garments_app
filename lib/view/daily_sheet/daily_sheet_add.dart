@@ -5,7 +5,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:garments_app/controller/garmentsApp.dart';
 import 'package:garments_app/controller/khatiyan.dart';
 
-
 import 'package:garments_app/model/dailySheet.dart';
 import 'package:garments_app/model/garmentsApp.dart';
 import 'package:garments_app/model/khatiyan.dart';
@@ -118,6 +117,13 @@ class _DailySheetAddPageState extends State<DailySheetAddPage> {
                                     setState(() {
                                       listOFItem[i] = editFromListItem.text;
                                       listOFAmount[i] = editFromListAmount.text;
+                                      for (int i = 0;
+                                          i < listOFAmount.length;
+                                          i++) {
+                                        int available =
+                                            int.parse(listOFAmount[i]);
+                                        totalAmount += available;
+                                      }
                                       myList[i] = DailySheetJoma(
                                           item: editFromListItem.text,
                                           amount: editFromListAmount.text,
@@ -250,12 +256,28 @@ class _DailySheetAddPageState extends State<DailySheetAddPage> {
                                 amount: amount.text,
                                 date: datetime.toString(),
                                 status: status));
-                            int available = int.parse(amount.text);
-                            totalAmount += available;
-                            listOFItem.add(name.text);
-                            listOFAmount.add(amount.text);
-                            name.text = "";
-                            amount.text = "";
+                            if (listOFItem.contains(name.text)) {
+                              int a = listOFItem.indexOf(name.text);
+                              String m = listOFAmount.elementAt(a);
+                              int available = int.parse(m);
+                              int available2 =
+                                  int.parse(amount.text) + available;
+                              listOFAmount[a] = available2.toString();
+                              totalAmount = 0;
+                              for (int i = 0; i < listOFAmount.length; i++) {
+                                int available = int.parse(listOFAmount[i]);
+                                totalAmount += available;
+                              }
+                              name.text = "";
+                              amount.text = "";
+                            } else {
+                              int available = int.parse(amount.text);
+                              totalAmount += available;
+                              listOFItem.add(name.text);
+                              listOFAmount.add(amount.text);
+                              name.text = "";
+                              amount.text = "";
+                            }
                           }
                         });
                       },
@@ -340,11 +362,28 @@ class _DailySheetAddPageState extends State<DailySheetAddPage> {
                               amount: khatiyanAmount.text,
                               date: datetime!,
                               status: status));
-                          int available = int.parse(khatiyanAmount.text);
-                          totalAmount += available;
-                          listOFItem.add(_selected!.khatiyanName.toString());
-                          listOFAmount.add(khatiyanAmount.text);
-                          khatiyanAmount.text = "";
+                          if (listOFItem
+                              .contains(_selected!.khatiyanName.toString())) {
+                            int a = listOFItem
+                                .indexOf(_selected!.khatiyanName.toString());
+                            String m = listOFAmount.elementAt(a);
+                            int available = int.parse(m);
+                            int available2 =
+                                int.parse(khatiyanAmount.text) + available;
+                            listOFAmount[a] = available2.toString();
+                            totalAmount = 0;
+                            for (int i = 0; i < listOFAmount.length; i++) {
+                              int available = int.parse(listOFAmount[i]);
+                              totalAmount += available;
+                            }
+                            khatiyanAmount.text = "";
+                          } else {
+                            int available = int.parse(khatiyanAmount.text);
+                            totalAmount += available;
+                            listOFItem.add(_selected!.khatiyanName.toString());
+                            listOFAmount.add(khatiyanAmount.text);
+                            khatiyanAmount.text = "";
+                          }
                         }
                       });
                     },
