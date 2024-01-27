@@ -65,6 +65,7 @@ class _PartyKhataDetailsState extends State<PartyKhataDetails> {
                   future: getPartyKhatiyanDetails(widget.shopName),
                   builder: (BuildContext context,
                       AsyncSnapshot<List<PartyKhatiyan>> sn) {
+                      
                     if (sn.hasData) {
                       return Container(
                           padding: const EdgeInsets.all(5),
@@ -110,7 +111,7 @@ class DataClass extends StatelessWidget {
               ),
               DataColumn(
                 label: Text(
-                  "BillNo",
+                  "Details",
                   style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                 ),
               ),
@@ -144,7 +145,7 @@ class DataClass extends StatelessWidget {
                       ),
                       DataCell(
                         Text(
-                          '${data.billNo}',
+                          '${data.details}',
                           style: const TextStyle(
                               fontSize: 25, fontWeight: FontWeight.w500),
                         ),

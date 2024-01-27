@@ -112,6 +112,12 @@ class DataClass extends StatelessWidget {
               ),
               DataColumn(
                 label: Text(
+                  "Details",
+                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                ),
+              ),
+              DataColumn(
+                label: Text(
                   "Joma",
                   style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                 ),
@@ -134,6 +140,13 @@ class DataClass extends StatelessWidget {
                       DataCell(
                         Text(
                           data.date,
+                          style: const TextStyle(
+                              fontSize: 25, fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                      DataCell(
+                        Text(
+                          data.details,
                           style: const TextStyle(
                               fontSize: 25, fontWeight: FontWeight.w500),
                         ),

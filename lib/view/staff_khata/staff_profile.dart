@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 
 import 'package:garments_app/controller/garmentsApp.dart';
+import 'package:garments_app/model/staff.dart';
 import 'package:http/http.dart' as http;
 
 class StaffProfile extends StatefulWidget {
@@ -32,7 +33,7 @@ class _StaffProfileState extends State<StaffProfile> {
     }
   }
 
-  Future getKhatiyanDetailsStaff(String staffName) async {
+  Future<List<StaffData>> getKhatiyanDetailsStaff(String staffName) async {
     String finalUrl = "http://$mydeviceIP:8000/getKhatiyanDetailsStaff";
     var url = Uri.parse(finalUrl);
     http.Response response = await http.post(url, body: {
@@ -40,7 +41,11 @@ class _StaffProfileState extends State<StaffProfile> {
     });
 
     if (response.statusCode == 200) {
-      return jsonDecode(response.body);
+      List result = jsonDecode(response.body);
+      List<StaffData> mydata =
+          result.map((e) => StaffData.fromJson(e)).toList();
+
+      return mydata;
     } else {
       throw Exception("Error loading data");
     }
@@ -97,44 +102,18 @@ class _StaffProfileState extends State<StaffProfile> {
               },
             ),
           ),
-          Container(
-            padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-            child: const Card(
-              child: ListTile(
-                title: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text("Date"),
-                    Text("Joma"),
-                    Text("Khoroch"),
-                    Text("Balance"),
-                  ],
-                ),
-              ),
-            ),
-          ),
           Expanded(
             child: Container(
               padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-              child: FutureBuilder(
+              child: FutureBuilder<List<StaffData>>(
                 future: getKhatiyanDetailsStaff(widget.staffName),
-                builder: (BuildContext context, AsyncSnapshot sn) {
+                builder:
+                    (BuildContext context, AsyncSnapshot<List<StaffData>> sn) {
+                
                   if (sn.hasData) {
-                    List unis = sn.data;
-                    return ListView.builder(
-                      itemCount: unis.length,
-                      itemBuilder: (context, index) => Card(
-                        child: ListTile(
-                          title: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text("${unis[index]["Date"]}"),
-                              Text("${unis[index]["Joma"]}"),
-                              Text("${unis[index]["Khoroch"]}"),
-                            ],
-                          ),
-                        ),
-                      ),
+                    return Container(
+                      padding: const EdgeInsets.all(5),
+                      child: DataClass(datalist: sn.data as List<StaffData>),
                     );
                   }
                   if (sn.hasError) {
@@ -148,6 +127,95 @@ class _StaffProfileState extends State<StaffProfile> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class DataClass extends StatelessWidget {
+  final List<StaffData> datalist;
+  const DataClass({super.key, required this.datalist});
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.vertical,
+      child: FittedBox(
+        child: DataTable(
+            sortColumnIndex: 1,
+            showCheckboxColumn: false,
+            border: TableBorder.all(width: 1.0),
+            columns: const [
+              DataColumn(
+                label: Text(
+                  "Date",
+                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                ),
+              ),
+              DataColumn(
+                label: Text(
+                  "Details",
+                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                ),
+              ),
+              DataColumn(
+                label: Text(
+                  "Joma",
+                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                ),
+              ),
+              DataColumn(
+                label: Text(
+                  "Khoroch",
+                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                ),
+              ),
+              DataColumn(
+                label: Text(
+                  "Balance",
+                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                ),
+              )
+            ],
+            rows: datalist
+                .map((data) => DataRow(cells: [
+                      DataCell(
+                        Text(
+                          data.date,
+                          style: const TextStyle(
+                              fontSize: 25, fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                      DataCell(
+                        Text(
+                          '${data.details}',
+                          style: const TextStyle(
+                              fontSize: 25, fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                      DataCell(
+                        Text(
+                          '${data.joma}',
+                          style: const TextStyle(
+                              fontSize: 25, fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                      DataCell(
+                        Text(
+                          '${data.khoroch}',
+                          style: const TextStyle(
+                              fontSize: 25, fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                      DataCell(
+                        Text(
+                          '${data.balance}',
+                          style: const TextStyle(
+                              fontSize: 25, fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                    ]))
+                .toList()),
       ),
     );
   }

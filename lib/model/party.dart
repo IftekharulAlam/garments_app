@@ -27,14 +27,14 @@ class PartyPersonal {
 class PartyKhatiyan {
 
   late String date;
-  late int billNo;
+  late String details;
   late int joma;
   late int khoroch;
   late int balance;
   PartyKhatiyan({
    
     required this.date,
-    required this.billNo,
+    required this.details,
     required this.joma,
     required this.khoroch,
     required this.balance,
@@ -43,7 +43,7 @@ class PartyKhatiyan {
   PartyKhatiyan.fromJson(Map<String, dynamic> json) {
    
     date = json["date"];
-    billNo = json["billNo"];
+    details = json["details"];
     joma = json["joma"];
     khoroch = json["khoroch"];
     balance = json["balance"];

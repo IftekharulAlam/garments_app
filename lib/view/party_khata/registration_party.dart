@@ -22,7 +22,7 @@ class _RegistrationPagePartyState extends State<RegistrationPageParty> {
   TextEditingController ownerName = TextEditingController();
   TextEditingController shopName = TextEditingController();
   TextEditingController ownerPhone = TextEditingController();
-  TextEditingController ownerAddress = TextEditingController();
+
   TextEditingController shopAddress = TextEditingController();
   TextEditingController shopPhone = TextEditingController();
   @override
@@ -32,20 +32,13 @@ class _RegistrationPagePartyState extends State<RegistrationPageParty> {
     super.initState();
   }
 
-  Future createParty(
-      String ownerName,
-      String shopName,
-      String ownerPhone,
-      String ownerAddress,
-      String shopAddress,
-      String shopPhone,
-      String datetime) async {
+  Future createParty(String ownerName, String shopName, String ownerPhone,
+      String shopAddress, String shopPhone, String datetime) async {
     http.Response response = await http
         .post(Uri.parse("http://$mydeviceIP:8000/createParty"), body: {
       "ownerName": ownerName,
       "shopName": shopName,
       "ownerPhone": ownerPhone,
-      "ownerAddress": ownerAddress,
       "shopAddress": shopAddress,
       "shopPhone": shopPhone,
       "datetime": datetime
@@ -126,16 +119,6 @@ class _RegistrationPagePartyState extends State<RegistrationPageParty> {
             Container(
               padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
               child: TextField(
-                controller: ownerAddress,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Owner Address',
-                ),
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-              child: TextField(
                 controller: shopAddress,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
@@ -163,22 +146,15 @@ class _RegistrationPagePartyState extends State<RegistrationPageParty> {
                   if (ownerName.text.isEmpty ||
                       shopName.text.isEmpty ||
                       ownerPhone.text.isEmpty ||
-                      ownerAddress.text.isEmpty ||
                       shopAddress.text.isEmpty ||
                       shopPhone.text.isEmpty) {
                   } else {
-                    createParty(
-                        ownerName.text,
-                        shopName.text,
-                        ownerPhone.text,
-                        ownerAddress.text,
-                        shopAddress.text,
-                        shopPhone.text,
-                        datetime!);
+                    createParty(ownerName.text, shopName.text, ownerPhone.text,
+                        shopAddress.text, shopPhone.text, datetime!);
                     ownerName.text = '';
                     shopName.text = '';
                     ownerPhone.text = '';
-                    ownerAddress.text = '';
+
                     shopAddress.text = '';
                     shopPhone.text = '';
                   }
