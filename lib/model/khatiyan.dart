@@ -24,10 +24,12 @@ class KhatiyanData {
 
 class Khatiyan {
   late String khatiyanName;
+  late String type;
 
-  Khatiyan({required this.khatiyanName});
+  Khatiyan({required this.khatiyanName,required this.type,   });
 
   Khatiyan.fromJson(Map<String, dynamic> json) {
     khatiyanName = json['khatiyanName'];
+    type = json['type'];
   }
 }

@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 
 import 'package:garments_app/controller/garmentsApp.dart';
-import 'package:garments_app/view/daily_sheet/daily_sheet_add.dart';
-import 'package:garments_app/view/daily_sheet/daily_sheet_khoroch.dart';
+import 'package:garments_app/view/daily_sheet/daily_sheet_joma_khoroch.dart';
+
 import 'package:garments_app/view/daily_sheet/daily_sheet_view.dart';
 
 import 'package:http/http.dart' as http;
@@ -51,7 +51,7 @@ class _DailySheetPageState extends State<DailySheetPage> {
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                const DailySheetKhorochPage()));
+                                 DailySheetJomaKhorochPage(jomaKhorochType: "Khoroch",)));
                   },
                 ),
               ),
@@ -65,7 +65,7 @@ class _DailySheetPageState extends State<DailySheetPage> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const DailySheetAddPage()));
+                            builder: (context) =>  DailySheetJomaKhorochPage(jomaKhorochType: "Joma",)));
                   },
                 ),
               ),
@@ -80,7 +80,7 @@ class _DailySheetPageState extends State<DailySheetPage> {
               child: FutureBuilder(
                 future: dailysheetJomaKhorochList(),
                 builder: (BuildContext context, AsyncSnapshot sn) {
-                  print(sn.error);
+                 
                   if (sn.hasData) {
                     List unis = sn.data;
                     return ListView.builder(

@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -9,24 +11,53 @@ import 'package:garments_app/model/dailySheet.dart';
 import 'package:garments_app/model/garmentsApp.dart';
 import 'package:garments_app/model/khatiyan.dart';
 
-import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
-class DailySheetKhorochPage extends StatefulWidget {
-  const DailySheetKhorochPage({super.key});
+class DailySheetJomaKhorochPage extends StatefulWidget {
+  String jomaKhorochType;
+  DailySheetJomaKhorochPage({super.key, required this.jomaKhorochType});
 
   @override
-  State<DailySheetKhorochPage> createState() => _DailySheetKhorochPageState();
+  State<DailySheetJomaKhorochPage> createState() =>
+      _DailySheetJomaKhorochPageState();
 }
 
-class _DailySheetKhorochPageState extends State<DailySheetKhorochPage> {
+class _DailySheetJomaKhorochPageState extends State<DailySheetJomaKhorochPage> {
   Future<GarmentsApp>? _future;
-
   Khatiyan? _selected;
-
   String? datetime;
   String status = "pending";
   int totalAmount = 0;
+  Future createDailysheetJoma(List<DailySheetJoma> listOfData) async {
+    String finalUrl = "http://$mydeviceIP:8000/createDailysheetJoma";
+    String jsonOfListOfData = jsonEncode(listOfData);
+    var url = Uri.parse(finalUrl);
+
+    http.Response response;
+    response = await http.post(url, body: {"listOFItem": jsonOfListOfData});
+    if (response.statusCode == 200) {
+      Fluttertoast.showToast(
+          msg: "Update Successful",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    } else {
+      throw Exception("Error loading data");
+    }
+
+    setState(() {
+      myList.clear();
+      listOFAmount.clear();
+      listOFItem.clear();
+      totalAmount = 0;
+      Navigator.pop(context);
+    });
+  }
+
   Future createDailysheetKhoroch(List<DailySheetJoma> listOfData) async {
     String finalUrl = "http://$mydeviceIP:8000/createDailysheetKhoroch";
     String jsonOfListOfData = jsonEncode(listOfData);
@@ -57,18 +88,19 @@ class _DailySheetKhorochPageState extends State<DailySheetKhorochPage> {
   }
 
   List<DailySheetJoma> myList = [];
+
   List<String> listOFItem = [];
+  List<String> listOFDetails = [];
   List<String> listOFAmount = [];
-    List<String> listOFDetails = [];
+  List<String> listOFtype = [];
   TextEditingController name = TextEditingController();
   TextEditingController details = TextEditingController(text: 'Nogod');
   TextEditingController khatiyanAmount = TextEditingController();
-  TextEditingController staffAmount = TextEditingController();
-
   TextEditingController editFromListItem = TextEditingController();
-  TextEditingController editFromListAmount = TextEditingController();
   TextEditingController editFromListDetails = TextEditingController();
- List<DataColumn> _createColumns() {
+  TextEditingController editFromListAmount = TextEditingController();
+
+  List<DataColumn> _createColumns() {
     return [
       const DataColumn(label: Text('Item')),
       const DataColumn(label: Text('Details')),
@@ -104,15 +136,18 @@ class _DailySheetKhorochPageState extends State<DailySheetKhorochPage> {
                             TextField(
                               readOnly: true,
                               controller: editFromListItem,
-                              decoration: const InputDecoration(hintText: "Item"),
+                              decoration:
+                                  const InputDecoration(hintText: "Item"),
                             ),
                             TextField(
                               controller: editFromListDetails,
-                              decoration: const InputDecoration(hintText: "Details"),
+                              decoration:
+                                  const InputDecoration(hintText: "Details"),
                             ),
                             TextField(
                               controller: editFromListAmount,
-                              decoration: const InputDecoration(hintText: "Amount"),
+                              decoration:
+                                  const InputDecoration(hintText: "Amount"),
                             ),
                           ],
                         ),
@@ -128,7 +163,8 @@ class _DailySheetKhorochPageState extends State<DailySheetKhorochPage> {
                                     setState(() {
                                       listOFItem[i] = editFromListItem.text;
                                       listOFAmount[i] = editFromListAmount.text;
-                                      listOFDetails[i] = editFromListDetails.text;
+                                      listOFDetails[i] =
+                                          editFromListDetails.text;
                                       for (int i = 0;
                                           i < listOFAmount.length;
                                           i++) {
@@ -139,6 +175,7 @@ class _DailySheetKhorochPageState extends State<DailySheetKhorochPage> {
                                       myList[i] = DailySheetJoma(
                                           item: editFromListItem.text,
                                           amount: editFromListAmount.text,
+                                          type: listOFtype[i],
                                           date: datetime!,
                                           details: editFromListDetails.text,
                                           status: status);
@@ -173,6 +210,7 @@ class _DailySheetKhorochPageState extends State<DailySheetKhorochPage> {
                     listOFItem.removeAt(i);
                     listOFDetails.removeAt(i);
                     listOFAmount.removeAt(i);
+                    listOFtype.removeAt(i);
                     myList.removeAt(i);
                   });
                 }),
@@ -203,8 +241,8 @@ class _DailySheetKhorochPageState extends State<DailySheetKhorochPage> {
   @override
   void initState() {
     _future = getKhatiyanListAll();
-
     datetime = DateFormat("dd-MM-yyyy").format(DateTime.now());
+
     super.initState();
   }
 
@@ -212,7 +250,7 @@ class _DailySheetKhorochPageState extends State<DailySheetKhorochPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Daily Sheet Joma"),
+        title: Text("Daily Sheet ${widget.jomaKhorochType}"),
       ),
       body: ListView(
         children: <Widget>[
@@ -301,6 +339,7 @@ class _DailySheetKhorochPageState extends State<DailySheetKhorochPage> {
                       } else {
                         myList.add(DailySheetJoma(
                             item: _selected!.khatiyanName.toString(),
+                            type: _selected!.type.toString(),
                             amount: khatiyanAmount.text,
                             date: datetime!,
                             details: details.text,
@@ -314,10 +353,11 @@ class _DailySheetKhorochPageState extends State<DailySheetKhorochPage> {
                           int available2 =
                               int.parse(khatiyanAmount.text) + available;
                           listOFAmount[a] = available2.toString();
-      
+
                           myList[a] = DailySheetJoma(
                               item: _selected!.khatiyanName.toString(),
                               amount: available2.toString(),
+                              type: _selected!.type.toString(),
                               date: datetime!,
                               details: listOFDetails[a],
                               status: status);
@@ -327,13 +367,14 @@ class _DailySheetKhorochPageState extends State<DailySheetKhorochPage> {
                             totalAmount += available;
                           }
                           khatiyanAmount.text = "";
-                           details.text = "Nogod";
+                          details.text = "Nogod";
                         } else {
                           int available = int.parse(khatiyanAmount.text);
                           totalAmount += available;
                           listOFItem.add(_selected!.khatiyanName.toString());
                           listOFDetails.add(details.text);
                           listOFAmount.add(khatiyanAmount.text);
+                          listOFtype.add(_selected!.type.toString());
                           khatiyanAmount.text = "";
                           details.text = "Nogod";
                         }
@@ -414,7 +455,12 @@ class _DailySheetKhorochPageState extends State<DailySheetKhorochPage> {
                                             ),
                                             child: const Text('Submit'),
                                             onPressed: () {
-                                              createDailysheetKhoroch(myList);
+                                              if (widget.jomaKhorochType ==
+                                                  "Joma") {
+                                                createDailysheetJoma(myList);
+                                              } else {
+                                                createDailysheetKhoroch(myList);
+                                              }
                                             },
                                           ),
                                         ),
@@ -449,14 +495,16 @@ class _DailySheetKhorochPageState extends State<DailySheetKhorochPage> {
                 height: 50,
                 padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                 child: ElevatedButton(
-                  child: const Text('Cancel'),
+                  child: const Text('Clear'),
                   onPressed: () {
                     setState(
                       () {
                         listOFAmount.clear();
-                        myList.clear();
                         listOFDetails.clear();
+                        myList.clear();
                         listOFItem.clear();
+                        listOFtype.clear();
+                        totalAmount = 0;
                       },
                     );
                   },
