@@ -12,3 +12,23 @@ class Products {
   }
 }
 
+class ProductProductionData {
+  final String productionDate;
+  final String productSize;
+  final int productQuantity;
+
+
+  ProductProductionData({
+    required this.productionDate,
+    required this.productSize,
+    required this.productQuantity,
+
+  });
+
+  factory ProductProductionData.fromJson(Map<String, dynamic> json) => ProductProductionData(
+        productionDate: json["productionDate"],
+        productSize: json["productSize"],
+        productQuantity: json["productQuantity"],
+    
+      );
+}

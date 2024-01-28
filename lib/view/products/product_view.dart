@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:garments_app/controller/garmentsApp.dart';
+import 'package:garments_app/model/products.dart';
 
 import 'package:http/http.dart' as http;
 
@@ -15,7 +16,7 @@ class ProductsViewPage extends StatefulWidget {
   State<ProductsViewPage> createState() => _ProductsViewPageState();
 }
 
-Future getProductProductionDetails(String productModelNo) async {
+Future<List<ProductProductionData>> getProductProductionDetails(String productModelNo) async {
   String finalUrl = "http://$mydeviceIP:8000/getProductProductionDetails";
   var url = Uri.parse(finalUrl);
   http.Response response = await http.post(url, body: {
@@ -23,7 +24,11 @@ Future getProductProductionDetails(String productModelNo) async {
   });
 
   if (response.statusCode == 200) {
-    return jsonDecode(response.body);
+     List result = jsonDecode(response.body);
+      List<ProductProductionData> mydata =
+          result.map((e) => ProductProductionData.fromJson(e)).toList();
+
+      return mydata;
   } else {
     throw Exception("Error loading data");
   }
@@ -107,43 +112,18 @@ class _ProductsViewPageState extends State<ProductsViewPage> {
               ),
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.all(10.0),
-            child: Card(
-              child: ListTile(
-                title: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text("Production Date"),
-                    Text("Size"),
-                    Text("Quantity"),
-                  ],
-                ),
-              ),
-            ),
-          ),
+         
           Expanded(
             child: Container(
-              padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-              child: FutureBuilder(
+              padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+              child: FutureBuilder<List<ProductProductionData>>(
                 future: getProductProductionDetails(widget.productModelNo),
-                builder: (BuildContext context, AsyncSnapshot sn) {
+                builder: (BuildContext context,
+                    AsyncSnapshot<List<ProductProductionData>> sn) {
                   if (sn.hasData) {
-                    List unis = sn.data;
-                    return ListView.builder(
-                      itemCount: unis.length,
-                      itemBuilder: (context, index) => Card(
-                        child: ListTile(
-                          title: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text("${unis[index]["productionDate"]}"),
-                              Text("${unis[index]["productSize"]}"),
-                              Text("${unis[index]["productQuantity"]}"),
-                            ],
-                          ),
-                        ),
-                      ),
+                    return Container(
+                      padding: const EdgeInsets.all(5),
+                      child: DataClass(datalist: sn.data as List<ProductProductionData>),
                     );
                   }
                   if (sn.hasError) {
@@ -157,6 +137,69 @@ class _ProductsViewPageState extends State<ProductsViewPage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class DataClass extends StatelessWidget {
+  final List<ProductProductionData> datalist;
+  const DataClass({super.key, required this.datalist});
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.vertical,
+      child: FittedBox(
+        child: DataTable(
+            sortColumnIndex: 1,
+            showCheckboxColumn: false,
+            border: TableBorder.all(width: 1.0),
+            columns: const [
+              DataColumn(
+                label: Text(
+                  "Date",
+                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                ),
+              ),
+              DataColumn(
+                label: Text(
+                  "Size",
+                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                ),
+              ),
+              DataColumn(
+                label: Text(
+                  "Quantity",
+                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+            rows: datalist
+                .map((data) => DataRow(cells: [
+                      DataCell(
+                        Text(
+                          data.productionDate,
+                          style: const TextStyle(
+                              fontSize: 25, fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                      DataCell(
+                        Text(
+                          data.productSize,
+                          style: const TextStyle(
+                              fontSize: 25, fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                      DataCell(
+                        Text(
+                          '${data.productQuantity}',
+                          style: const TextStyle(
+                              fontSize: 25, fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                    ]))
+                .toList()),
       ),
     );
   }
