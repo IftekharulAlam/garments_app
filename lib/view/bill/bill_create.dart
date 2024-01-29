@@ -21,9 +21,9 @@ class BillCreatePage extends StatefulWidget {
 class _BillCreatePageState extends State<BillCreatePage> {
   List<TextEditingController> listOfTextField = [];
   List<String> listOFProductModelNo = [];
-  List<String> listOFProductRate = [];
+  List<int> listOFProductRate = [];
   List<String> listOFProductSize = [];
-  List<String> listOFProductQuantity = [];
+  List<int> listOFProductQuantity = [];
   List<int> listOFProductAmount = [];
 
   static const String _title = 'Create Bill';
@@ -88,9 +88,9 @@ class _BillCreatePageState extends State<BillCreatePage> {
       String shopName,
       String date,
       List<String> listOFProductModelNo,
-      List<String> listOFProductRate,
+      List<int> listOFProductRate,
       List<String> listOFProductSize,
-      List<String> listOFProductQuantity,
+      List<int> listOFProductQuantity,
       int totalAmount2) async {
     late http.Response response;
     for (int i = 0; i < listOFProductModelNo.length; i++) {
@@ -143,8 +143,8 @@ class _BillCreatePageState extends State<BillCreatePage> {
         DataRow(cells: [
           DataCell(Text(listOFProductModelNo[i])),
           DataCell(Text(listOFProductSize[i])),
-          DataCell(Text(listOFProductQuantity[i])),
-          DataCell(Text(listOFProductRate[i])),
+          DataCell(Text('${listOFProductQuantity[i]}')),
+          DataCell(Text('${listOFProductRate[i]}')),
           DataCell(Text(listOFProductAmount[i].toString())),
           DataCell(
             IconButton(
@@ -152,9 +152,9 @@ class _BillCreatePageState extends State<BillCreatePage> {
                 onPressed: () {
                   setState(() {
                     int myProductRate =
-                        int.parse(listOFProductRate.elementAt(i));
+                        listOFProductRate.elementAt(i);
                     int myProductQuantity =
-                        int.parse(listOFProductQuantity.elementAt(i));
+                        listOFProductQuantity.elementAt(i);
                     totalAmount -= myProductRate * myProductQuantity;
                     listOFProductModelNo.removeAt(i);
                     listOFProductRate.removeAt(i);
@@ -174,7 +174,7 @@ class _BillCreatePageState extends State<BillCreatePage> {
         DataRow(cells: [
           DataCell(Text(listOFProductModelNo[i])),
           DataCell(Text(listOFProductSize[i])),
-          DataCell(Text(listOFProductQuantity[i])),
+          DataCell(Text('${listOFProductQuantity[i]}')),
           DataCell(Text(listOFProductAmount[i].toString())),
         ]),
     ];
@@ -221,6 +221,7 @@ class _BillCreatePageState extends State<BillCreatePage> {
               child: FutureBuilder(
                 future: getProductsAvailableList(),
                 builder: (BuildContext context, AsyncSnapshot sn) {
+                
                   if (sn.hasData) {
                     unis = sn.data;
                     listOfTextField = List.generate(
@@ -262,14 +263,14 @@ class _BillCreatePageState extends State<BillCreatePage> {
                                           if (int.parse(
                                                   listOfTextField[index].text) >
                                               0) {
-                                            int available = int.parse(
+                                            int available = 
                                                 unis[index]
-                                                    ["productAvailable"]);
+                                                    ["productAvailable"];
                                             int requested = int.parse(
                                                 listOfTextField[index].text);
                                             if (requested <= available) {
-                                              int myProductRate = int.parse(
-                                                  unis[index]["productRate"]);
+                                              int myProductRate = 
+                                                  unis[index]["productRate"];
                                               int myProductQuantity = int.parse(
                                                   listOfTextField[index].text);
                                               listOFProductAmount.add(
@@ -283,7 +284,7 @@ class _BillCreatePageState extends State<BillCreatePage> {
                                               listOFProductRate.add(
                                                   unis[index]["productRate"]);
                                               listOFProductQuantity.add(
-                                                  listOfTextField[index].text);
+                                                  int.parse(listOfTextField[index].text));
                                               totalAmount += myProductRate *
                                                   myProductQuantity;
                                             } else {

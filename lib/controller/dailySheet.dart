@@ -12,7 +12,7 @@ Future<List> fetchDate(String date) async {
   });
 
   if (response.statusCode == 200) {
-    return DailySheetJoma.fromJson(jsonDecode(response.body)) as List;
+    return DailySheetData.fromJson(jsonDecode(response.body)) as List;
   } else {
     throw Exception("Error loading data");
   }

@@ -4,8 +4,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:garments_app/controller/garmentsApp.dart';
-
-
+import 'package:garments_app/model/dailySheet.dart';
 
 import 'package:http/http.dart' as http;
 
@@ -33,7 +32,7 @@ class _DailySheetViewPageState extends State<DailySheetViewPage> {
     }
   }
 
-  Future getJomaDataList(String date) async {
+  Future<List<DailySheetJomaKhorochData>> getJomaDataList(String date) async {
     String finalUrl = "http://$mydeviceIP:8000/getJomaDataList";
     var url = Uri.parse(finalUrl);
     http.Response response = await http.post(url, body: {
@@ -41,13 +40,17 @@ class _DailySheetViewPageState extends State<DailySheetViewPage> {
     });
 
     if (response.statusCode == 200) {
-      return jsonDecode(response.body);
+      List result = jsonDecode(response.body);
+      List<DailySheetJomaKhorochData> mydata =
+          result.map((e) => DailySheetJomaKhorochData.fromJson(e)).toList();
+
+      return mydata;
     } else {
       throw Exception("Error loading data");
     }
   }
 
-  Future getKhorochDataList(String date) async {
+  Future<List<DailySheetJomaKhorochData>> getKhorochDataList(String date) async {
     String finalUrl = "http://$mydeviceIP:8000/getKhorochDataList";
     var url = Uri.parse(finalUrl);
     http.Response response = await http.post(url, body: {
@@ -55,7 +58,11 @@ class _DailySheetViewPageState extends State<DailySheetViewPage> {
     });
 
     if (response.statusCode == 200) {
-      return jsonDecode(response.body);
+      List result = jsonDecode(response.body);
+      List<DailySheetJomaKhorochData> mydata =
+          result.map((e) => DailySheetJomaKhorochData.fromJson(e)).toList();
+
+      return mydata;
     } else {
       throw Exception("Error loading data");
     }
@@ -86,33 +93,29 @@ class _DailySheetViewPageState extends State<DailySheetViewPage> {
             ),
             SizedBox(
               height: 300,
-              child: FutureBuilder(
-                future: getJomaDataList(widget.date),
-                builder: (BuildContext context, AsyncSnapshot sn) {
-                  if (sn.hasData) {
-                    List unis = sn.data;
-                    return ListView.builder(
-                      itemCount: unis.length,
-                      itemBuilder: (context, index) => Card(
-                        child: ListTile(
-                          title: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text("${unis[index]["item"]}"),
-                              Text("${unis[index]["amount"]}"),
-                            ],
-                          ),
-                        ),
-                      ),
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                child: FutureBuilder<List<DailySheetJomaKhorochData>>(
+                  future: getJomaDataList(widget.date),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<List<DailySheetJomaKhorochData>> sn) {
+                        print(sn.error);
+                    if (sn.hasData) {
+                      return Container(
+                        padding: const EdgeInsets.all(5),
+                        child: DataClass(
+                            datalist:
+                                sn.data as List<DailySheetJomaKhorochData>),
+                      );
+                    }
+                    if (sn.hasError) {
+                      return const Center(child: Text("Error Loading Data"));
+                    }
+                    return const Center(
+                      child: CircularProgressIndicator(),
                     );
-                  }
-                  if (sn.hasError) {
-                    return const Center(child: Text("Error Loading Data"));
-                  }
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                },
+                  },
+                ),
               ),
             ),
             Row(
@@ -130,33 +133,29 @@ class _DailySheetViewPageState extends State<DailySheetViewPage> {
             ),
             SizedBox(
               height: 300,
-              child: FutureBuilder(
-                future: getKhorochDataList(widget.date),
-                builder: (BuildContext context, AsyncSnapshot sn) {
-                  if (sn.hasData) {
-                    List unis = sn.data;
-                    return ListView.builder(
-                      itemCount: unis.length,
-                      itemBuilder: (context, index) => Card(
-                        child: ListTile(
-                          title: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text("${unis[index]["item"]}"),
-                              Text("${unis[index]["amount"]}"),
-                            ],
-                          ),
-                        ),
-                      ),
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                child: FutureBuilder<List<DailySheetJomaKhorochData>>(
+                  future: getKhorochDataList(widget.date),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<List<DailySheetJomaKhorochData>> sn) {
+                        print(sn.data);
+                    if (sn.hasData) {
+                      return Container(
+                        padding: const EdgeInsets.all(5),
+                        child: DataClass(
+                            datalist:
+                                sn.data as List<DailySheetJomaKhorochData>),
+                      );
+                    }
+                    if (sn.hasError) {
+                      return const Center(child: Text("Error Loading Data"));
+                    }
+                    return const Center(
+                      child: CircularProgressIndicator(),
                     );
-                  }
-                  if (sn.hasError) {
-                    return const Center(child: Text("Error Loading Data"));
-                  }
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                },
+                  },
+                ),
               ),
             ),
             Row(
@@ -186,6 +185,56 @@ class _DailySheetViewPageState extends State<DailySheetViewPage> {
             )
           ],
         ),
+      ),
+    );
+  }
+}
+
+class DataClass extends StatelessWidget {
+  final List<DailySheetJomaKhorochData> datalist;
+  const DataClass({super.key, required this.datalist});
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.vertical,
+      child: FittedBox(
+        child: DataTable(
+            sortColumnIndex: 1,
+            showCheckboxColumn: false,
+            border: TableBorder.all(width: 1.0),
+            columns: const [
+              DataColumn(
+                label: Text(
+                  "Item",
+                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                ),
+              ),
+              DataColumn(
+                label: Text(
+                  "Amount",
+                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+            rows: datalist
+                .map((data) => DataRow(cells: [
+                      DataCell(
+                        Text(
+                          data.date,
+                          style: const TextStyle(
+                              fontSize: 25, fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                      DataCell(
+                        Text(
+                          '${data.amount}',
+                          style: const TextStyle(
+                              fontSize: 25, fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                    ]))
+                .toList()),
       ),
     );
   }

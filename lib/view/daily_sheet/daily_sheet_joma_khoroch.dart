@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:garments_app/controller/garmentsApp.dart';
 import 'package:garments_app/controller/khatiyan.dart';
-
 import 'package:garments_app/model/dailySheet.dart';
+
 import 'package:garments_app/model/garmentsApp.dart';
 import 'package:garments_app/model/khatiyan.dart';
 
@@ -29,7 +29,7 @@ class _DailySheetJomaKhorochPageState extends State<DailySheetJomaKhorochPage> {
   String? datetime;
   String status = "pending";
   int totalAmount = 0;
-  Future createDailysheetJoma(List<DailySheetJoma> listOfData) async {
+  Future createDailysheetJoma(List<DailySheetData> listOfData) async {
     String finalUrl = "http://$mydeviceIP:8000/createDailysheetJoma";
     String jsonOfListOfData = jsonEncode(listOfData);
     var url = Uri.parse(finalUrl);
@@ -58,7 +58,7 @@ class _DailySheetJomaKhorochPageState extends State<DailySheetJomaKhorochPage> {
     });
   }
 
-  Future createDailysheetKhoroch(List<DailySheetJoma> listOfData) async {
+  Future createDailysheetKhoroch(List<DailySheetData> listOfData) async {
     String finalUrl = "http://$mydeviceIP:8000/createDailysheetKhoroch";
     String jsonOfListOfData = jsonEncode(listOfData);
     var url = Uri.parse(finalUrl);
@@ -87,7 +87,7 @@ class _DailySheetJomaKhorochPageState extends State<DailySheetJomaKhorochPage> {
     });
   }
 
-  List<DailySheetJoma> myList = [];
+  List<DailySheetData> myList = [];
 
   List<String> listOFItem = [];
   List<String> listOFDetails = [];
@@ -172,7 +172,7 @@ class _DailySheetJomaKhorochPageState extends State<DailySheetJomaKhorochPage> {
                                             int.parse(listOFAmount[i]);
                                         totalAmount += available;
                                       }
-                                      myList[i] = DailySheetJoma(
+                                      myList[i] = DailySheetData(
                                           item: editFromListItem.text,
                                           amount: editFromListAmount.text,
                                           type: listOFtype[i],
@@ -337,7 +337,7 @@ class _DailySheetJomaKhorochPageState extends State<DailySheetJomaKhorochPage> {
                     setState(() {
                       if (khatiyanAmount.text.isEmpty) {
                       } else {
-                        myList.add(DailySheetJoma(
+                        myList.add(DailySheetData(
                             item: _selected!.khatiyanName.toString(),
                             type: _selected!.type.toString(),
                             amount: khatiyanAmount.text,
@@ -354,7 +354,7 @@ class _DailySheetJomaKhorochPageState extends State<DailySheetJomaKhorochPage> {
                               int.parse(khatiyanAmount.text) + available;
                           listOFAmount[a] = available2.toString();
 
-                          myList[a] = DailySheetJoma(
+                          myList[a] = DailySheetData(
                               item: _selected!.khatiyanName.toString(),
                               amount: available2.toString(),
                               type: _selected!.type.toString(),
