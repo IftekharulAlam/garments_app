@@ -135,6 +135,7 @@ class _BillCreateOnePageState extends State<BillCreateOnePage> {
                     future: _future,
                     builder: (BuildContext context,
                         AsyncSnapshot<GarmentsApp> sn) {
+                        
                       if (sn.hasData) {
                         return DropdownButton<PartyPersonal>(
                           items: sn.data!.partyPersonal.map((partyPersonal) {
