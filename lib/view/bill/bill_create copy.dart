@@ -19,31 +19,45 @@ class BillCreatePage extends StatefulWidget {
 }
 
 class _BillCreatePageState extends State<BillCreatePage> {
-  Future createBill(Bill myBill) async {
-    String jsonOfListOfData = jsonEncode(myBill);
+  Future createBill(
+      String shopName,
+      String date,
+      List<String> listOFProductModelNo,
+      List<int> listOFProductRate,
+      List<String> listOFProductSize,
+      List<int> listOFProductQuantity,
+      int totalAmount2) async {
     late http.Response response;
-    response =
-        await http.post(Uri.parse("http://$mydeviceIP:8000/createBill"), body: {
-      "bill": jsonOfListOfData,
-    });
-    if (response.statusCode == 200) {
-    } else {
-      throw Exception("Error loading data");
+    for (int i = 0; i < listOFProductModelNo.length; i++) {
+      response = await http
+          .post(Uri.parse("http://$mydeviceIP:8000/createBill"), body: {
+        "shopName": shopName,
+        "date": date,
+        "listOFProductModelNo": listOFProductModelNo[i],
+        "listOFProductRate": listOFProductRate[i],
+        "listOFProductSize": listOFProductSize[i],
+        "listOFProductQuantity": listOFProductQuantity[i],
+        "totalAmount": totalAmount2.toString()
+      });
+      if (response.statusCode == 200) {
+      } else {
+        throw Exception("Error loading data");
+      }
     }
-
+    addBillToPartyKhatiyan(shopName, date, totalAmount);
     setState(() {
       listOFProductModelNo.clear();
       listOFProductRate.clear();
       listOFProductSize.clear();
       listOFProductQuantity.clear();
       listOFProductAmount.clear();
-      mybillProductsDataList.clear();
       totalAmount = 0;
-      Navigator.pop(context);
     });
   }
+   
 
   List<BillProductsData> mybillProductsDataList = [];
+  late Bill myBill;
 
   List<TextEditingController> listOfTextField = [];
   List<String> listOFProductModelNo = [];
@@ -54,7 +68,6 @@ class _BillCreatePageState extends State<BillCreatePage> {
 
   static const String _title = 'Create Bill';
   String? datetime;
-  String billNo = "1111";
   @override
   void initState() {
     datetime = DateFormat("dd-MM-yyyy").format(DateTime.now());
@@ -275,20 +288,6 @@ class _BillCreatePageState extends State<BillCreatePage> {
                                                           .text));
                                               totalAmount += myProductRate *
                                                   myProductQuantity;
-                                              mybillProductsDataList.add(
-                                                  BillProductsData(
-                                                      productModelNo: unis[
-                                                              index]
-                                                          ["productModelNo"],
-                                                      productSize: unis[index]
-                                                          ["productSize"],
-                                                      productRate: unis[index]
-                                                          ["productRate"],
-                                                      productQuantity:
-                                                          int.parse(
-                                                              listOfTextField[
-                                                                      index]
-                                                                  .text)));
                                             } else {
                                               Fluttertoast.showToast(
                                                   msg: "Not Available",
@@ -399,13 +398,14 @@ class _BillCreatePageState extends State<BillCreatePage> {
                                             ),
                                             child: const Text('Save'),
                                             onPressed: () {
-                                              createBill(Bill(
-                                                  billNo: billNo,
-                                                  shopName: widget.myShopName,
-                                                  date: datetime!,
-                                                  mybillProductsData:
-                                                      mybillProductsDataList,
-                                                  totalAmount: totalAmount));
+                                              createBill(
+                                                  widget.myShopName,
+                                                  datetime!,
+                                                  listOFProductModelNo,
+                                                  listOFProductRate,
+                                                  listOFProductSize,
+                                                  listOFProductQuantity,
+                                                  totalAmount);
                                             },
                                           ),
                                         ),
@@ -461,7 +461,6 @@ class _BillCreatePageState extends State<BillCreatePage> {
                         listOFProductSize.clear();
                         listOFProductQuantity.clear();
                         listOFProductAmount.clear();
-                        mybillProductsDataList.clear();
                         totalAmount = 0;
                       });
                     },
