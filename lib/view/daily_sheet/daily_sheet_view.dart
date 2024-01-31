@@ -50,7 +50,8 @@ class _DailySheetViewPageState extends State<DailySheetViewPage> {
     }
   }
 
-  Future<List<DailySheetJomaKhorochData>> getKhorochDataList(String date) async {
+  Future<List<DailySheetJomaKhorochData>> getKhorochDataList(
+      String date) async {
     String finalUrl = "http://$mydeviceIP:8000/getKhorochDataList";
     var url = Uri.parse(finalUrl);
     http.Response response = await http.post(url, body: {
@@ -99,7 +100,6 @@ class _DailySheetViewPageState extends State<DailySheetViewPage> {
                   future: getJomaDataList(widget.date),
                   builder: (BuildContext context,
                       AsyncSnapshot<List<DailySheetJomaKhorochData>> sn) {
-                        print(sn.error);
                     if (sn.hasData) {
                       return Container(
                         padding: const EdgeInsets.all(5),
@@ -139,7 +139,6 @@ class _DailySheetViewPageState extends State<DailySheetViewPage> {
                   future: getKhorochDataList(widget.date),
                   builder: (BuildContext context,
                       AsyncSnapshot<List<DailySheetJomaKhorochData>> sn) {
-                        print(sn.data);
                     if (sn.hasData) {
                       return Container(
                         padding: const EdgeInsets.all(5),
@@ -200,41 +199,46 @@ class DataClass extends StatelessWidget {
       scrollDirection: Axis.vertical,
       child: FittedBox(
         child: DataTable(
-            sortColumnIndex: 1,
-            showCheckboxColumn: false,
-            border: TableBorder.all(width: 1.0),
-            columns: const [
-              DataColumn(
-                label: Text(
-                  "Item",
-                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                ),
+          sortColumnIndex: 1,
+          showCheckboxColumn: false,
+          border: TableBorder.all(width: 1.0),
+          columns: const [
+            DataColumn(
+              label: Text(
+                "Item",
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
               ),
-              DataColumn(
-                label: Text(
-                  "Amount",
-                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                ),
+            ),
+            DataColumn(
+              label: Text(
+                "Amount",
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
               ),
-            ],
-            rows: datalist
-                .map((data) => DataRow(cells: [
-                      DataCell(
-                        Text(
-                          data.date,
-                          style: const TextStyle(
-                              fontSize: 25, fontWeight: FontWeight.w500),
-                        ),
+            ),
+          ],
+          rows: datalist
+              .map(
+                (data) => DataRow(
+                  cells: [
+                    DataCell(
+                      Text(
+                        data.item,
+                        style: const TextStyle(
+                            fontSize: 25, fontWeight: FontWeight.w500),
                       ),
-                      DataCell(
-                        Text(
-                          '${data.amount}',
-                          style: const TextStyle(
-                              fontSize: 25, fontWeight: FontWeight.w500),
-                        ),
+                    ),
+                    DataCell(
+                      Text(
+                        '${data.amount}',
+                        style: const TextStyle(
+                            fontSize: 25, fontWeight: FontWeight.w500),
                       ),
-                    ]))
-                .toList()),
+                    ),
+                  ],
+                ),
+              )
+              .toList(),
+        ),
       ),
     );
   }
