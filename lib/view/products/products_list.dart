@@ -63,14 +63,15 @@ class _ProductsListPageState extends State<ProductsListPage> {
   }
 
   Future addProduct(String productModelNo, String productionDate,
-      String productSize, String productQuantity) async {
+      String productSize, String productQuantity, String productRate) async {
     String finalUrl = "http://$mydeviceIP:8000/addProduct";
     var url = Uri.parse(finalUrl);
     http.Response response = await http.post(url, body: {
       "productModelNo": productModelNo,
       "productionDate": productionDate,
       "productSize": productSize,
-      "productQuantity": productQuantity
+      "productQuantity": productQuantity,
+      "productRate": productRate
     });
 
     if (response.statusCode == 200) {
@@ -325,12 +326,21 @@ class _ProductsListPageState extends State<ProductsListPage> {
                                       productionDate.text.isEmpty ||
                                       productSize.text.isEmpty ||
                                       productQuantity.text.isEmpty) {
+                                    Fluttertoast.showToast(
+                                        msg: "Production Data Cannot be Empty",
+                                        toastLength: Toast.LENGTH_SHORT,
+                                        gravity: ToastGravity.CENTER,
+                                        timeInSecForIosWeb: 1,
+                                        backgroundColor: Colors.red,
+                                        textColor: Colors.white,
+                                        fontSize: 16.0);
                                   } else {
                                     addProduct(
                                         _selected!.productModelNo.toString(),
                                         productionDate.text,
                                         productSize.text,
-                                        productQuantity.text);
+                                        productQuantity.text,
+                                        _selected!.productRate.toString());
                                     productionDate.text = "";
                                     productSize.text = "";
                                     productQuantity.text = "";
