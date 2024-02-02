@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:garments_app/controller/garmentsApp.dart';
+import 'package:garments_app/model/khatiyan.dart';
+import 'package:garments_app/model/sql_service.dart';
 
 import 'package:garments_app/view/khatiyan/khatiyan_view.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -17,7 +19,13 @@ class KhatiyanListPage extends StatefulWidget {
 }
 
 class _KhatiyanListPageState extends State<KhatiyanListPage> {
+  late final SqlService mysqlService = SqlService();
   String? datetime;
+  int joma = 0;
+  int khoroch = 0;
+  int balance = 0;
+  String type = "Office";
+  String details = "Nogod";
   @override
   void initState() {
     datetime = DateFormat("dd-MM-yyyy").format(DateTime.now());
@@ -110,8 +118,17 @@ class _KhatiyanListPageState extends State<KhatiyanListPage> {
                                         textColor: Colors.white,
                                         fontSize: 16.0);
                                   } else {
-                                    createKhatiyan(
-                                        khatiyanName.text, datetime!);
+                                    // createKhatiyan(
+                                    //     khatiyanName.text, datetime!);
+
+                                    mysqlService.insertKhatiyan(Khatiyan(
+                                        khatiyanName: khatiyanName.text,
+                                        date: datetime!,
+                                        details: details,
+                                        joma: joma,
+                                        khoroch: khoroch,
+                                        balance: balance,
+                                        type: type));
                                     khatiyanName.text = "";
                                     Navigator.of(context).pop();
                                   }
@@ -139,22 +156,24 @@ class _KhatiyanListPageState extends State<KhatiyanListPage> {
           Expanded(
             child: Container(
               padding: const EdgeInsets.all(10),
-              child: FutureBuilder(
-                future: getKhatiyanList(),
-                builder: (BuildContext context, AsyncSnapshot sn) {
+              child: FutureBuilder<List<Khatiyan>>(
+                future: mysqlService.getKhatiyanList(),
+                builder:
+                    (BuildContext context, AsyncSnapshot<List<Khatiyan>> sn) {
                   if (sn.hasData) {
-                    List unis = sn.data;
+                    List<Khatiyan> mykhatiyan = sn.data as List<Khatiyan>;
                     return ListView.builder(
                       padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                      itemCount: unis.length,
+                      itemCount: mykhatiyan.length,
                       itemBuilder: (context, index) => GestureDetector(
                         onTap: () {
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => KhatiyanViewPage(
-                                      khatiyanName:
-                                          "${unis[index]["khatiyanName"]}")));
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => KhatiyanViewPage(
+                                  khatiyanName: mykhatiyan[index].khatiyanName),
+                            ),
+                          );
                         },
                         child: Card(
                           child: ListTile(
@@ -163,7 +182,7 @@ class _KhatiyanListPageState extends State<KhatiyanListPage> {
                               children: [
                                 SizedBox(
                                   width: 200,
-                                  child: Text("${unis[index]["khatiyanName"]}"),
+                                  child: Text(mykhatiyan[index].khatiyanName),
                                 ),
                                 IconButton(
                                     onPressed: () {},

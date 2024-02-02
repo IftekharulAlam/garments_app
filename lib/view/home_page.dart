@@ -1,8 +1,9 @@
-// ignore_for_file: prefer_const_constructors, must_be_immutable, use_build_context_synchronously
+// ignore_for_file: prefer_const_constructors, must_be_immutable, use_build_context_synchronously, prefer_typing_uninitialized_variables
 
 // import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:garments_app/model/sql_service.dart';
 import 'package:garments_app/view/bill/bill.dart';
 import 'package:garments_app/view/chalan.dart';
 import 'package:garments_app/view/daily_sheet/daily_sheet.dart';
@@ -24,6 +25,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  late final SqlService mysqlService = SqlService();
   List<String> itemStrings = [
     'Products',
     'Daily Sheet',
@@ -44,6 +46,13 @@ class _HomePageState extends State<HomePage> {
     const VoucherPage(),
     const ChalanPage()
   ];
+
+  @override
+  void initState() {
+    mysqlService.initializeDB();
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

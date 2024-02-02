@@ -7,6 +7,7 @@ import 'package:garments_app/controller/products.dart';
 
 import 'package:garments_app/model/garmentsApp.dart';
 import 'package:garments_app/model/products.dart';
+import 'package:garments_app/model/sql_service.dart';
 
 import 'package:garments_app/view/products/product_view.dart';
 
@@ -23,7 +24,7 @@ class ProductsListPage extends StatefulWidget {
 class _ProductsListPageState extends State<ProductsListPage> {
   Future<GarmentsApp>? _future;
   Products? _selected;
-
+  late final SqlService mysqlService  = SqlService();
   TextEditingController productModelNo = TextEditingController();
   TextEditingController productDetails = TextEditingController();
   TextEditingController productRate = TextEditingController();
@@ -89,12 +90,16 @@ class _ProductsListPageState extends State<ProductsListPage> {
     }
   }
 
-  Future getProductsList() async {
+  Future<List<Products>> getProductsList() async {
     http.Response response = await http.get(
       Uri.parse("http://$mydeviceIP:8000/getProductsList"),
     );
     if (response.statusCode == 200) {
-      return jsonDecode(response.body);
+      List result = jsonDecode(response.body);
+      List<Products> mydata =
+          result.map((e) => Products.fromJson(e)).toList();
+
+      return mydata;
     } else {
       throw Exception("Error loading data");
     }
@@ -175,10 +180,11 @@ class _ProductsListPageState extends State<ProductsListPage> {
                                         productDetails.text.isEmpty ||
                                         productRate.text.isEmpty) {
                                     } else {
-                                      createProduct(
-                                          productModelNo.text,
-                                          productDetails.text,
-                                          productRate.text);
+                                      mysqlService.insertProduct(Products(productModelNo:productModelNo.text , productDetails:  productDetails.text, productRate: int.parse(productRate.text)));
+                                      // createProduct(
+                                      //     productModelNo.text,
+                                      //     productDetails.text,
+                                      //     productRate.text);
                                       productModelNo.text = "";
                                       productDetails.text = "";
 
@@ -367,22 +373,22 @@ class _ProductsListPageState extends State<ProductsListPage> {
           Expanded(
             child: Container(
               padding: const EdgeInsets.all(10),
-              child: FutureBuilder(
-                future: getProductsList(),
-                builder: (BuildContext context, AsyncSnapshot sn) {
+              child: FutureBuilder<List<Products>>(
+                future: mysqlService.getProductsList(),
+                builder: (BuildContext context, AsyncSnapshot<List<Products>> sn) {
                   if (sn.hasData) {
-                    List unis = sn.data;
+                    List<Products> products = sn.data as List<Products>;
                     return ListView.builder(
                       padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                      itemCount: unis.length,
+                      itemCount: products.length,
                       itemBuilder: (context, index) => GestureDetector(
                         onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => ProductsViewPage(
-                                    productModelNo: unis[index]
-                                        ["productModelNo"])),
+                                    productModelNo: products[index].productModelNo
+                                        )),
                           );
                         },
                         child: Card(
@@ -390,7 +396,7 @@ class _ProductsListPageState extends State<ProductsListPage> {
                             title: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text("${unis[index]["productModelNo"]}"),
+                                Text(products[index].productModelNo),
                                 IconButton(
                                     onPressed: () {},
                                     icon: const Icon(Icons.edit))

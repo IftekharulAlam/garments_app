@@ -24,12 +24,36 @@ class KhatiyanData {
 
 class Khatiyan {
   late String khatiyanName;
+  late String date;
+  late String details;
+  late int joma;
+  late int khoroch;
+  late int balance;
   late String type;
 
-  Khatiyan({required this.khatiyanName,required this.type,   });
+  Khatiyan({
+    required this.khatiyanName,
+    required this.date,
+    required this.details,
+    required this.joma,
+    required this.khoroch,
+    required this.balance,
+    required this.type,
+  });
 
   Khatiyan.fromJson(Map<String, dynamic> json) {
     khatiyanName = json['khatiyanName'];
     type = json['type'];
+  }
+  Map<String, dynamic> toMap() {
+    return {
+      'khatiyanName': khatiyanName,
+      'date': date,
+      'details': details,
+      'joma': joma,
+      'khoroch': khoroch,
+      'balance': balance,
+      'type': type,
+    };
   }
 }
