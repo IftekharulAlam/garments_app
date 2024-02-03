@@ -49,7 +49,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    mysqlService.initializeDB();
+   // mysqlService.initializeDB();
 
     super.initState();
   }

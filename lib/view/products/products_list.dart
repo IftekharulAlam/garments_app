@@ -1,4 +1,7 @@
+// ignore_for_file: unused_field
+
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -13,6 +16,7 @@ import 'package:garments_app/view/products/product_view.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ProductsListPage extends StatefulWidget {
   const ProductsListPage({super.key});
@@ -24,7 +28,7 @@ class ProductsListPage extends StatefulWidget {
 class _ProductsListPageState extends State<ProductsListPage> {
   Future<GarmentsApp>? _future;
   Products? _selected;
-  late final SqlService mysqlService  = SqlService();
+  late final SqlService mysqlService = SqlService();
   TextEditingController productModelNo = TextEditingController();
   TextEditingController productDetails = TextEditingController();
   TextEditingController productRate = TextEditingController();
@@ -35,31 +39,55 @@ class _ProductsListPageState extends State<ProductsListPage> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  final _picker = ImagePicker();
+  String filepath = "";
+  File? _image;
   var list = [];
   List unismy = [];
+  Future<void> _openImagePicker() async {
+    try {
+      var pickedImage = await _picker.pickImage(source: ImageSource.gallery);
+      if (pickedImage != null) {
+        setState(() {
+          _image = File(pickedImage.path);
+          filepath = pickedImage.path;
+        });
+        // uploadImage(pickedImage.path);
+      }
+    } catch (e) {
+      //print(e);
+    }
+  }
 
-  Future createProduct(
-      String productModelNo, String productDetails, String productRate) async {
-    String finalUrl = "http://$mydeviceIP:8000/createProduct";
-    var url = Uri.parse(finalUrl);
-    http.Response response = await http.post(url, body: {
-      "productModelNo": productModelNo,
-      "productDetails": productDetails,
-      "productRate": productRate,
-    });
+  Future createProduct(String productModelNo, String productDetails,
+      String productRate, filepath) async {
+    try {
+      var request = http.MultipartRequest(
+          'POST', Uri.parse("http://$mydeviceIP:8000/createProduct"));
 
-    if (response.statusCode == 200) {
-      Fluttertoast.showToast(
-          msg: "Update Successful",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0);
-      return jsonDecode(response.body);
-    } else {
-      throw Exception("Error loading data");
+      request.fields.addAll({
+        'productModelNo': productModelNo,
+        'productDetails': productDetails,
+        'productRate': productRate,
+      });
+      request.files.add(await http.MultipartFile.fromPath('image', filepath));
+
+      http.StreamedResponse response = await request.send();
+
+      if (response.statusCode == 200) {
+        Fluttertoast.showToast(
+            msg: "Added Successful",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0);
+      } else {
+        //print(response.reasonPhrase);
+      }
+    } catch (e) {
+      //  print(e);
     }
   }
 
@@ -96,8 +124,7 @@ class _ProductsListPageState extends State<ProductsListPage> {
     );
     if (response.statusCode == 200) {
       List result = jsonDecode(response.body);
-      List<Products> mydata =
-          result.map((e) => Products.fromJson(e)).toList();
+      List<Products> mydata = result.map((e) => Products.fromJson(e)).toList();
 
       return mydata;
     } else {
@@ -125,7 +152,7 @@ class _ProductsListPageState extends State<ProductsListPage> {
                 height: 50,
                 padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                 child: ElevatedButton(
-                  child: const Text('Create'),
+                  child: const Text('Create Product'),
                   onPressed: () {
                     showDialog(
                       context: context,
@@ -146,6 +173,32 @@ class _ProductsListPageState extends State<ProductsListPage> {
                                       labelText: 'Model No',
                                     ),
                                   ),
+                                ),
+                                Row(
+                                  children: [
+                                    Container(
+                                      height: 50,
+                                      padding:
+                                          const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                                      child: ElevatedButton(
+                                        child: const Text('Take Picture'),
+                                        onPressed: () {
+                                          // _openImagePicker();
+                                        },
+                                      ),
+                                    ),
+                                    Container(
+                                      height: 50,
+                                      padding:
+                                          const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                                      child: ElevatedButton(
+                                        child: const Text('Upload Picture'),
+                                        onPressed: () {
+                                          _openImagePicker();
+                                        },
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 Container(
                                   padding: const EdgeInsets.all(10),
@@ -178,13 +231,19 @@ class _ProductsListPageState extends State<ProductsListPage> {
                                     list.clear();
                                     if (productModelNo.text.isEmpty ||
                                         productDetails.text.isEmpty ||
+                                        filepath == "" ||
                                         productRate.text.isEmpty) {
                                     } else {
-                                      mysqlService.insertProduct(Products(productModelNo:productModelNo.text , productDetails:  productDetails.text, productRate: int.parse(productRate.text)));
-                                      // createProduct(
-                                      //     productModelNo.text,
-                                      //     productDetails.text,
-                                      //     productRate.text);
+                                      // mysqlService.insertProduct(Products(
+                                      //     productModelNo: productModelNo.text,
+                                      //     productDetails: productDetails.text,
+                                      //     productRate:
+                                      //         int.parse(productRate.text)));
+                                      createProduct(
+                                          productModelNo.text,
+                                          productDetails.text,
+                                          productRate.text,
+                                          filepath);
                                       productModelNo.text = "";
                                       productDetails.text = "";
 
@@ -212,7 +271,7 @@ class _ProductsListPageState extends State<ProductsListPage> {
                 height: 50,
                 padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                 child: ElevatedButton(
-                  child: const Text('Add'),
+                  child: const Text('Add Stock'),
                   onPressed: () {
                     showDialog(
                       context: context,
@@ -374,8 +433,9 @@ class _ProductsListPageState extends State<ProductsListPage> {
             child: Container(
               padding: const EdgeInsets.all(10),
               child: FutureBuilder<List<Products>>(
-                future: mysqlService.getProductsList(),
-                builder: (BuildContext context, AsyncSnapshot<List<Products>> sn) {
+                future: getProductsList(),
+                builder:
+                    (BuildContext context, AsyncSnapshot<List<Products>> sn) {
                   if (sn.hasData) {
                     List<Products> products = sn.data as List<Products>;
                     return ListView.builder(
@@ -387,8 +447,8 @@ class _ProductsListPageState extends State<ProductsListPage> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => ProductsViewPage(
-                                    productModelNo: products[index].productModelNo
-                                        )),
+                                    productModelNo:
+                                        products[index].productModelNo)),
                           );
                         },
                         child: Card(

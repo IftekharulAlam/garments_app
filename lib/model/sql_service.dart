@@ -8,8 +8,11 @@ import 'package:garments_app/model/products.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-
 class SqlService {
+  List<String> myquery = [
+    'CREATE TABLE product_table(productModelNo text NOT NULL,productDetails text NOT NULL,productRate int(11) NOT NULL);',
+    'CREATE TABLE khatiyan_full(serial INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,date text NOT NULL,khatiyanName text NOT NULL,details text NOT NULL,joma int(11) NOT NULL,khoroch int(11) NOT NULL,balance int(11) NOT NULL,type text NOT NULL)'
+  ];
   var database;
   // A method that retrieves all the dogs from the dogs table.
   Future<List<Products>> getProductsList() async {
@@ -62,9 +65,9 @@ class SqlService {
     return openDatabase(
       join(await getDatabasesPath(), 'garments.db'),
       onCreate: (db, version) {
-        return db.execute(
-          'CREATE TABLE product_table(productModelNo text NOT NULL,productDetails text NOT NULL,productRate int(11) NOT NULL); CREATE TABLE khatiyan_full(serial int(11) NOT NULL AUTO_INCREMENT,date text NOT NULL,khatiyanName text NOT NULL,details text NOT NULL,joma int(11) NOT NULL,khoroch int(11) NOT NULL,balance int(11) NOT NULL,type text NOT NULL)',
-        );
+        for (int i = 0; i < myquery.length; i++) {
+          db.execute(myquery[i]);
+        }
       },
       version: 1,
     );
