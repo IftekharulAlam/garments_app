@@ -12,7 +12,7 @@ import 'package:garments_app/model/garmentsApp.dart';
 import 'package:garments_app/model/products.dart';
 import 'package:garments_app/model/sql_service.dart';
 
-import 'package:garments_app/view/products/product_view.dart';
+//import 'package:garments_app/view/products/product_view.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -443,16 +443,38 @@ class _ProductsListPageState extends State<ProductsListPage> {
                       itemCount: products.length,
                       itemBuilder: (context, index) => GestureDetector(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ProductsViewPage(
-                                    productModelNo:
-                                        products[index].productModelNo)),
-                          );
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //       builder: (context) => ProductsViewPage(
+                          //           productModelNo:
+                          //               products[index].productModelNo)),
+                          // );
                         },
                         child: Card(
                           child: ListTile(
+                            leading: GestureDetector(
+                              child: FlutterLogo(size: 56.0),
+                              onTap: () {
+                                showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: Row(
+                                          mainAxisAlignment: MainAxisAlignment.end,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            IconButton(
+                                                onPressed: () =>
+                                                    Navigator.of(context).pop(),
+                                                icon: const Icon(Icons.cancel_outlined)),
+                                          ],
+                                        ),
+                                        content: const FlutterLogo(size: 200.0),
+                                      );
+                                    });
+                              },
+                            ),
                             title: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -462,6 +484,7 @@ class _ProductsListPageState extends State<ProductsListPage> {
                                     icon: const Icon(Icons.edit))
                               ],
                             ),
+                            subtitle: Text(products[index].productDetails),
                             trailing: IconButton(
                                 onPressed: () {},
                                 icon: const Icon(Icons.delete)),
