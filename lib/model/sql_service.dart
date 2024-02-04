@@ -15,18 +15,18 @@ class SqlService {
   ];
   var database;
   // A method that retrieves all the dogs from the dogs table.
-  Future<List<Products>> getProductsList() async {
-    final Database db = await initializeDB();
-    final List<Map<String, dynamic>> maps = await db.query('product_table');
+  // Future<List<Products>> getProductsList() async {
+  //   final Database db = await initializeDB();
+  //   final List<Map<String, dynamic>> maps = await db.query('product_table');
 
-    return List.generate(maps.length, (i) {
-      return Products(
-        productModelNo: maps[i]['productModelNo'],
-        productDetails: maps[i]['productDetails'] as String,
-        productRate: maps[i]['productRate'] as int,
-      );
-    });
-  }
+  //   return List.generate(maps.length, (i) {
+  //     return Products(
+  //       productModelNo: maps[i]['productModelNo'],
+  //       productDetails: maps[i]['productDetails'] as String,
+  //       productRate: maps[i]['productRate'] as int,
+  //     );
+  //   });
+  // }
 
   Future<List<Khatiyan>> getKhatiyanList() async {
     final Database db = await initializeDB();

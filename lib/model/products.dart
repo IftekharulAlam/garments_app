@@ -1,22 +1,26 @@
 class Products {
   late String productModelNo;
-  late String productDetails;
   late int productRate;
+  late String productDetails;
+
+  late String imagePath;
   Products({
     required this.productModelNo,
+    required this.imagePath,
     required this.productDetails,
     required this.productRate,
-
   });
 
   Products.fromJson(Map<String, dynamic> json) {
     productModelNo = json['productModelNo'];
+    imagePath = json['imagePath'];
     productDetails = json['productDetails'];
     productRate = json['productRate'];
   }
   Map<String, dynamic> toMap() {
     return {
       'productModelNo': productModelNo,
+      'imagePath': imagePath,
       'productDetails': productDetails,
       'productRate': productRate,
     };

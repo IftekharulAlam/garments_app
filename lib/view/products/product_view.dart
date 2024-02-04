@@ -16,7 +16,8 @@ class ProductsViewPage extends StatefulWidget {
   State<ProductsViewPage> createState() => _ProductsViewPageState();
 }
 
-Future<List<ProductProductionData>> getProductProductionDetails(String productModelNo) async {
+Future<List<ProductProductionData>> getProductProductionDetails(
+    String productModelNo) async {
   String finalUrl = "http://$mydeviceIP:8000/getProductProductionDetails";
   var url = Uri.parse(finalUrl);
   http.Response response = await http.post(url, body: {
@@ -24,11 +25,11 @@ Future<List<ProductProductionData>> getProductProductionDetails(String productMo
   });
 
   if (response.statusCode == 200) {
-     List result = jsonDecode(response.body);
-      List<ProductProductionData> mydata =
-          result.map((e) => ProductProductionData.fromJson(e)).toList();
+    List result = jsonDecode(response.body);
+    List<ProductProductionData> mydata =
+        result.map((e) => ProductProductionData.fromJson(e)).toList();
 
-      return mydata;
+    return mydata;
   } else {
     throw Exception("Error loading data");
   }
@@ -75,30 +76,59 @@ class _ProductsViewPageState extends State<ProductsViewPage> {
                 builder: (BuildContext context, AsyncSnapshot sn) {
                   if (sn.hasData) {
                     List unis = sn.data;
+
                     return ListView.builder(
                       padding: const EdgeInsets.all(10),
                       itemCount: unis.length,
-                      itemBuilder: (context, index) => Column(
-                        children: [
-                          Card(
-                            child: ListTile(
-                              title: Text(
-                                  "Product Model: ${unis[index]["productModelNo"]}"),
-                            ),
+                      itemBuilder: (context, index) => Card(
+                        child: ListTile(
+                          leading: GestureDetector(
+                            child: Image.network(unis[index]["imagePath"]),
+                            onTap: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          IconButton(
+                                              onPressed: () =>
+                                                  Navigator.of(context).pop(),
+                                              icon: const Icon(
+                                                  Icons.cancel_outlined)),
+                                        ],
+                                      ),
+                                      content: Image.network(
+                                          unis[index]["imagePath"]),
+                                    );
+                                  });
+                            },
                           ),
-                          Card(
-                            child: ListTile(
-                              title: Text(
-                                  "Product Details: ${unis[index]["productDetails"]}"),
-                            ),
+                          title: Text(
+                              "Product Model: ${unis[index]["productModelNo"]}"),
+                          subtitle: Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                      "Product Details: ${unis[index]["productDetails"]}"),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                      "Product price: ${unis[index]["productRate"]}"),
+                                ],
+                              ),
+                            ],
                           ),
-                          Card(
-                            child: ListTile(
-                              title: Text(
-                                  "Product Rate: ${unis[index]["productRate"]}"),
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
                     );
                   }
@@ -112,28 +142,44 @@ class _ProductsViewPageState extends State<ProductsViewPage> {
               ),
             ),
           ),
-         
           Expanded(
-            child: Container(
-              padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-              child: FutureBuilder<List<ProductProductionData>>(
-                future: getProductProductionDetails(widget.productModelNo),
-                builder: (BuildContext context,
-                    AsyncSnapshot<List<ProductProductionData>> sn) {
-                  if (sn.hasData) {
-                    return Container(
-                      padding: const EdgeInsets.all(5),
-                      child: DataClass(datalist: sn.data as List<ProductProductionData>),
-                    );
-                  }
-                  if (sn.hasError) {
-                    return const Center(child: Text("Error Loading Data"));
-                  }
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                },
-              ),
+            flex: 3,
+            child: Column(
+              children: [
+                Container(
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.all(10),
+                  child: const Text(
+                    'Production Details',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 30),
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                  child: FutureBuilder<List<ProductProductionData>>(
+                    future: getProductProductionDetails(widget.productModelNo),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<List<ProductProductionData>> sn) {
+                      if (sn.hasData) {
+                        return Container(
+                          padding: const EdgeInsets.all(5),
+                          child: DataClass(
+                              datalist: sn.data as List<ProductProductionData>),
+                        );
+                      }
+                      if (sn.hasError) {
+                        return const Center(child: Text("Error Loading Data"));
+                      }
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
           ),
         ],

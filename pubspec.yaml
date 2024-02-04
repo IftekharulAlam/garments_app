@@ -44,6 +44,8 @@ dependencies:
   sqflite_common_ffi_web: ^0.4.2+3
   sqflite_common_ffi: ^2.3.2+1
   image_picker: ^1.0.7
+  camera: ^0.10.5+9
+  path_provider: ^2.1.2
 
 dev_dependencies:
   flutter_test:
