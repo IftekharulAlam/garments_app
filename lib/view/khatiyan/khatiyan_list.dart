@@ -56,13 +56,16 @@ class _KhatiyanListPageState extends State<KhatiyanListPage> {
     }
   }
 
-  Future getKhatiyanList() async {
+  Future<List<Khatiyan>> getKhatiyanList() async {
     http.Response response = await http.get(
       Uri.parse("http://$mydeviceIP:8000/getKhatiyanList"),
     );
 
     if (response.statusCode == 200) {
-      return jsonDecode(response.body);
+      List result = jsonDecode(response.body);
+      List<Khatiyan> mydata = result.map((e) => Khatiyan.fromJson(e)).toList();
+
+      return mydata;
     } else {
       throw Exception("Error loading data");
     }
@@ -118,17 +121,17 @@ class _KhatiyanListPageState extends State<KhatiyanListPage> {
                                         textColor: Colors.white,
                                         fontSize: 16.0);
                                   } else {
-                                    // createKhatiyan(
-                                    //     khatiyanName.text, datetime!);
+                                    createKhatiyan(
+                                        khatiyanName.text, datetime!);
 
-                                    mysqlService.insertKhatiyan(Khatiyan(
-                                        khatiyanName: khatiyanName.text,
-                                        date: datetime!,
-                                        details: details,
-                                        joma: joma,
-                                        khoroch: khoroch,
-                                        balance: balance,
-                                        type: type));
+                                    // mysqlService.insertKhatiyan(Khatiyan(
+                                    //     khatiyanName: khatiyanName.text,
+                                    //     date: datetime!,
+                                    //     details: details,
+                                    //     joma: joma,
+                                    //     khoroch: khoroch,
+                                    //     balance: balance,
+                                    //     type: type));
                                     khatiyanName.text = "";
                                     Navigator.of(context).pop();
                                   }
@@ -157,7 +160,7 @@ class _KhatiyanListPageState extends State<KhatiyanListPage> {
             child: Container(
               padding: const EdgeInsets.all(10),
               child: FutureBuilder<List<Khatiyan>>(
-                future: mysqlService.getKhatiyanList(),
+                future: getKhatiyanList(),
                 builder:
                     (BuildContext context, AsyncSnapshot<List<Khatiyan>> sn) {
                   if (sn.hasData) {

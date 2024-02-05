@@ -222,7 +222,7 @@ class DataClass extends StatelessWidget {
                   cells: [
                     DataCell(
                       Text(
-                        data.item,
+                        data.item == "DailySheet" ? "Total" : data.item,
                         style: const TextStyle(
                             fontSize: 25, fontWeight: FontWeight.w500),
                       ),

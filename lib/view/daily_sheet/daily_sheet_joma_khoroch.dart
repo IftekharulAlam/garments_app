@@ -457,8 +457,24 @@ class _DailySheetJomaKhorochPageState extends State<DailySheetJomaKhorochPage> {
                                             onPressed: () {
                                               if (widget.jomaKhorochType ==
                                                   "Joma") {
+                                                myList.add(DailySheetData(
+                                                    item: "DailySheet",
+                                                    amount:
+                                                        totalAmount.toString(),
+                                                    date: datetime!,
+                                                    details: 'Total',
+                                                    status: status,
+                                                    type: "Office"));
                                                 createDailysheetJoma(myList);
                                               } else {
+                                                myList.add(DailySheetData(
+                                                    item: "DailySheet",
+                                                    amount:
+                                                        totalAmount.toString(),
+                                                    date: datetime!,
+                                                    details: 'Total',
+                                                    status: status,
+                                                    type: "Office"));
                                                 createDailysheetKhoroch(myList);
                                               }
                                             },
