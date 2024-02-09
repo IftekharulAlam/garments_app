@@ -1,4 +1,4 @@
-// ignore_for_file: must_be_immutable
+// ignore_for_file: must_be_immutable, unused_field
 
 import 'dart:convert';
 
@@ -14,21 +14,60 @@ import 'package:garments_app/model/khatiyan.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
-class DailySheetJomaKhorochPage extends StatefulWidget {
+class DailySheetJomaKhorochPageUpdate extends StatefulWidget {
   String jomaKhorochType;
-  DailySheetJomaKhorochPage({super.key, required this.jomaKhorochType});
+  String date;
+  DailySheetJomaKhorochPageUpdate(
+      {super.key, required this.date, required this.jomaKhorochType});
 
   @override
-  State<DailySheetJomaKhorochPage> createState() =>
-      _DailySheetJomaKhorochPageState();
+  State<DailySheetJomaKhorochPageUpdate> createState() =>
+      _DailySheetJomaKhorochPageUpdateState();
 }
 
-class _DailySheetJomaKhorochPageState extends State<DailySheetJomaKhorochPage> {
+class _DailySheetJomaKhorochPageUpdateState
+    extends State<DailySheetJomaKhorochPageUpdate> {
   Future<GarmentsApp>? _future;
+
   Khatiyan? _selected;
   String? datetime;
   String status = "pending";
   int totalAmount = 0;
+  List<DailySheetData>? dailySheetdata = [];
+  Future getKhorochDataListForUpdate(String date, String type) async {
+    String finalUrl = "http://$mydeviceIP:8000/getKhorochDataListForUpdate";
+    var url = Uri.parse(finalUrl);
+    http.Response response =
+        await http.post(url, body: {"date": date, "type": type});
+
+    if (response.statusCode == 200) {
+      setState(() {
+        List result = jsonDecode(response.body);
+        dailySheetdata = result.map((e) => DailySheetData.fromJson(e)).toList();
+        for (var i = 0; i < dailySheetdata!.length; i++) {
+          listOFItem.add(dailySheetdata![i].item);
+        }
+        for (var i = 0; i < dailySheetdata!.length; i++) {
+          listOFDetails.add(dailySheetdata![i].details);
+        }
+        for (var i = 0; i < dailySheetdata!.length; i++) {
+          listOFAmount.add(dailySheetdata![i].amount.toString());
+        }
+        for (var i = 0; i < dailySheetdata!.length; i++) {
+          listOFtype.add(dailySheetdata![i].type);
+        }
+        
+        for (var i = 0; i < listOFAmount.length; i++) {
+          totalAmount += int.parse(listOFAmount.elementAt(i));
+        }
+
+        myList = dailySheetdata!;
+      });
+    } else {
+      throw Exception("Error loading data");
+    }
+  }
+
   Future createDailysheetJoma(List<DailySheetData> listOfData) async {
     String finalUrl = "http://$mydeviceIP:8000/createDailysheetJoma";
     String jsonOfListOfData = jsonEncode(listOfData);
@@ -88,6 +127,7 @@ class _DailySheetJomaKhorochPageState extends State<DailySheetJomaKhorochPage> {
   }
 
   List<DailySheetData> myList = [];
+  Future<DailySheetData>? _myList2;
 
   List<String> listOFItem = [];
   List<String> listOFDetails = [];
@@ -99,17 +139,6 @@ class _DailySheetJomaKhorochPageState extends State<DailySheetJomaKhorochPage> {
   TextEditingController editFromListItem = TextEditingController();
   TextEditingController editFromListDetails = TextEditingController();
   TextEditingController editFromListAmount = TextEditingController();
-
-  List<DataColumn> _createColumns() {
-    return [
-      const DataColumn(label: Text('Item')),
-      const DataColumn(label: Text('Details')),
-      const DataColumn(label: Text('Amount')),
-      const DataColumn(label: Text('Update')),
-      const DataColumn(label: Text('Delete')),
-    ];
-  }
-
   List<DataRow> _createRows() {
     return [
       for (int i = 0; i < listOFItem.length; i++)
@@ -174,7 +203,8 @@ class _DailySheetJomaKhorochPageState extends State<DailySheetJomaKhorochPage> {
                                       }
                                       myList[i] = DailySheetData(
                                           item: editFromListItem.text,
-                                          amount: int.parse(editFromListAmount.text),
+                                          amount: int.parse(
+                                              editFromListAmount.text),
                                           type: listOFtype[i],
                                           date: datetime!,
                                           details: editFromListDetails.text,
@@ -219,6 +249,16 @@ class _DailySheetJomaKhorochPageState extends State<DailySheetJomaKhorochPage> {
     ];
   }
 
+  List<DataColumn> _createColumns() {
+    return [
+      const DataColumn(label: Text('Item')),
+      const DataColumn(label: Text('Details')),
+      const DataColumn(label: Text('Amount')),
+      const DataColumn(label: Text('Update')),
+      const DataColumn(label: Text('Delete')),
+    ];
+  }
+
   List<DataColumn> _createColumns2() {
     return [
       const DataColumn(label: Text('Item')),
@@ -241,6 +281,7 @@ class _DailySheetJomaKhorochPageState extends State<DailySheetJomaKhorochPage> {
   @override
   void initState() {
     _future = getKhatiyanListAll();
+    getKhorochDataListForUpdate(widget.date, widget.jomaKhorochType);
     datetime = DateFormat("dd-MM-yyyy").format(DateTime.now());
 
     super.initState();
@@ -250,7 +291,7 @@ class _DailySheetJomaKhorochPageState extends State<DailySheetJomaKhorochPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Daily Sheet ${widget.jomaKhorochType}"),
+        title: Text("Daily Sheet ${widget.jomaKhorochType} Update"),
       ),
       body: ListView(
         children: <Widget>[
@@ -459,8 +500,7 @@ class _DailySheetJomaKhorochPageState extends State<DailySheetJomaKhorochPage> {
                                                   "Joma") {
                                                 myList.add(DailySheetData(
                                                     item: "DailySheet",
-                                                    amount:
-                                                        totalAmount,
+                                                    amount: totalAmount,
                                                     date: datetime!,
                                                     details: 'Total',
                                                     status: status,
@@ -469,8 +509,7 @@ class _DailySheetJomaKhorochPageState extends State<DailySheetJomaKhorochPage> {
                                               } else {
                                                 myList.add(DailySheetData(
                                                     item: "DailySheet",
-                                                    amount:
-                                                        totalAmount,
+                                                    amount: totalAmount,
                                                     date: datetime!,
                                                     details: 'Total',
                                                     status: status,

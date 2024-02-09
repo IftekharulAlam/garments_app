@@ -1,3 +1,4 @@
+import 'package:garments_app/model/dailySheet.dart';
 import 'package:garments_app/model/khatiyan.dart';
 import 'package:garments_app/model/party.dart';
 import 'package:garments_app/model/products.dart';
@@ -8,12 +9,15 @@ class GarmentsApp {
   late List<PartyPersonal> partyPersonal;
   late List<Khatiyan> khatiyanList;
   late List<Staff> staffList;
+  late List<DailySheetData> dailySheetData;
 
-  GarmentsApp(
-      {required this.products,
-      required this.staffList,
-      required this.partyPersonal,
-      required this.khatiyanList});
+  GarmentsApp.dailySheetDataFromJson(List json) {
+    dailySheetData = [];
+
+    for (var v in json) {
+      dailySheetData.add(DailySheetData.fromJson(v));
+    }
+  }
   GarmentsApp.productsFromJson(List json) {
     products = [];
 
@@ -43,6 +47,3 @@ class GarmentsApp {
     }
   }
 }
-
-
-

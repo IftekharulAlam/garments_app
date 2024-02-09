@@ -38,7 +38,7 @@ class _HomePageState extends State<HomePage> {
   ];
   List<Widget> itemWidgets = [
     const ProductsListPage(),
-    const DailySheetPage(),
+     DailySheetPage(),
     const KhatiyanListPage(),
     const StaffKhataPage(),
     const PartyKhataPage(),

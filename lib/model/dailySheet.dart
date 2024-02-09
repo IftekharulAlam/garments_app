@@ -1,6 +1,6 @@
 class DailySheetData {
   final String item;
-  final String amount;
+  final int amount;
   final String date;
   final String details;
   final String status;
@@ -23,7 +23,7 @@ class DailySheetData {
         type: json["type"],
       );
 
-  Map<String, String> toJson() => {
+  Map<String, dynamic> toJson() => {
         "item": item,
         "date": date,
         "amount": amount,
@@ -63,5 +63,26 @@ class DailySheetJomaKhorochData {
         "amount": amount,
         "status": status,
         "type": type,
+      };
+}
+
+class DailysheetJomaKhorochList {
+  final String date;
+  final String status;
+
+  DailysheetJomaKhorochList({
+    required this.status,
+    required this.date,
+  });
+
+  factory DailysheetJomaKhorochList.fromJson(Map<String, dynamic> json) =>
+      DailysheetJomaKhorochList(
+        date: json["date"],
+        status: json["status"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "date": date,
+        "status": status,
       };
 }
