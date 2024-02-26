@@ -92,7 +92,9 @@ class _DailySheetJomaKhorochPageState extends State<DailySheetJomaKhorochPage> {
   List<String> listOFItem = [];
   List<String> listOFDetails = [];
   List<String> listOFAmount = [];
-  List<String> listOFtype = [];
+  List<String> listOFsegment = [];
+
+
   TextEditingController name = TextEditingController();
   TextEditingController details = TextEditingController(text: 'Nogod');
   TextEditingController khatiyanAmount = TextEditingController();
@@ -175,7 +177,7 @@ class _DailySheetJomaKhorochPageState extends State<DailySheetJomaKhorochPage> {
                                       myList[i] = DailySheetData(
                                           item: editFromListItem.text,
                                           amount: int.parse(editFromListAmount.text),
-                                          type: listOFtype[i],
+                                          segment: listOFsegment[i],
                                           date: datetime!,
                                           details: editFromListDetails.text,
                                           status: status);
@@ -210,7 +212,7 @@ class _DailySheetJomaKhorochPageState extends State<DailySheetJomaKhorochPage> {
                     listOFItem.removeAt(i);
                     listOFDetails.removeAt(i);
                     listOFAmount.removeAt(i);
-                    listOFtype.removeAt(i);
+                    listOFsegment.removeAt(i);
                     myList.removeAt(i);
                   });
                 }),
@@ -339,7 +341,7 @@ class _DailySheetJomaKhorochPageState extends State<DailySheetJomaKhorochPage> {
                       } else {
                         myList.add(DailySheetData(
                             item: _selected!.khatiyanName.toString(),
-                            type: _selected!.type.toString(),
+                            segment: _selected!.segment.toString(),
                             amount: int.parse(khatiyanAmount.text),
                             date: datetime!,
                             details: details.text,
@@ -357,7 +359,7 @@ class _DailySheetJomaKhorochPageState extends State<DailySheetJomaKhorochPage> {
                           myList[a] = DailySheetData(
                               item: _selected!.khatiyanName.toString(),
                               amount: int.parse(available2.toString()),
-                              type: _selected!.type.toString(),
+                              segment: _selected!.segment.toString(),
                               date: datetime!,
                               details: listOFDetails[a],
                               status: status);
@@ -374,7 +376,7 @@ class _DailySheetJomaKhorochPageState extends State<DailySheetJomaKhorochPage> {
                           listOFItem.add(_selected!.khatiyanName.toString());
                           listOFDetails.add(details.text);
                           listOFAmount.add(khatiyanAmount.text);
-                          listOFtype.add(_selected!.type.toString());
+                          listOFsegment.add(_selected!.segment.toString());
                           khatiyanAmount.text = "";
                           details.text = "Nogod";
                         }
@@ -464,7 +466,7 @@ class _DailySheetJomaKhorochPageState extends State<DailySheetJomaKhorochPage> {
                                                     date: datetime!,
                                                     details: 'Total',
                                                     status: status,
-                                                    type: "Office"));
+                                                    segment: "Office"));
                                                 createDailysheetJoma(myList);
                                               } else {
                                                 myList.add(DailySheetData(
@@ -474,7 +476,7 @@ class _DailySheetJomaKhorochPageState extends State<DailySheetJomaKhorochPage> {
                                                     date: datetime!,
                                                     details: 'Total',
                                                     status: status,
-                                                    type: "Office"));
+                                                    segment: "Office"));
                                                 createDailysheetKhoroch(myList);
                                               }
                                             },
@@ -519,7 +521,7 @@ class _DailySheetJomaKhorochPageState extends State<DailySheetJomaKhorochPage> {
                         listOFDetails.clear();
                         myList.clear();
                         listOFItem.clear();
-                        listOFtype.clear();
+                        listOFsegment.clear();
                         totalAmount = 0;
                       },
                     );

@@ -40,7 +40,7 @@ class SqlService {
         joma: maps[i]['joma'] as int,
         khoroch: maps[i]['khoroch'] as int,
         balance: maps[i]['balance'] as int,
-        type: maps[i]['type'] as String,
+        segment: maps[i]['segment'] as String,
       );
     });
   }

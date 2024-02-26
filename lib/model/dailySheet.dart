@@ -4,14 +4,15 @@ class DailySheetData {
   final String date;
   final String details;
   final String status;
-  final String type;
+  final String segment;
+
   DailySheetData({
     required this.item,
     required this.amount,
     required this.date,
     required this.details,
     required this.status,
-    required this.type,
+    required this.segment,
   });
 
   factory DailySheetData.fromJson(Map<String, dynamic> json) => DailySheetData(
@@ -20,7 +21,7 @@ class DailySheetData {
         date: json["date"],
         details: json["details"],
         status: json["status"],
-        type: json["type"],
+        segment: json["segment"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -29,19 +30,20 @@ class DailySheetData {
         "amount": amount,
         "details": details,
         "status": status,
-        "type": type,
+        "segment": segment,
       };
 }
 
 class DailySheetJomaKhorochData {
   final String item;
+  final String details;
   final int amount;
   final String date;
-
   final String status;
   final String type;
   DailySheetJomaKhorochData({
     required this.item,
+    required this.details,
     required this.amount,
     required this.date,
     required this.status,
@@ -51,6 +53,7 @@ class DailySheetJomaKhorochData {
   factory DailySheetJomaKhorochData.fromJson(Map<String, dynamic> json) =>
       DailySheetJomaKhorochData(
         item: json["item"],
+        details: json["details"],
         amount: json["amount"],
         date: json["date"],
         status: json["status"],
@@ -59,8 +62,9 @@ class DailySheetJomaKhorochData {
 
   Map<String, dynamic> toJson() => {
         "item": item,
-        "date": date,
+        "details": details,
         "amount": amount,
+        "date": date,
         "status": status,
         "type": type,
       };

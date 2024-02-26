@@ -34,8 +34,8 @@ class _DailySheetJomaKhorochPageUpdateState
   String status = "pending";
   int totalAmount = 0;
   List<DailySheetData>? dailySheetdata = [];
-  Future getKhorochDataListForUpdate(String date, String type) async {
-    String finalUrl = "http://$mydeviceIP:8000/getKhorochDataListForUpdate";
+  Future getKJomahorochDataListForUpdate(String date, String type) async {
+    String finalUrl = "http://$mydeviceIP:8000/getKJomahorochDataListForUpdate";
     var url = Uri.parse(finalUrl);
     http.Response response =
         await http.post(url, body: {"date": date, "type": type});
@@ -43,7 +43,9 @@ class _DailySheetJomaKhorochPageUpdateState
     if (response.statusCode == 200) {
       setState(() {
         List result = jsonDecode(response.body);
+
         dailySheetdata = result.map((e) => DailySheetData.fromJson(e)).toList();
+        print(dailySheetdata);
         for (var i = 0; i < dailySheetdata!.length; i++) {
           listOFItem.add(dailySheetdata![i].item);
         }
@@ -54,7 +56,7 @@ class _DailySheetJomaKhorochPageUpdateState
           listOFAmount.add(dailySheetdata![i].amount.toString());
         }
         for (var i = 0; i < dailySheetdata!.length; i++) {
-          listOFtype.add(dailySheetdata![i].type);
+          listOFsegment.add(dailySheetdata![i].segment);
         }
         
         for (var i = 0; i < listOFAmount.length; i++) {
@@ -68,8 +70,8 @@ class _DailySheetJomaKhorochPageUpdateState
     }
   }
 
-  Future createDailysheetJoma(List<DailySheetData> listOfData) async {
-    String finalUrl = "http://$mydeviceIP:8000/createDailysheetJoma";
+  Future createDailysheetJomaUpdate(List<DailySheetData> listOfData) async {
+    String finalUrl = "http://$mydeviceIP:8000/createDailysheetJomaUpdate";
     String jsonOfListOfData = jsonEncode(listOfData);
     var url = Uri.parse(finalUrl);
 
@@ -97,8 +99,8 @@ class _DailySheetJomaKhorochPageUpdateState
     });
   }
 
-  Future createDailysheetKhoroch(List<DailySheetData> listOfData) async {
-    String finalUrl = "http://$mydeviceIP:8000/createDailysheetKhoroch";
+  Future createDailysheetKhorochUpdate(List<DailySheetData> listOfData) async {
+    String finalUrl = "http://$mydeviceIP:8000/createDailysheetKhorochUpdate";
     String jsonOfListOfData = jsonEncode(listOfData);
     var url = Uri.parse(finalUrl);
 
@@ -132,7 +134,7 @@ class _DailySheetJomaKhorochPageUpdateState
   List<String> listOFItem = [];
   List<String> listOFDetails = [];
   List<String> listOFAmount = [];
-  List<String> listOFtype = [];
+  List<String> listOFsegment = [];
   TextEditingController name = TextEditingController();
   TextEditingController details = TextEditingController(text: 'Nogod');
   TextEditingController khatiyanAmount = TextEditingController();
@@ -205,7 +207,7 @@ class _DailySheetJomaKhorochPageUpdateState
                                           item: editFromListItem.text,
                                           amount: int.parse(
                                               editFromListAmount.text),
-                                          type: listOFtype[i],
+                                          segment: listOFsegment[i],
                                           date: datetime!,
                                           details: editFromListDetails.text,
                                           status: status);
@@ -240,7 +242,7 @@ class _DailySheetJomaKhorochPageUpdateState
                     listOFItem.removeAt(i);
                     listOFDetails.removeAt(i);
                     listOFAmount.removeAt(i);
-                    listOFtype.removeAt(i);
+                    listOFsegment.removeAt(i);
                     myList.removeAt(i);
                   });
                 }),
@@ -281,7 +283,7 @@ class _DailySheetJomaKhorochPageUpdateState
   @override
   void initState() {
     _future = getKhatiyanListAll();
-    getKhorochDataListForUpdate(widget.date, widget.jomaKhorochType);
+    getKJomahorochDataListForUpdate(widget.date, widget.jomaKhorochType);
     datetime = DateFormat("dd-MM-yyyy").format(DateTime.now());
 
     super.initState();
@@ -380,7 +382,7 @@ class _DailySheetJomaKhorochPageUpdateState
                       } else {
                         myList.add(DailySheetData(
                             item: _selected!.khatiyanName.toString(),
-                            type: _selected!.type.toString(),
+                            segment: _selected!.segment.toString(),
                             amount: int.parse(khatiyanAmount.text),
                             date: datetime!,
                             details: details.text,
@@ -398,7 +400,7 @@ class _DailySheetJomaKhorochPageUpdateState
                           myList[a] = DailySheetData(
                               item: _selected!.khatiyanName.toString(),
                               amount: int.parse(available2.toString()),
-                              type: _selected!.type.toString(),
+                              segment: _selected!.segment.toString(),
                               date: datetime!,
                               details: listOFDetails[a],
                               status: status);
@@ -415,7 +417,7 @@ class _DailySheetJomaKhorochPageUpdateState
                           listOFItem.add(_selected!.khatiyanName.toString());
                           listOFDetails.add(details.text);
                           listOFAmount.add(khatiyanAmount.text);
-                          listOFtype.add(_selected!.type.toString());
+                          listOFsegment.add(_selected!.segment.toString());
                           khatiyanAmount.text = "";
                           details.text = "Nogod";
                         }
@@ -504,8 +506,8 @@ class _DailySheetJomaKhorochPageUpdateState
                                                     date: datetime!,
                                                     details: 'Total',
                                                     status: status,
-                                                    type: "Office"));
-                                                createDailysheetJoma(myList);
+                                                    segment: "Office"));
+                                                createDailysheetJomaUpdate(myList);
                                               } else {
                                                 myList.add(DailySheetData(
                                                     item: "DailySheet",
@@ -513,8 +515,8 @@ class _DailySheetJomaKhorochPageUpdateState
                                                     date: datetime!,
                                                     details: 'Total',
                                                     status: status,
-                                                    type: "Office"));
-                                                createDailysheetKhoroch(myList);
+                                                    segment: "Office"));
+                                                createDailysheetKhorochUpdate(myList);
                                               }
                                             },
                                           ),
@@ -558,7 +560,7 @@ class _DailySheetJomaKhorochPageUpdateState
                         listOFDetails.clear();
                         myList.clear();
                         listOFItem.clear();
-                        listOFtype.clear();
+                        listOFsegment.clear();
                         totalAmount = 0;
                       },
                     );

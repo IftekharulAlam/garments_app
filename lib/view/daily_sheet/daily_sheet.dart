@@ -8,6 +8,7 @@ import 'package:garments_app/controller/garmentsApp.dart';
 import 'package:garments_app/model/dailySheet.dart';
 import 'package:garments_app/view/daily_sheet/daily_sheet_joma_khoroch.dart';
 import 'package:garments_app/view/daily_sheet/daily_sheet_joma_khoroch_update.dart';
+
 import 'package:garments_app/view/daily_sheet/daily_sheet_view.dart';
 
 import 'package:http/http.dart' as http;
@@ -25,9 +26,9 @@ class _DailySheetPageState extends State<DailySheetPage> {
   late String selectedDate = "New";
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   List<DailysheetJomaKhorochList> dailysheetJomaKhorochlist = [];
-  Future dailysheetJomaKhorochList() async {
+  Future getdailysheetJomaKhorochList() async {
     http.Response response = await http.get(
-      Uri.parse("http://$mydeviceIP:8000/dailysheetJomaKhorochList"),
+      Uri.parse("http://$mydeviceIP:8000/getdailysheetJomaKhorochList"),
     );
 
     if (response.statusCode == 200) {
@@ -51,7 +52,7 @@ class _DailySheetPageState extends State<DailySheetPage> {
   @override
   void initState() {
     datetime = DateFormat("dd-MM-yyyy").format(DateTime.now());
-    dailysheetJomaKhorochList();
+    getdailysheetJomaKhorochList();
     super.initState();
   }
 

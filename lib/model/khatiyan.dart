@@ -29,7 +29,7 @@ class Khatiyan {
   late int joma;
   late int khoroch;
   late int balance;
-  late String type;
+  late String segment;
 
   Khatiyan({
     required this.khatiyanName,
@@ -38,12 +38,12 @@ class Khatiyan {
     required this.joma,
     required this.khoroch,
     required this.balance,
-    required this.type,
+    required this.segment,
   });
 
   Khatiyan.fromJson(Map<String, dynamic> json) {
     khatiyanName = json['khatiyanName'];
-    type = json['type'];
+    segment = json['segment'];
   }
   Map<String, dynamic> toMap() {
     return {
@@ -53,7 +53,7 @@ class Khatiyan {
       'joma': joma,
       'khoroch': khoroch,
       'balance': balance,
-      'type': type,
+      'segment': segment,
     };
   }
 }

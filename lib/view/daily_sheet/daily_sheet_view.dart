@@ -100,6 +100,7 @@ class _DailySheetViewPageState extends State<DailySheetViewPage> {
                   future: getJomaDataList(widget.date),
                   builder: (BuildContext context,
                       AsyncSnapshot<List<DailySheetJomaKhorochData>> sn) {
+                  
                     if (sn.hasData) {
                       return Container(
                         padding: const EdgeInsets.all(5),
@@ -109,7 +110,7 @@ class _DailySheetViewPageState extends State<DailySheetViewPage> {
                       );
                     }
                     if (sn.hasError) {
-                      return const Center(child: Text("Error Loading Data"));
+                      return const Center(child: Text("No Data"));
                     }
                     return const Center(
                       child: CircularProgressIndicator(),
@@ -148,7 +149,7 @@ class _DailySheetViewPageState extends State<DailySheetViewPage> {
                       );
                     }
                     if (sn.hasError) {
-                      return const Center(child: Text("Error Loading Data"));
+                      return const Center(child: Text("No Data"));
                     }
                     return const Center(
                       child: CircularProgressIndicator(),
@@ -211,6 +212,12 @@ class DataClass extends StatelessWidget {
             ),
             DataColumn(
               label: Text(
+                "Details",
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+              ),
+            ),
+            DataColumn(
+              label: Text(
                 "Amount",
                 style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
               ),
@@ -222,7 +229,14 @@ class DataClass extends StatelessWidget {
                   cells: [
                     DataCell(
                       Text(
-                        data.item == "DailySheet" ? "Total" : data.item,
+                        data.item,
+                        style: const TextStyle(
+                            fontSize: 25, fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                    DataCell(
+                      Text(
+                        data.details,
                         style: const TextStyle(
                             fontSize: 25, fontWeight: FontWeight.w500),
                       ),
